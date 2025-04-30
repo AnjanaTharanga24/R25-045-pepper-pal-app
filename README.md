@@ -11,7 +11,7 @@
 | Name with Initials        | Registration Number | Contact Phone Number | Email                         | Badge   |
 |---------------------------|---------------------|----------------------|-------------------------------|---------|
 | Premavilal R.D.C.N.       | IT21803284          | 076 9129496          | it21803284@my.sliit.lk        | Leader  |
-| Samaranayake N.A.A.T      | IT21312694          | 077 4436594          | it21826436@my.sliit.lk        | Member  |
+| Samaranayake N.A.A.T      | IT21826436          | 077 4436594          | it21826436@my.sliit.lk        | Member  |
 | Koswaththa K.A.I.M.       | IT21212840          | 071 6578650          | it21829338@my.sliit.lk        | Member  |
 | Kalupahana N.D.           | IT21817762          | 070 4076943          | it21817762@my.sliit.lk        | Member  |
 

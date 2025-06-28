@@ -147,33 +147,6 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.bottomSpacing} />
       </ScrollView>
 
-      {/* Navigation Bar */}
-      <View style={styles.navigationBar}>
-        <TouchableOpacity style={[styles.navItem, styles.activeNavItem]}>
-          <Text style={[styles.navIcon, styles.activeNavIcon]}>🏠</Text>
-          <Text style={[styles.navLabel, styles.activeNavLabel]}>Home</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.navItem}>
-          <Text style={styles.navIcon}>📊</Text>
-          <Text style={styles.navLabel}>Analytics</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.navItem}>
-          <Text style={styles.navIcon}>🌱</Text>
-          <Text style={styles.navLabel}>Farm</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.navItem}>
-          <Text style={styles.navIcon}>💰</Text>
-          <Text style={styles.navLabel}>Market</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.navItem}>
-          <Text style={styles.navIcon}>👤</Text>
-          <Text style={styles.navLabel}>Profile</Text>
-        </TouchableOpacity>
-      </View>
     </SafeAreaView>
   );
 }
@@ -181,12 +154,12 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f9f0', // Light green background
+    backgroundColor: '#f0f9f0',
   },
   
   // Simple Header
   header: {
-    backgroundColor: '#2d5c3e', // Deep forest green
+    backgroundColor: '#2d5c3e', 
     paddingHorizontal: 20,
     paddingTop: 10,
     paddingBottom: 20,

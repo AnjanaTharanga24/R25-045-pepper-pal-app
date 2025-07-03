@@ -5,6 +5,7 @@ import HomeScreen from './screens/HomeScreens';
 import PricePredictionScreen from './screens/price-prediction/PricePrediction';  
 import DistrictPredictionScreen from './screens/price-prediction/DistrictLevelPrediction';  
 import NationalPredictionScreen from './screens/price-prediction/NationalLevelPrediction'; 
+import DiseaseDetectionScreen from './screens/disease-detection/DiseaseDetection';
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +27,11 @@ export default function App() {
         <Stack.Screen
           name="National Price"
           component={NationalPredictionScreen}
+          options={{ title: 'Black Pepper Price' }} 
+        />
+        <Stack.Screen
+          name="Detect Disease"
+          component={DiseaseDetectionScreen}
           options={{ title: 'Black Pepper Price' }} 
         />
       </Stack.Navigator>

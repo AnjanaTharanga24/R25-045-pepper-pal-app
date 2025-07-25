@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 
 export default function PricePredictionScreen({ navigation }) {
   return (
@@ -16,7 +16,7 @@ export default function PricePredictionScreen({ navigation }) {
         <View style={styles.placeholder} />
       </View>
 
-      <View style={styles.content}>
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Title Section */}
         <View style={styles.titleSection}>
           <Text style={styles.title}>Black Pepper Price Prediction</Text>
@@ -76,8 +76,43 @@ export default function PricePredictionScreen({ navigation }) {
               <Text style={styles.arrowText}>→</Text>
             </View>
           </TouchableOpacity>
+
+          {/* Advanced Prediction */}
+          <TouchableOpacity
+            style={[styles.optionCard, styles.advancedCard]}
+            onPress={() => navigation.navigate('Advanced Price')}
+            activeOpacity={0.7}
+          >
+            <View style={styles.cardIcon}>
+              <Text style={styles.iconText}>🔬</Text>
+            </View>
+            <View style={styles.cardContent}>
+              <Text style={styles.cardTitle}>Advanced Analysis</Text>
+              <Text style={styles.cardDescription}>
+                Multi-factor analysis considering rainfall, inflation & seasonality
+              </Text>
+              <View style={styles.cardFeatures}>
+                <Text style={styles.featureText}>• Weather impact analysis</Text>
+                <Text style={styles.featureText}>• Economic factor integration</Text>
+                <Text style={styles.featureText}>• Seasonal trend analysis</Text>
+              </View>
+            </View>
+            <View style={styles.cardArrow}>
+              <Text style={styles.arrowText}>→</Text>
+            </View>
+          </TouchableOpacity>
         </View>
-      </View>
+
+        {/* Info Section */}
+        <View style={styles.infoSection}>
+          <View style={styles.infoCard}>
+            <Text style={styles.infoTitle}>💡 Prediction Accuracy</Text>
+            <Text style={styles.infoText}>
+              Our prediction models use historical data, weather patterns, and market trends to provide accurate price forecasts. Advanced analysis incorporates multiple economic and environmental factors for enhanced precision.
+            </Text>
+          </View>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -122,11 +157,11 @@ const styles = StyleSheet.create({
   // Content
   content: {
     flex: 1,
-    paddingHorizontal: 20,
   },
   
   // Title Section
   titleSection: {
+    paddingHorizontal: 20,
     paddingVertical: 24,
     alignItems: 'center',
   },
@@ -146,6 +181,7 @@ const styles = StyleSheet.create({
   
   // Options Container
   optionsContainer: {
+    paddingHorizontal: 20,
     gap: 16,
     marginBottom: 24,
   },
@@ -170,6 +206,10 @@ const styles = StyleSheet.create({
   nationalCard: {
     borderLeftWidth: 4,
     borderLeftColor: '#ffa500',
+  },
+  advancedCard: {
+    borderLeftWidth: 4,
+    borderLeftColor: '#6f42c1',
   },
   cardIcon: {
     width: 60,
@@ -223,7 +263,9 @@ const styles = StyleSheet.create({
   
   // Info Section
   infoSection: {
+    paddingHorizontal: 20,
     marginTop: 16,
+    paddingBottom: 32,
   },
   infoCard: {
     backgroundColor: '#ffffff',

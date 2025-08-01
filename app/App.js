@@ -7,7 +7,8 @@ import DistrictPredictionScreen from './screens/price-prediction/DistrictLevelPr
 import NationalPredictionScreen from './screens/price-prediction/NationalLevelPrediction';
 import AdvancedPredictionScreen from './screens/price-prediction/AdvancedPredictionScreen';
 import DiseaseDetectionScreen from './screens/disease-detection/DiseaseDetection';
-import FertilizerGuideScreen from './screens/fertilizer-guide/FertilizerGuide'; // Add this import
+import FertilizerGuideScreen from './screens/fertilizer-guide/FertilizerGuide';
+import PepperVarietiesScreen from './screens/pepper-varieties/PepperVarieties'; // Add this import
 
 const Stack = createNativeStackNavigator();
 
@@ -53,6 +54,11 @@ export default function App() {
           name="Fertilizer"
           component={FertilizerGuideScreen}
           options={{ title: 'Fertilizer Guide' }} 
+        />
+        <Stack.Screen
+          name="Varieties"
+          component={PepperVarietiesScreen}
+          options={{ title: 'Pepper Varieties' }} 
         />
       </Stack.Navigator>
     </NavigationContainer>

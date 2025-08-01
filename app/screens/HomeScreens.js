@@ -68,55 +68,6 @@ export default function HomeScreen({ navigation }) {
           <Text style={styles.subtitle}>Let's manage your pepper farm efficiently</Text>
         </View>
 
-        {/* Market Overview Card */}
-        <View style={styles.marketCard}>
-          <View style={styles.cardHeader}>
-            <Text style={styles.cardTitle}>Market Overview</Text>
-            <View style={styles.liveStatus}>
-              <View style={styles.liveIndicator} />
-              <Text style={styles.liveText}>Live</Text>
-            </View>
-          </View>
-          
-          <View style={styles.marketInfo}>
-            <View style={styles.priceSection}>
-              <Text style={styles.currentPrice}>₹450</Text>
-              <Text style={styles.priceUnit}>per kg</Text>
-            </View>
-            <View style={styles.changeSection}>
-              <Text style={styles.priceChange}>+2.3%</Text>
-              <Text style={styles.changeLabel}>Today</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Premium Quality Card */}
-        <View style={styles.qualityCard}>
-          <View style={styles.qualityHeader}>
-            <Text style={styles.qualityTitle}>Sri Lankan Black Pepper</Text>
-            <View style={styles.qualityBadge}>
-              <Text style={styles.badgeText}>Premium</Text>
-            </View>
-          </View>
-          <Text style={styles.qualityDescription}>
-            Export grade quality with AI-powered market insights and recommendations
-          </Text>
-          <View style={styles.qualityMetrics}>
-            <View style={styles.metric}>
-              <Text style={styles.metricValue}>95%</Text>
-              <Text style={styles.metricLabel}>Quality Score</Text>
-            </View>
-            <View style={styles.metric}>
-              <Text style={styles.metricValue}>Fresh</Text>
-              <Text style={styles.metricLabel}>Status</Text>
-            </View>
-            <View style={styles.metric}>
-              <Text style={styles.metricValue}>12.5kg</Text>
-              <Text style={styles.metricLabel}>Today's Harvest</Text>
-            </View>
-          </View>
-        </View>
-
         {/* Features Section */}
         <View style={styles.featuresSection}>
           <Text style={styles.sectionTitle}>Features</Text>

@@ -1,0 +1,92 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+*.egg-info/
+.installed.cfg
+*.egg
+dist/
+build/
+*.mo
+*.pot
+
+# Flask
+instance/
+.webassets-cache
+
+# Database
+*.sqlite
+*.db
+
+# TensorFlow/Keras
+*.h5
+*.pb
+*.tflite
+*.keras
+
+# Pickle files (except the model components)
+*.pkl
+!api/price_prediction/pickle_models/**/*.pkl
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+frontend/.env*.local
+frontend/.vscode
+frontend/.idea
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-*
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# System
+.DS_Store
+Thumbs.db
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Frontend build
+dist/
+build/
+out/
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Vite cache
+frontend/.vite
+
+# Editor directories and files
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

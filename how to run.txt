@@ -1,0 +1,4 @@
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements/base.txt -r requirements/price_prediction.txt
+python -B app.py  # The -B flag prevents .pyc file creation

@@ -1,7 +1,19 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Alert } from 'react-native';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  TouchableOpacity, 
+  SafeAreaView, 
+  ScrollView, 
+  Alert,
+  ActivityIndicator
+} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
+import axios from 'axios';
+
+const BASE_URL = 'http://192.168.1.2:8000'; // Replace with your actual API URL
 
 export default function DistrictPredictionScreen({ navigation }) {
   const [date, setDate] = useState(new Date());
@@ -15,19 +27,48 @@ export default function DistrictPredictionScreen({ navigation }) {
     'Galle', 'Matara', 'Hambantota', 'Monaragala'
   ];
 
+  const predictDistrictPrice = async (district, targetDate) => {
+    try {
+      const response = await axios.post(`${BASE_URL}/district/predict`, {
+        district,
+        target_date: targetDate,
+      });
+      return response.data;
+    } catch (error) {
+      console.error('API Error:', error);
+      throw error;
+    }
+  };
+
   const onPredict = async () => {
+    if (isLoading) return;
+    
     setIsLoading(true);
     try {
-      // TODO: Replace with actual API call
-      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API call
+      // Format the date as YYYY-MM-DD
+      const formattedDate = date.toISOString().split('T')[0];
+      
+      // Call the API
+      const prediction = await predictDistrictPrice(selectedDistrict, formattedDate);
       
       Alert.alert(
         'Price Prediction',
-        `Predicted price for ${selectedDistrict} district on ${date.toLocaleDateString('en-GB')}:\n\n₹425 - ₹450 per kg\n\nConfidence: 82%`,
+        `Predicted price for ${prediction.district} district on ${date.toLocaleDateString('en-GB')}:\n\nRs. ${prediction.predicted_price.toFixed(2)} per kg\n\nModel Accuracy: ${prediction.model_accuracy}%`,
         [{ text: 'OK' }]
       );
     } catch (error) {
-      Alert.alert('Error', 'Failed to get prediction. Please try again.');
+      let errorMessage = 'Failed to get prediction. Please try again.';
+      if (error.response) {
+        errorMessage = error.response.data.error || errorMessage;
+      } else if (error.request) {
+        errorMessage = 'Network error. Please check your connection.';
+      }
+      
+      Alert.alert(
+        'Error', 
+        errorMessage,
+        [{ text: 'OK' }]
+      );
     } finally {
       setIsLoading(false);
     }
@@ -47,7 +88,11 @@ export default function DistrictPredictionScreen({ navigation }) {
         <View style={styles.placeholder} />
       </View>
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        style={styles.content} 
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
         {/* Title Section */}
         <View style={styles.titleSection}>
           <Text style={styles.title}>District Level Price Prediction</Text>
@@ -66,6 +111,7 @@ export default function DistrictPredictionScreen({ navigation }) {
                 selectedValue={selectedDistrict}
                 onValueChange={(itemValue) => setSelectedDistrict(itemValue)}
                 style={styles.picker}
+                dropdownIconColor="#2d5c3e"
               >
                 {districts.map((district) => (
                   <Picker.Item 
@@ -85,6 +131,7 @@ export default function DistrictPredictionScreen({ navigation }) {
             <TouchableOpacity
               style={styles.dateInput}
               onPress={() => setShowPicker(true)}
+              disabled={isLoading}
             >
               <View style={styles.dateContent}>
                 <Text style={styles.dateIcon}>📅</Text>
@@ -120,8 +167,8 @@ export default function DistrictPredictionScreen({ navigation }) {
               <Text style={styles.infoValue}>{date.toLocaleDateString('en-GB')}</Text>
             </View>
             <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>Market Type:</Text>
-              <Text style={styles.infoValue}>Regional</Text>
+              <Text style={styles.infoLabel}>Pepper Type:</Text>
+              <Text style={styles.infoValue}>GR-1</Text>
             </View>
           </View>
 
@@ -132,10 +179,14 @@ export default function DistrictPredictionScreen({ navigation }) {
             disabled={isLoading}
             activeOpacity={0.8}
           >
-            <Text style={styles.predictButtonText}>
-              {isLoading ? 'Predicting...' : 'Get Price Prediction'}
-            </Text>
-            {!isLoading && <Text style={styles.buttonIcon}>🚀</Text>}
+            {isLoading ? (
+              <ActivityIndicator size="small" color="#ffffff" />
+            ) : (
+              <>
+                <Text style={styles.predictButtonText}>Get Price Prediction</Text>
+                <Text style={styles.buttonIcon}>🚀</Text>
+              </>
+            )}
           </TouchableOpacity>
         </View>
 
@@ -204,6 +255,9 @@ const styles = StyleSheet.create({
   // Content
   content: {
     flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 20,
   },
   
   // Title Section

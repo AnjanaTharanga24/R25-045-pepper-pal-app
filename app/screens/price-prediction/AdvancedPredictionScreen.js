@@ -1,6 +1,19 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Alert, TextInput } from 'react-native';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  TouchableOpacity, 
+  SafeAreaView, 
+  ScrollView, 
+  Alert, 
+  TextInput,
+  ActivityIndicator
+} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import axios from 'axios';
+
+const BASE_URL = 'http://192.168.8.131:8000'; // Replace with your actual API URL
 
 export default function AdvancedPredictionScreen({ navigation }) {
   const [rainfall, setRainfall] = useState('150');
@@ -12,7 +25,7 @@ export default function AdvancedPredictionScreen({ navigation }) {
   const priceTypes = [
     { label: 'GR1 (Grade 1)', value: 'GR1' },
     { label: 'GR2 (Grade 2)', value: 'GR2' },
-    { label: 'White', value: 'White' }
+    { label: 'White', value: 'WHITE' }  // Updated to match API expectation
   ];
 
   const seasonalityOptions = [
@@ -24,8 +37,8 @@ export default function AdvancedPredictionScreen({ navigation }) {
     const rainfallNum = parseFloat(rainfall);
     const inflationNum = parseFloat(inflationRate);
     
-    if (isNaN(rainfallNum) || rainfallNum < 0 || rainfallNum > 500) {
-      Alert.alert('Invalid Input', 'Rainfall must be between 0-500 mm');
+    if (isNaN(rainfallNum) || rainfallNum < 0 || rainfallNum > 2000) {
+      Alert.alert('Invalid Input', 'Rainfall must be between 0-2000 mm');
       return false;
     }
     
@@ -37,48 +50,52 @@ export default function AdvancedPredictionScreen({ navigation }) {
     return true;
   };
 
+  const predictAdvancedPrice = async (rainfallValue, priceTypeValue, inflationRateValue, seasonalityValue) => {
+    try {
+      const response = await axios.post(`${BASE_URL}/api/new-price/predict`, {
+        rainfall: parseFloat(rainfallValue),
+        price_type: priceTypeValue,
+        inflation_rate: parseFloat(inflationRateValue),
+        seasonality: seasonalityValue
+      });
+      return response.data;
+    } catch (error) {
+      console.error('API Error:', error);
+      throw error;
+    }
+  };
+
   const onPredict = async () => {
     if (!validateInputs()) return;
     
     setIsLoading(true);
     try {
-      // TODO: Replace with actual API call
-      const payload = {
-        rainfall: parseFloat(rainfall),
-        price_type: priceType,
-        inflation_rate: parseFloat(inflationRate),
-        seasonality: seasonality
-      };
+      // Call the API
+      const prediction = await predictAdvancedPrice(rainfall, priceType, inflationRate, seasonality);
       
-      console.log('Prediction payload:', payload);
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Mock price calculation based on inputs
-      const basePrices = { 'GR1': 500, 'GR2': 440, 'White': 400 };
-      let basePrice = basePrices[priceType];
-      
-      // Adjust for rainfall (optimal rainfall around 150-200mm)
-      const rainfallFactor = Math.abs(175 - parseFloat(rainfall)) / 100;
-      basePrice += rainfallFactor * 20;
-      
-      // Adjust for inflation
-      basePrice += (parseFloat(inflationRate) / 100) * basePrice * 0.8;
-      
-      // Adjust for seasonality
-      if (seasonality === 'YES') basePrice += 50;
-      
-      const lowerPrice = Math.round(basePrice * 0.95);
-      const upperPrice = Math.round(basePrice * 1.05);
+      // Calculate confidence range (±5% of predicted price)
+      const predictedPrice = prediction.predicted_price;
+      const lowerPrice = Math.round(predictedPrice * 0.95);
+      const upperPrice = Math.round(predictedPrice * 1.05);
       
       Alert.alert(
         'Advanced Price Prediction',
-        `Predicted price range for ${priceType} quality:\n\n₹${lowerPrice} - ₹${upperPrice} per kg\n\nConfidence: 88%\n\nFactors considered:\n• Rainfall: ${rainfall}mm\n• Inflation: ${inflationRate}%\n• Seasonality: ${seasonality === 'NO' ? 'No' : 'Yes'}`,
+        `Predicted price range for ${priceType} quality:\n\nRs. ${lowerPrice} - Rs. ${upperPrice} per kg\n\nPredicted Price: Rs. ${predictedPrice.toFixed(2)}\nConfidence: 88%\n\nFactors considered:\n• Rainfall: ${rainfall}mm\n• Inflation: ${inflationRate}%\n• Seasonality: ${seasonality === 'NO' ? 'No' : 'Yes'}`,
         [{ text: 'OK' }]
       );
     } catch (error) {
-      Alert.alert('Error', 'Failed to get prediction. Please try again.');
+      let errorMessage = 'Failed to get prediction. Please try again.';
+      if (error.response) {
+        errorMessage = error.response.data.error || errorMessage;
+      } else if (error.request) {
+        errorMessage = 'Network error. Please check your connection.';
+      }
+      
+      Alert.alert(
+        'Error', 
+        errorMessage,
+        [{ text: 'OK' }]
+      );
     } finally {
       setIsLoading(false);
     }
@@ -116,7 +133,11 @@ export default function AdvancedPredictionScreen({ navigation }) {
         <View style={styles.placeholder} />
       </View>
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        style={styles.content} 
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
         {/* Title Section */}
         <View style={styles.titleSection}>
           <Text style={styles.title}>Advanced Price Prediction</Text>
@@ -137,7 +158,8 @@ export default function AdvancedPredictionScreen({ navigation }) {
                 onChangeText={setRainfall}
                 placeholder="Enter rainfall in mm"
                 keyboardType="numeric"
-                maxLength={3}
+                maxLength={6}
+                editable={!isLoading}
               />
               <View style={[styles.statusBadge, { backgroundColor: rainfallStatus.color + '20' }]}>
                 <Text style={styles.statusIcon}>{rainfallStatus.icon}</Text>
@@ -157,6 +179,8 @@ export default function AdvancedPredictionScreen({ navigation }) {
                 selectedValue={priceType}
                 onValueChange={(itemValue) => setPriceType(itemValue)}
                 style={styles.picker}
+                enabled={!isLoading}
+                dropdownIconColor="#2d5c3e"
               >
                 {priceTypes.map((type) => (
                   <Picker.Item 
@@ -180,7 +204,8 @@ export default function AdvancedPredictionScreen({ navigation }) {
                 onChangeText={setInflationRate}
                 placeholder="Enter inflation rate"
                 keyboardType="numeric"
-                maxLength={4}
+                maxLength={5}
+                editable={!isLoading}
               />
               <View style={[styles.statusBadge, { backgroundColor: inflationImpact.color + '20' }]}>
                 <Text style={[styles.statusText, { color: inflationImpact.color }]}>
@@ -199,6 +224,8 @@ export default function AdvancedPredictionScreen({ navigation }) {
                 selectedValue={seasonality}
                 onValueChange={(itemValue) => setSeasonality(itemValue)}
                 style={styles.picker}
+                enabled={!isLoading}
+                dropdownIconColor="#2d5c3e"
               >
                 {seasonalityOptions.map((option) => (
                   <Picker.Item 
@@ -220,10 +247,14 @@ export default function AdvancedPredictionScreen({ navigation }) {
             disabled={isLoading}
             activeOpacity={0.8}
           >
-            <Text style={styles.predictButtonText}>
-              {isLoading ? 'Analyzing Factors...' : 'Get Advanced Prediction'}
-            </Text>
-            {!isLoading && <Text style={styles.buttonIcon}>🔬</Text>}
+            {isLoading ? (
+              <ActivityIndicator size="small" color="#ffffff" />
+            ) : (
+              <>
+                <Text style={styles.predictButtonText}>Get Advanced Prediction</Text>
+                <Text style={styles.buttonIcon}>🔬</Text>
+              </>
+            )}
           </TouchableOpacity>
         </View>
 
@@ -341,6 +372,9 @@ const styles = StyleSheet.create({
   // Content
   content: {
     flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 20,
   },
   
   // Title Section

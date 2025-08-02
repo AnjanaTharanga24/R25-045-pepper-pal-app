@@ -2,7 +2,8 @@ from flask import Flask
 from flask_cors import CORS
 from api.price_prediction.routes import price_bp
 from api.district_prediction.routes import district_bp
-from api.new_price_prediction.routes import new_price_bp  # Add this import
+from api.new_price_prediction.routes import new_price_bp
+from api.diseases_detection.routes import disease_bp  # Add this import
 
 def create_app():
     app = Flask(__name__)
@@ -12,13 +13,14 @@ def create_app():
     # Register blueprints
     app.register_blueprint(price_bp)
     app.register_blueprint(district_bp)
-    app.register_blueprint(new_price_bp)  # Add this line
+    app.register_blueprint(new_price_bp)
+    app.register_blueprint(disease_bp)  # Add this line
     
     @app.route('/')
     def home():
         return {
             "status": "healthy", 
-            "services": ["price", "district", "new-price"]
+            "services": ["price", "district", "new-price", "disease-detection"]  # Add disease-detection
         }
     
     return app

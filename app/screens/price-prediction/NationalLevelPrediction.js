@@ -1,7 +1,19 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Alert } from 'react-native';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  TouchableOpacity, 
+  SafeAreaView, 
+  ScrollView, 
+  Alert,
+  ActivityIndicator
+} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
+import axios from 'axios';
+
+const BASE_URL = 'http://192.168.8.131:8000'; // Replace with your actual API URL
 
 export default function NationalPredictionScreen({ navigation }) {
   const [date, setDate] = useState(new Date());
@@ -15,26 +27,48 @@ export default function NationalPredictionScreen({ navigation }) {
     { label: 'White', value: 'White' }
   ];
 
+  const predictNationalPrice = async (pepperType, targetDate) => {
+    try {
+      const response = await axios.post(`${BASE_URL}/price/predict`, {
+        pepper_type: pepperType,
+        target_date: targetDate,
+      });
+      return response.data;
+    } catch (error) {
+      console.error('API Error:', error);
+      throw error;
+    }
+  };
+
   const onPredict = async () => {
+    if (isLoading) return;
+    
     setIsLoading(true);
     try {
-      // TODO: Replace with actual API call
-      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API call
+      // Format the date as YYYY-MM-DD
+      const formattedDate = date.toISOString().split('T')[0];
       
-      // Mock different price ranges based on quality
-      const priceRanges = {
-        'GR1': '₹480 - ₹520',
-        'GR2': '₹420 - ₹460',
-        'White': '₹380 - ₹420'
-      };
+      // Call the API
+      const prediction = await predictNationalPrice(selectedQuality, formattedDate);
       
       Alert.alert(
         'National Price Prediction',
-        `Predicted national average price for ${selectedQuality} quality on ${date.toLocaleDateString('en-GB')}:\n\n${priceRanges[selectedQuality]} per kg\n\nConfidence: 85%\nMarket Coverage: All Districts`,
+        `Predicted national average price for ${prediction.pepper_type} quality on ${date.toLocaleDateString('en-GB')}:\n\nRs. ${prediction.predicted_price.toFixed(2)} per kg\n\nModel Accuracy: ${prediction.model_accuracy}%\nMarket Coverage: All Districts`,
         [{ text: 'OK' }]
       );
     } catch (error) {
-      Alert.alert('Error', 'Failed to get prediction. Please try again.');
+      let errorMessage = 'Failed to get prediction. Please try again.';
+      if (error.response) {
+        errorMessage = error.response.data.error || errorMessage;
+      } else if (error.request) {
+        errorMessage = 'Network error. Please check your connection.';
+      }
+      
+      Alert.alert(
+        'Error', 
+        errorMessage,
+        [{ text: 'OK' }]
+      );
     } finally {
       setIsLoading(false);
     }
@@ -54,7 +88,11 @@ export default function NationalPredictionScreen({ navigation }) {
         <View style={styles.placeholder} />
       </View>
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        style={styles.content} 
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
         {/* Title Section */}
         <View style={styles.titleSection}>
           <Text style={styles.title}>National Level Price Prediction</Text>
@@ -73,6 +111,7 @@ export default function NationalPredictionScreen({ navigation }) {
                 selectedValue={selectedQuality}
                 onValueChange={(itemValue) => setSelectedQuality(itemValue)}
                 style={styles.picker}
+                dropdownIconColor="#2d5c3e"
               >
                 {qualityTypes.map((quality) => (
                   <Picker.Item 
@@ -92,6 +131,7 @@ export default function NationalPredictionScreen({ navigation }) {
             <TouchableOpacity
               style={styles.dateInput}
               onPress={() => setShowPicker(true)}
+              disabled={isLoading}
             >
               <View style={styles.dateContent}>
                 <Text style={styles.dateIcon}>📅</Text>
@@ -143,10 +183,14 @@ export default function NationalPredictionScreen({ navigation }) {
             disabled={isLoading}
             activeOpacity={0.8}
           >
-            <Text style={styles.predictButtonText}>
-              {isLoading ? 'Predicting...' : 'Get National Prediction'}
-            </Text>
-            {!isLoading && <Text style={styles.buttonIcon}>🚀</Text>}
+            {isLoading ? (
+              <ActivityIndicator size="small" color="#ffffff" />
+            ) : (
+              <>
+                <Text style={styles.predictButtonText}>Get National Prediction</Text>
+                <Text style={styles.buttonIcon}>🚀</Text>
+              </>
+            )}
           </TouchableOpacity>
         </View>
 
@@ -250,6 +294,9 @@ const styles = StyleSheet.create({
   // Content
   content: {
     flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 20,
   },
   
   // Title Section

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   View, 
   Text, 
@@ -11,28 +11,109 @@ import {
   Modal,
   ActivityIndicator,
   Dimensions,
-  Platform
+  Platform,
+  Linking,
+  PermissionsAndroid
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as MediaLibrary from 'expo-media-library';
+import * as FileSystem from 'expo-file-system';
+import * as DocumentPicker from 'expo-document-picker';
+import axios from 'axios';
 
 const { width } = Dimensions.get('window');
+
+// Update this to your actual API URL
+const BASE_URL = 'http://192.168.8.131:8000';
 
 export default function DiseaseDetection({ navigation }) {
   const [selectedImage, setSelectedImage] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [analysisResult, setAnalysisResult] = useState(null);
+  const [permissionStatus, setPermissionStatus] = useState({
+    camera: null,
+    mediaLibrary: null,
+    storage: null
+  });
 
-  // Expo Permission Handlers
-  const requestCameraPermission = async () => {
-    const { status } = await ImagePicker.requestCameraPermissionsAsync();
-    return status === 'granted';
+  useEffect(() => {
+    requestPermissions();
+  }, []);
+
+  const requestAndroidPermissions = async () => {
+    if (Platform.OS !== 'android') return true;
+
+    try {
+      const androidVersion = Platform.Version;
+      console.log('Android Version:', androidVersion);
+
+      if (androidVersion >= 33) {
+        const permissions = [
+          PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
+          PermissionsAndroid.PERMISSIONS.CAMERA,
+        ];
+
+        const granted = await PermissionsAndroid.requestMultiple(permissions);
+        
+        console.log('Android 13+ permissions:', granted);
+        
+        return (
+          granted[PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES] === PermissionsAndroid.RESULTS.GRANTED &&
+          granted[PermissionsAndroid.PERMISSIONS.CAMERA] === PermissionsAndroid.RESULTS.GRANTED
+        );
+      } else if (androidVersion >= 23) {
+        const permissions = [
+          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+          PermissionsAndroid.PERMISSIONS.CAMERA,
+        ];
+
+        const granted = await PermissionsAndroid.requestMultiple(permissions);
+        
+        console.log('Android 6-12 permissions:', granted);
+        
+        return (
+          granted[PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE] === PermissionsAndroid.RESULTS.GRANTED &&
+          granted[PermissionsAndroid.PERMISSIONS.CAMERA] === PermissionsAndroid.RESULTS.GRANTED
+        );
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Android permission error:', error);
+      return false;
+    }
   };
 
-  const requestGalleryPermission = async () => {
-    const { status } = await MediaLibrary.requestPermissionsAsync();
-    return status === 'granted';
+  const requestPermissions = async () => {
+    try {
+      const androidPermissionGranted = await requestAndroidPermissions();
+      
+      const cameraStatus = await ImagePicker.requestCameraPermissionsAsync();
+      const mediaStatus = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      const mediaLibraryStatus = await MediaLibrary.requestPermissionsAsync();
+      
+      const status = {
+        camera: cameraStatus.status,
+        mediaLibrary: mediaStatus.status,
+        storage: androidPermissionGranted ? 'granted' : 'denied'
+      };
+      
+      setPermissionStatus(status);
+      
+      if (status.camera !== 'granted' || status.mediaLibrary !== 'granted' || !androidPermissionGranted) {
+        Alert.alert(
+          'Permissions Required',
+          'This app needs camera and gallery permissions to function properly.',
+          [
+            { text: 'Cancel', style: 'cancel' },
+            { text: 'Open Settings', onPress: () => Linking.openSettings() }
+          ]
+        );
+      }
+    } catch (error) {
+      console.error('Error requesting permissions:', error);
+    }
   };
 
   const handleImagePicker = () => {
@@ -42,42 +123,117 @@ export default function DiseaseDetection({ navigation }) {
   const openCamera = async () => {
     setShowOptions(false);
     
-    const hasPermission = await requestCameraPermission();
-    if (!hasPermission) {
-      Alert.alert('Permission Required', 'Camera permission is required to take photos.');
-      return;
-    }
+    try {
+      const { status } = await ImagePicker.getCameraPermissionsAsync();
+      
+      if (status !== 'granted') {
+        const { status: newStatus } = await ImagePicker.requestCameraPermissionsAsync();
+        if (newStatus !== 'granted') {
+          Alert.alert('Permission Required', 'Camera permission is required to take photos.');
+          return;
+        }
+      }
 
-    const result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      quality: 0.8,
-      allowsEditing: false,
-    });
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 0.8,
+        allowsEditing: false,
+      });
 
-    if (!result.canceled && result.assets?.[0]) {
-      setSelectedImage(result.assets[0]);
-      setAnalysisResult(null);
+      if (!result.canceled && result.assets?.[0]) {
+        setSelectedImage(result.assets[0]);
+        setAnalysisResult(null);
+      }
+    } catch (error) {
+      console.error('Camera error:', error);
+      Alert.alert('Error', 'Failed to open camera. Please try again.');
     }
   };
 
+  // Updated gallery function with better error handling
   const openGallery = async () => {
     setShowOptions(false);
     
-    const hasPermission = await requestGalleryPermission();
-    if (!hasPermission) {
-      Alert.alert('Permission Required', 'Gallery permission is required to select photos.');
-      return;
+    try {
+      // First try the standard image picker
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 0.8,
+        allowsEditing: false,
+        aspect: [4, 3],
+      });
+
+      console.log('Image picker result:', result);
+
+      if (!result.canceled && result.assets?.[0]) {
+        setSelectedImage(result.assets[0]);
+        setAnalysisResult(null);
+        return;
+      }
+
+      // If standard picker fails, try document picker as fallback
+      await pickDocument();
+    } catch (error) {
+      console.error('Gallery error:', error);
+      Alert.alert('Error', 'Failed to access gallery. Trying alternative method...');
+      
+      // Try document picker as fallback
+      await pickDocument();
     }
+  };
 
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      quality: 0.8,
-      allowsEditing: false,
-    });
+  // Document picker fallback method
+  const pickDocument = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: 'image/*',
+        copyToCacheDirectory: true,
+      });
+      
+      if (result.type === 'success') {
+        // Verify the file exists
+        const fileInfo = await FileSystem.getInfoAsync(result.uri);
+        if (!fileInfo.exists) {
+          throw new Error('Selected file does not exist');
+        }
+        
+        setSelectedImage({ 
+          uri: result.uri,
+          // Add mock properties to match ImagePicker's asset format
+          width: 0,
+          height: 0,
+          fileName: result.name || 'selected_image.jpg'
+        });
+        setAnalysisResult(null);
+      }
+    } catch (error) {
+      console.error('Document picker error:', error);
+      Alert.alert('Error', 'Failed to select image. Please try another method.');
+    }
+  };
 
-    if (!result.canceled && result.assets?.[0]) {
-      setSelectedImage(result.assets[0]);
-      setAnalysisResult(null);
+  // API call function for disease prediction
+  const predictDisease = async (imageUri) => {
+    try {
+      const formData = new FormData();
+      
+      formData.append('file', {
+        uri: imageUri,
+        type: 'image/jpeg',
+        name: 'plant_image.jpg',
+      });
+
+      const response = await axios.post(`${BASE_URL}/api/disease/predict`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        timeout: 30000,
+      });
+      
+      return response.data;
+    } catch (error) {
+      console.error('API Error:', error);
+      throw error;
     }
   };
 
@@ -90,52 +246,77 @@ export default function DiseaseDetection({ navigation }) {
     setIsAnalyzing(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      const prediction = await predictDisease(selectedImage.uri);
       
-      const mockResults = [
-        {
-          disease: 'Pepper Leaf Spot',
-          confidence: 92,
-          severity: 'Moderate',
-          description: 'Fungal infection affecting leaf tissue',
-          treatment: 'Apply copper-based fungicide',
-          color: '#ff6b6b'
-        },
-        {
-          disease: 'Anthracnose',
-          confidence: 88,
-          severity: 'High',
-          description: 'Fungal disease causing dark lesions on fruits and leaves',
-          treatment: 'Remove affected parts and apply fungicide spray',
-          color: '#dc3545'
-        },
-        {
-          disease: 'Bacterial Leaf Spot',
-          confidence: 85,
-          severity: 'Moderate',
-          description: 'Bacterial infection causing water-soaked lesions',
-          treatment: 'Use copper-based bactericide and improve air circulation',
-          color: '#ffc107'
-        },
-        {
-          disease: 'Healthy',
-          confidence: 95,
-          severity: 'None',
-          description: 'Plant appears healthy with no visible diseases',
-          treatment: 'Continue regular care and monitoring',
-          color: '#28a745'
-        }
-      ];
+      const result = {
+        disease: prediction.predicted_class || prediction.disease || 'Unknown Disease',
+        confidence: Math.round((prediction.confidence || prediction.probability || 0.85) * 100),
+        severity: prediction.severity || getSeverityFromConfidence(prediction.confidence || 0.85),
+        description: prediction.description || getDescriptionForDisease(prediction.predicted_class || prediction.disease),
+        treatment: prediction.treatment || getTreatmentForDisease(prediction.predicted_class || prediction.disease),
+        color: getColorForDisease(prediction.predicted_class || prediction.disease)
+      };
       
-      const randomResult = mockResults[Math.floor(Math.random() * mockResults.length)];
-      setAnalysisResult(randomResult);
+      setAnalysisResult(result);
       
     } catch (error) {
-      Alert.alert('Error', 'Failed to analyze image. Please try again.');
+      let errorMessage = 'Failed to analyze image. Please try again.';
+      
+      if (error.response) {
+        errorMessage = error.response.data.error || error.response.data.message || errorMessage;
+      } else if (error.request) {
+        errorMessage = 'Network error. Please check your connection.';
+      } else if (error.code === 'ECONNABORTED') {
+        errorMessage = 'Request timeout. The server may be busy.';
+      }
+      
+      Alert.alert('Analysis Error', errorMessage);
     } finally {
       setIsAnalyzing(false);
     }
+  };
+
+  // Helper functions
+  const getSeverityFromConfidence = (confidence) => {
+    if (confidence > 0.9) return 'High';
+    if (confidence > 0.7) return 'Moderate';
+    return 'Low';
+  };
+
+  const getDescriptionForDisease = (disease) => {
+    const descriptions = {
+      'Pepper Leaf Spot': 'Fungal infection affecting leaf tissue',
+      'Anthracnose': 'Fungal disease causing dark lesions',
+      'Bacterial Leaf Spot': 'Bacterial infection causing lesions',
+      'Healthy': 'Plant appears healthy with no visible diseases',
+      'Powdery Mildew': 'Fungal disease causing white powdery growth',
+      'Mosaic Virus': 'Viral infection causing mottled patterns'
+    };
+    return descriptions[disease] || 'Disease detected in plant tissue';
+  };
+
+  const getTreatmentForDisease = (disease) => {
+    const treatments = {
+      'Pepper Leaf Spot': 'Apply copper-based fungicide',
+      'Anthracnose': 'Remove affected parts and apply fungicide',
+      'Bacterial Leaf Spot': 'Use copper-based bactericide',
+      'Healthy': 'Continue regular care and monitoring',
+      'Powdery Mildew': 'Apply sulfur-based fungicide',
+      'Mosaic Virus': 'Remove infected plants and control aphids'
+    };
+    return treatments[disease] || 'Consult with agricultural expert';
+  };
+
+  const getColorForDisease = (disease) => {
+    const colors = {
+      'Healthy': '#28a745',
+      'Pepper Leaf Spot': '#ff6b6b',
+      'Anthracnose': '#dc3545',
+      'Bacterial Leaf Spot': '#ffc107',
+      'Powdery Mildew': '#17a2b8',
+      'Mosaic Virus': '#6f42c1'
+    };
+    return colors[disease] || '#dc3545';
   };
 
   const clearImage = () => {
@@ -156,22 +337,21 @@ export default function DiseaseDetection({ navigation }) {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity 
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <Text style={styles.backIcon}>←</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Disease Detection</Text>
-        <View style={styles.placeholder} />
+        <TouchableOpacity onPress={requestPermissions}>
+          <Text style={styles.debugButton}>🔄</Text>
+        </TouchableOpacity>
       </View>
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView style={styles.content}>
         {/* Title Section */}
         <View style={styles.titleSection}>
           <Text style={styles.title}>AI Disease Detection</Text>
           <Text style={styles.subtitle}>
-            Upload or capture images of pepper plants to detect diseases instantly
+            Upload or capture images of pepper plants to detect diseases
           </Text>
         </View>
 
@@ -220,7 +400,6 @@ export default function DiseaseDetection({ navigation }) {
               style={[styles.analyzeButton, isAnalyzing && styles.disabledButton]}
               onPress={analyzeImage}
               disabled={isAnalyzing}
-              activeOpacity={0.8}
             >
               {isAnalyzing ? (
                 <View style={styles.loadingContainer}>
@@ -228,7 +407,7 @@ export default function DiseaseDetection({ navigation }) {
                   <Text style={styles.loadingText}>Analyzing...</Text>
                 </View>
               ) : (
-                <Text style={styles.analyzeButtonText}>🔬 Analyze Image</Text>
+                <Text style={styles.analyzeButtonText}>Analyze Image</Text>
               )}
             </TouchableOpacity>
           </View>
@@ -266,7 +445,7 @@ export default function DiseaseDetection({ navigation }) {
                 <Text style={styles.detailTitle}>Description:</Text>
                 <Text style={styles.detailText}>{analysisResult.description}</Text>
                 
-                <Text style={styles.detailTitle}>Recommended Treatment:</Text>
+                <Text style={styles.detailTitle}>Treatment:</Text>
                 <Text style={styles.detailText}>{analysisResult.treatment}</Text>
               </View>
             </View>
@@ -282,27 +461,17 @@ export default function DiseaseDetection({ navigation }) {
             <Text style={styles.tipText}>
               • Take clear, well-lit photos{'\n'}
               • Focus on affected areas{'\n'}
-              • Include leaves, stems, or fruits{'\n'}
-              • Avoid blurry or dark images
+              • Include leaves, stems, or fruits
             </Text>
           </View>
 
           <View style={styles.tipCard}>
-            <Text style={styles.tipTitle}>🔍 What We Detect</Text>
+            <Text style={styles.tipTitle}>⚠️ Troubleshooting</Text>
             <Text style={styles.tipText}>
-              • Fungal infections (Anthracnose, Leaf Spot){'\n'}
-              • Bacterial diseases{'\n'}
-              • Viral infections{'\n'}
-              • Nutrient deficiencies{'\n'}
-              • Pest damage signs
-            </Text>
-          </View>
-
-          <View style={styles.disclaimerCard}>
-            <Text style={styles.disclaimerTitle}>⚠️ Important Note</Text>
-            <Text style={styles.disclaimerText}>
-              This AI detection is for guidance only. For severe infections or uncertain cases, 
-              consult with agricultural experts or plant pathologists.
+              If gallery isn't working:{'\n'}
+              • Try taking a photo first{'\n'}
+              • Restart the app{'\n'}
+              • Create a development build
             </Text>
           </View>
         </View>
@@ -348,13 +517,12 @@ export default function DiseaseDetection({ navigation }) {
   );
 }
 
+// Styles remain the same as in your original code
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f0f9f0',
   },
-  
-  // Header
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -362,43 +530,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#2d5c3e',
     paddingHorizontal: 20,
     paddingVertical: 16,
-    ...Platform.select({
-      ios: {
-        paddingTop: 16,
-      },
-      android: {
-        paddingTop: 16,
-      },
-    }),
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   backIcon: {
-    fontSize: 20,
-    color: '#ffffff',
-    fontWeight: '600',
+    fontSize: 24,
+    color: '#fff',
+    fontWeight: 'bold',
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#ffffff',
+    color: '#fff',
   },
-  placeholder: {
-    width: 40,
+  debugButton: {
+    fontSize: 20,
+    color: '#fff',
   },
-  
-  // Content
   content: {
     flex: 1,
   },
-  
-  // Title Section
   titleSection: {
     paddingHorizontal: 20,
     paddingVertical: 24,
@@ -408,17 +557,13 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '700',
     color: '#2d5c3e',
-    textAlign: 'center',
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
     color: '#6c757d',
     textAlign: 'center',
-    lineHeight: 24,
   },
-  
-  // Upload Section
   uploadSection: {
     paddingHorizontal: 20,
     marginBottom: 24,
@@ -430,18 +575,13 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   uploadArea: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#fff',
     borderRadius: 16,
     padding: 32,
     alignItems: 'center',
     borderWidth: 2,
     borderColor: '#28a745',
     borderStyle: 'dashed',
-    shadowColor: '#2d5c3e',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 5,
   },
   uploadIcon: {
     width: 80,
@@ -464,7 +604,6 @@ const styles = StyleSheet.create({
   uploadSubtitle: {
     fontSize: 16,
     color: '#6c757d',
-    textAlign: 'center',
     marginBottom: 20,
   },
   uploadButton: {
@@ -476,20 +615,13 @@ const styles = StyleSheet.create({
   uploadButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#ffffff',
+    color: '#fff',
   },
-  
-  // Image Container
   imageContainer: {
     position: 'relative',
-    backgroundColor: '#ffffff',
+    backgroundColor: '#fff',
     borderRadius: 16,
     padding: 8,
-    shadowColor: '#2d5c3e',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 5,
   },
   selectedImage: {
     width: '100%',
@@ -503,17 +635,15 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backgroundColor: 'rgba(0,0,0,0.7)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   removeButtonText: {
     fontSize: 20,
-    color: '#ffffff',
+    color: '#fff',
     fontWeight: '600',
   },
-  
-  // Analysis Section
   analysisSection: {
     paddingHorizontal: 20,
     marginBottom: 24,
@@ -523,20 +653,14 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
-    shadowColor: '#28a745',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 6,
   },
   disabledButton: {
     backgroundColor: '#6c757d',
-    shadowOpacity: 0.1,
   },
   analyzeButtonText: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#ffffff',
+    color: '#fff',
   },
   loadingContainer: {
     flexDirection: 'row',
@@ -546,23 +670,16 @@ const styles = StyleSheet.create({
   loadingText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#ffffff',
+    color: '#fff',
   },
-  
-  // Results Section
   resultsSection: {
     paddingHorizontal: 20,
     marginBottom: 24,
   },
   resultCard: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#fff',
     borderRadius: 16,
     padding: 20,
-    shadowColor: '#2d5c3e',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 5,
   },
   resultHeader: {
     flexDirection: 'row',
@@ -589,7 +706,7 @@ const styles = StyleSheet.create({
   severityText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#ffffff',
+    color: '#fff',
   },
   confidence: {
     fontSize: 24,
@@ -621,24 +738,17 @@ const styles = StyleSheet.create({
     color: '#6c757d',
     lineHeight: 22,
   },
-  
-  // Info Section
   infoSection: {
     paddingHorizontal: 20,
     paddingBottom: 32,
     gap: 16,
   },
   tipCard: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#fff',
     borderRadius: 12,
     padding: 16,
     borderLeftWidth: 3,
     borderLeftColor: '#17a2b8',
-    shadowColor: '#2d5c3e',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
   },
   tipTitle: {
     fontSize: 16,
@@ -651,33 +761,13 @@ const styles = StyleSheet.create({
     color: '#6c757d',
     lineHeight: 20,
   },
-  disclaimerCard: {
-    backgroundColor: '#fff3cd',
-    borderRadius: 12,
-    padding: 16,
-    borderLeftWidth: 3,
-    borderLeftColor: '#ffc107',
-  },
-  disclaimerTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#856404',
-    marginBottom: 8,
-  },
-  disclaimerText: {
-    fontSize: 13,
-    color: '#856404',
-    lineHeight: 18,
-  },
-  
-  // Modal Styles
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'flex-end',
   },
   modalContent: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#fff',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 20,

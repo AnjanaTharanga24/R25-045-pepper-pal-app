@@ -3,78 +3,86 @@ import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Ale
 import { Picker } from '@react-native-picker/picker';
 
 export default function PepperVarietiesScreen({ navigation }) {
-  const [selectedDistrict, setSelectedDistrict] = useState('');
-  const [selectedDSDivision, setSelectedDSDivision] = useState('');
-  const [rainfall, setRainfall] = useState('');
+  // Commented out district and DS division states
+  // const [selectedDistrict, setSelectedDistrict] = useState('');
+  // const [selectedDSDivision, setSelectedDSDivision] = useState('');
+  
+  // New input states
+  const [elevation, setElevation] = useState('');
+  const [annualRainfall, setAnnualRainfall] = useState('');
+  const [avgTemperature, setAvgTemperature] = useState('');
   const [humidity, setHumidity] = useState('');
-  const [temperature, setTemperature] = useState('');
-  const [soilType, setSoilType] = useState('');
+  const [soilTexture, setSoilTexture] = useState('');
+  const [soilQuality, setSoilQuality] = useState('');
+  const [drainage, setDrainage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // Districts and DS Divisions data
+  // Commented out district data
+  /*
   const districtData = {
     'Ampara': ['Addalachchenai', 'Akkarajpattu', 'Alayadivembu', 'Ampara', 'Damana', 'Dehiattakandiya', 'Irakkamam', 'Kalmunai', 'Karaitivu', 'Lahugala', 'Mahaoya', 'Navithanveli', 'Nintavur', 'Padiyathalawa', 'Sainthamaruthu', 'Sammanthurai', 'Thirukkovil', 'Uhana'],
-    'Anuradhapura': ['Galenbindunuwewa', 'Ganewewa', 'Horowpothana', 'Ipalogama', 'Kahatagasdigiliya', 'Kebithigollewa', 'Kekirawa', 'Mahavilachchiya', 'Medawachchiya', 'Mihintale', 'Nachchaduwa', 'Nuwaragam Palatha Central', 'Nuwaragam Palatha East', 'Palagala', 'Rambewa', 'Rathmalgahawewa', 'Thalawa', 'Thambuttegama', 'Yaya Palatha'],
-    'Badulla': ['Badulla', 'Bandarawela', 'Ella', 'Hali-Ela', 'Haputale', 'Kandaketiya', 'Lunugala', 'Mahiyanganaya', 'Meegahakivula', 'Passara', 'Rideemaliyadda', 'Soranatota', 'Uva Paranagama', 'Welimada'],
-    'Batticaloa': ['Batticaloa', 'Eravur Pattu', 'Kattankudy', 'Koralai Pattu', 'Koralai Pattu Central', 'Koralai Pattu North', 'Koralai Pattu South', 'Koralai Pattu West', 'Mamunai North', 'Mamunai Pattu', 'Mamunai South', 'Mamunai South West', 'Mamunai West', 'Porativu Pattu'],
-    'Colombo': ['Colombo', 'Dehiwala', 'Homagama', 'Kaduwela', 'Kesbewa', 'Kolonnawa', 'Maharagama', 'Moratuwa', 'Padukka', 'Ratmalana', 'Seethawaka', 'Sri Jayawardenepura Kotte', 'Thimbirigasyaya'],
-    'Galle': ['Ambalangoda', 'Baddegama', 'Balapitiya', 'Benthota', 'Bope-Poddala', 'Elpitiya', 'Galle', 'Gonapinuwala', 'Habaraduwa', 'Hikkaduwa', 'Imaduwa', 'Karandeniya', 'Nagoda', 'Neluwa', 'Thawalama', 'Welivitiya-Divithura', 'Yakkalamulla'],
-    'Gampaha': ['Attanagalla', 'Biyagama', 'Divulapitiya', 'Dompe', 'Gampaha', 'Ja-Ela', 'Katana', 'Kelaniya', 'Mahara', 'Minuwangoda', 'Mirigama', 'Negombo', 'Wattala'],
-    'Hambantota': ['Ambalantota', 'Angunukolapelessa', 'Bellatta', 'Hambantota', 'Katuwana', 'Lunugamvehera', 'Okewela', 'Sooriyawewa', 'Tangalle', 'Thissamaharama', 'Walasmulla', 'Weeraketiya'],
-    'Jaffna': ['Chavakachcheri', 'Delft', 'Islands North', 'Islands South', 'Jaffna', 'Karainagar', 'Karaveddy', 'Kayts', 'Kopay', 'Nallur', 'Point Pedro', 'Sandilipay', 'Tellippalai', 'Uduvil', 'Valikamam East', 'Valikamam North', 'Valikamam South', 'Valikamam South West', 'Valikamam West'],
-    'Kalutara': ['Agalawatta', 'Bandaragama', 'Beruwala', 'Bulathsinhala', 'Dodangoda', 'Horana', 'Ingiriya', 'Kalutara', 'Matugama', 'Millaniya', 'Panadura', 'Walallavita'],
-    'Kandy': ['Akurana', 'Delthota', 'Doluwa', 'Gangawata Korale', 'Harispattuwa', 'Kundasale', 'Medadumbara', 'Minipe', 'Pathahewaheta', 'Pasbage Korale', 'Thumpane', 'Udapalatha', 'Udunuwara', 'Udadumbara', 'Yatinuwara'],
-    'Kegalle': ['Aranayaka', 'Bulathkohupitiya', 'Daraniyagala', 'Dehiowita', 'Deraniyagala', 'Galigamuwa', 'Kegalle', 'Mawanella', 'Rambukkana', 'Ruwanwella', 'Warakapola', 'Yatiyantota'],
-    'Kilinochchi': ['Karachchi', 'Kandavalai', 'Pachchilaipalli', 'Poonakary'],
-    'Kurunegala': ['Alawwa', 'Ambampola', 'Bamunakotuwa', 'Ehetuwewa', 'Galgamuwa', 'Ganewatta', 'Giribawa', 'Ibbagamuwa', 'Kobeigane', 'Kuliyapitiya East', 'Kuliyapitiya West', 'Kurunegala', 'Mahawa', 'Mallawapitiya', 'Maspotha', 'Nikaweratiya', 'Panduwasnuwara', 'Pannala', 'Polgahawela', 'Polpithigama', 'Rasnayakapura', 'Rideegama', 'Udubaddawa', 'Wariyapola', 'Weerambugedara'],
-    'Mannar': ['Madhu', 'Mannar', 'Manthai West', 'Musali', 'Nanaddan'],
-    'Matale': ['Dambulla', 'Galewela', 'Laggala-Pallegama', 'Matale', 'Naula', 'Rattota', 'Ukuwela', 'Wilgamuwa', 'Yatawatta'],
-    'Matara': ['Akurassa', 'Athuraliya', 'Devinuwara', 'Dickwella', 'Hakmana', 'Kamburupitiya', 'Kirinda Puhulwella', 'Kotapola', 'Malimbada', 'Matara', 'Mulatiyana', 'Pasgoda', 'Pitabeddara', 'Thihagoda', 'Weligama', 'Welipitiya'],
-    'Monaragala': ['Badalkumbura', 'Bibile', 'Buttala', 'Kataragama', 'Madulla', 'Monaragala', 'Sevanagala', 'Siyambalanduwa', 'Thanamalvila', 'Wellawaya'],
-    'Mullaitivu': ['Manthai East', 'Maritimepattu', 'Oddusuddan', 'Puthukkudiyiruppu', 'Thunukkai', 'Welioya'],
-    'Nuwara Eliya': ['Ambagamuwa', 'Hanguranketha', 'Kothmale', 'Nuwara Eliya', 'Walapane'],
-    'Polonnaruwa': ['Dimbulagala', 'Elahera', 'Hingurakgoda', 'Lankapura', 'Medirigiriya', 'Thamankaduwa', 'Welikanda'],
-    'Puttalam': ['Anamaduwa', 'Arachchikattuwa', 'Chilaw', 'Dankotuwa', 'Kalpitiya', 'Karuwalagaswewa', 'Mahakumbukkadawala', 'Mundalama', 'Nattandiya', 'Nawagattegama', 'Pallama', 'Puttalam', 'Vanathavilluwa', 'Wennappuwa'],
-    'Ratnapura': ['Ayagama', 'Balangoda', 'Eheliyagoda', 'Elapatha', 'Embilipitiya', 'Godakawela', 'Imbulpe', 'Kalawana', 'Kiriella', 'Kolonna', 'Kuruwita', 'Nivithigala', 'Opanayaka', 'Pelmadulla', 'Ratnapura', 'Weligepola'],
-    'Trincomalee': ['Gomarankadawala', 'Kantalai', 'Kinniya', 'Kuchehaveli', 'Morawewa', 'Muttur', 'Padavi Siripura', 'Seruvila', 'Thambalagamuwa', 'Trincomalee', 'Verugal'],
-    'Vavuniya': ['Vavuniya', 'Vavuniya North', 'Vavuniya South', 'Venkalacheddikulam']
+    // ... rest of district data
   };
 
   const districts = Object.keys(districtData);
   const dsDivisions = selectedDistrict ? districtData[selectedDistrict] : [];
+  */
 
-  const soilTypes = [
+  const soilTextureOptions = [
     { label: 'Sandy clay loam', value: 'Sandy clay loam' },
     { label: 'Red loam', value: 'Red loam' },
     { label: 'Lateritic soils', value: 'Lateritic soils' },
-    { label: 'Loamy soil', value: 'Loamy soil' }
+    { label: 'Loamy soil', value: 'Loamy soil' },
+    { label: 'Clay loam', value: 'Clay loam' },
+    { label: 'Sandy loam', value: 'Sandy loam' }
   ];
 
-  const handleDistrictChange = (district) => {
-    setSelectedDistrict(district);
-    setSelectedDSDivision(''); // Reset DS division when district changes
-  };
+  const soilQualityOptions = [
+    { label: 'Organic-rich', value: 'Organic-rich' },
+    { label: 'Moderate organic', value: 'Moderate organic' },
+    { label: 'Low organic', value: 'Low organic' },
+    { label: 'High fertility', value: 'High fertility' },
+    { label: 'Medium fertility', value: 'Medium fertility' },
+    { label: 'Low fertility', value: 'Low fertility' }
+  ];
+
+  const drainageOptions = [
+    { label: 'Well drained', value: 'Well drained' },
+    { label: 'Moderate drainage', value: 'Moderate drainage' },
+    { label: 'Poor drainage', value: 'Poor drainage' },
+    { label: 'Excellent drainage', value: 'Excellent drainage' }
+  ];
+
+  // Commented out district change handler
+  // const handleDistrictChange = (district) => {
+  //   setSelectedDistrict(district);
+  //   setSelectedDSDivision(''); // Reset DS division when district changes
+  // };
 
   const validateInputs = () => {
-    if (!selectedDistrict) {
-      Alert.alert('Missing Information', 'Please select a district');
-      return false;
-    }
-    if (!selectedDSDivision) {
-      Alert.alert('Missing Information', 'Please select a DS division');
-      return false;
-    }
-    if (!soilType) {
-      Alert.alert('Missing Information', 'Please select a soil type');
-      return false;
-    }
+    // Commented out district validations
+    // if (!selectedDistrict) {
+    //   Alert.alert('Missing Information', 'Please select a district');
+    //   return false;
+    // }
+    // if (!selectedDSDivision) {
+    //   Alert.alert('Missing Information', 'Please select a DS division');
+    //   return false;
+    // }
 
-    const rainfallNum = parseFloat(rainfall);
+    // New validations
+    const elevationNum = parseFloat(elevation);
+    const rainfallNum = parseFloat(annualRainfall);
+    const temperatureNum = parseFloat(avgTemperature);
     const humidityNum = parseFloat(humidity);
-    const temperatureNum = parseFloat(temperature);
 
-    if (!rainfall || isNaN(rainfallNum) || rainfallNum < 0 || rainfallNum > 5000) {
-      Alert.alert('Invalid Input', 'Rainfall must be between 0-5000 mm');
+    if (!elevation || isNaN(elevationNum) || elevationNum < 0 || elevationNum > 3000) {
+      Alert.alert('Invalid Input', 'Elevation must be between 0-3000 meters');
+      return false;
+    }
+
+    if (!annualRainfall || isNaN(rainfallNum) || rainfallNum < 0 || rainfallNum > 5000) {
+      Alert.alert('Invalid Input', 'Annual rainfall must be between 0-5000 mm');
       return false;
     }
     
@@ -83,8 +91,23 @@ export default function PepperVarietiesScreen({ navigation }) {
       return false;
     }
     
-    if (!temperature || isNaN(temperatureNum) || temperatureNum < 0 || temperatureNum > 50) {
-      Alert.alert('Invalid Input', 'Temperature must be between 0-50°C');
+    if (!avgTemperature || isNaN(temperatureNum) || temperatureNum < 0 || temperatureNum > 50) {
+      Alert.alert('Invalid Input', 'Average temperature must be between 0-50°C');
+      return false;
+    }
+
+    if (!soilTexture) {
+      Alert.alert('Missing Information', 'Please select soil texture');
+      return false;
+    }
+
+    if (!soilQuality) {
+      Alert.alert('Missing Information', 'Please select soil quality');
+      return false;
+    }
+
+    if (!drainage) {
+      Alert.alert('Missing Information', 'Please select drainage condition');
       return false;
     }
 
@@ -96,14 +119,15 @@ export default function PepperVarietiesScreen({ navigation }) {
     
     setIsLoading(true);
     try {
-      // TODO: Replace with actual API call
+      // Updated payload structure
       const payload = {
-        district: selectedDistrict,
-        ds_division: selectedDSDivision,
-        rainfall: parseFloat(rainfall),
+        elevation: parseFloat(elevation),
+        annual_rainfall: parseFloat(annualRainfall),
+        avg_temperature: parseFloat(avgTemperature),
         humidity: parseFloat(humidity),
-        temperature: parseFloat(temperature),
-        soil_type: soilType
+        soil_texture: soilTexture,
+        soil_quality: soilQuality,
+        drainage: drainage
       };
       
       console.log('Pepper varieties recommendation payload:', payload);
@@ -127,13 +151,13 @@ export default function PepperVarietiesScreen({ navigation }) {
   };
 
   const getRecommendation = (data) => {
-    const { rainfall: rain, humidity: hum, temperature: temp, soil_type: soil } = data;
+    const { annual_rainfall: rain, humidity: hum, avg_temperature: temp, soil_texture: soil, elevation: elev } = data;
     
     let recommendations = [];
     
     // Logic for different pepper varieties based on conditions
     if (temp >= 20 && temp <= 30 && rain >= 1500 && rain <= 2500 && hum >= 70) {
-      if (soil === 'Red loam' || soil === 'Loamy soil') {
+      if (soil === 'Red loam' || soil === 'Loamy soil' || soil === 'Sandy clay loam') {
         recommendations.push('🌶️ Panniyur-1: Excellent for your conditions\n• High yield variety\n• Disease resistant\n• Premium quality');
       }
     }
@@ -144,12 +168,17 @@ export default function PepperVarietiesScreen({ navigation }) {
       }
     }
     
-    if (temp >= 22 && temp <= 32 && hum >= 65) {
+    if (temp >= 22 && temp <= 32 && hum >= 65 && elev < 1000) {
       recommendations.push('🌶️ Kottanadan: Traditional variety\n• Well adapted to local conditions\n• Strong flavor profile\n• Good for spice trade');
     }
     
     if (rain >= 2000 && hum >= 75) {
       recommendations.push('🌶️ Karimunda: High rainfall variety\n• Thrives in humid conditions\n• Compact growth\n• Good for intercropping');
+    }
+
+    // High elevation recommendations
+    if (elev > 800 && temp >= 18 && temp <= 25) {
+      recommendations.push('🌶️ High Altitude Variety: Suitable for elevation\n• Cold tolerant\n• Good quality pepper\n• Slower growth but premium product');
     }
     
     // Fallback recommendations
@@ -157,18 +186,38 @@ export default function PepperVarietiesScreen({ navigation }) {
       recommendations.push('🌶️ Local varieties recommended\n• Consult local agricultural officers\n• Consider climate-adapted varieties\n• Focus on soil improvement');
     }
     
-    // Add general tips
-    recommendations.push('\n💡 General Tips:\n• Ensure proper drainage\n• Regular pruning recommended\n• Monitor for pests and diseases\n• Consider organic fertilizers');
+    // Add general tips based on conditions
+    recommendations.push('\n💡 Condition-specific Tips:');
+    
+    if (elev > 1000) {
+      recommendations.push('• High elevation: Consider wind protection\n• Use mulching for temperature regulation');
+    }
+    
+    if (rain > 2500) {
+      recommendations.push('• High rainfall: Ensure excellent drainage\n• Monitor for fungal diseases');
+    }
+    
+    if (hum > 85) {
+      recommendations.push('• High humidity: Improve air circulation\n• Regular pruning essential');
+    }
+
+    recommendations.push('• Regular soil testing recommended\n• Consider organic fertilizers\n• Monitor for pests and diseases');
     
     return recommendations.join('\n\n');
   };
 
   const getEnvironmentalStatus = () => {
-    const rainfallNum = parseFloat(rainfall) || 0;
+    const elevationNum = parseFloat(elevation) || 0;
+    const rainfallNum = parseFloat(annualRainfall) || 0;
     const humidityNum = parseFloat(humidity) || 0;
-    const temperatureNum = parseFloat(temperature) || 0;
+    const temperatureNum = parseFloat(avgTemperature) || 0;
 
     let status = [];
+    
+    // Elevation status
+    if (elevationNum < 300) status.push({ text: 'Low Elevation', color: '#28a745', icon: '🏞️' });
+    else if (elevationNum <= 800) status.push({ text: 'Medium Elevation', color: '#ffc107', icon: '⛰️' });
+    else status.push({ text: 'High Elevation', color: '#17a2b8', icon: '🏔️' });
     
     // Rainfall status
     if (rainfallNum < 1200) status.push({ text: 'Low Rainfall', color: '#dc3545', icon: '🌵' });
@@ -209,13 +258,14 @@ export default function PepperVarietiesScreen({ navigation }) {
         <View style={styles.titleSection}>
           <Text style={styles.title}>Pepper Variety Recommendations</Text>
           <Text style={styles.subtitle}>
-            Get personalized pepper variety suggestions based on your location and conditions
+            Get personalized pepper variety suggestions based on your environmental conditions
           </Text>
         </View>
 
         {/* Input Form */}
         <View style={styles.formContainer}>
-          {/* District Selection */}
+          {/* Commented out District and DS Division Selection */}
+          {/*
           <View style={styles.inputGroup}>
             <Text style={styles.label}>District</Text>
             <View style={styles.pickerContainer}>
@@ -237,7 +287,6 @@ export default function PepperVarietiesScreen({ navigation }) {
             </View>
           </View>
 
-          {/* DS Division Selection */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>DS Division</Text>
             <View style={[styles.pickerContainer, !selectedDistrict && styles.disabledPicker]}>
@@ -263,18 +312,33 @@ export default function PepperVarietiesScreen({ navigation }) {
               </Picker>
             </View>
           </View>
+          */}
 
           {/* Environmental Inputs */}
           <View style={styles.environmentalSection}>
             <Text style={styles.sectionTitle}>Environmental Conditions</Text>
             
-            {/* Rainfall Input */}
+            {/* Elevation Input */}
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Elevation (meters)</Text>
+              <TextInput
+                style={styles.textInput}
+                value={elevation}
+                onChangeText={setElevation}
+                placeholder="Enter elevation in meters"
+                keyboardType="numeric"
+                maxLength={4}
+              />
+              <Text style={styles.inputHint}>Typical range: 0-2500m for pepper cultivation</Text>
+            </View>
+
+            {/* Annual Rainfall Input */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Annual Rainfall (mm)</Text>
               <TextInput
                 style={styles.textInput}
-                value={rainfall}
-                onChangeText={setRainfall}
+                value={annualRainfall}
+                onChangeText={setAnnualRainfall}
                 placeholder="Enter annual rainfall"
                 keyboardType="numeric"
                 maxLength={4}
@@ -282,9 +346,23 @@ export default function PepperVarietiesScreen({ navigation }) {
               <Text style={styles.inputHint}>Typical range: 1200-3000mm for pepper cultivation</Text>
             </View>
 
+            {/* Average Temperature Input */}
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Average Temperature (°C)</Text>
+              <TextInput
+                style={styles.textInput}
+                value={avgTemperature}
+                onChangeText={setAvgTemperature}
+                placeholder="Enter average temperature"
+                keyboardType="numeric"
+                maxLength={4}
+              />
+              <Text style={styles.inputHint}>Optimal range: 20-30°C for pepper cultivation</Text>
+            </View>
+
             {/* Humidity Input */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Average Humidity (%)</Text>
+              <Text style={styles.label}>Humidity (%)</Text>
               <TextInput
                 style={styles.textInput}
                 value={humidity}
@@ -296,45 +374,48 @@ export default function PepperVarietiesScreen({ navigation }) {
               <Text style={styles.inputHint}>Optimal range: 70-85% for pepper growth</Text>
             </View>
 
-            {/* Temperature Input */}
+            {/* Soil Texture Input */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Average Temperature (°C)</Text>
+              <Text style={styles.label}>Soil Texture</Text>
               <TextInput
                 style={styles.textInput}
-                value={temperature}
-                onChangeText={setTemperature}
-                placeholder="Enter average temperature"
-                keyboardType="numeric"
-                maxLength={4}
+                value={soilTexture}
+                onChangeText={setSoilTexture}
+                placeholder="Enter soil texture (e.g., Sandy clay loam)"
+                maxLength={50}
               />
-              <Text style={styles.inputHint}>Optimal range: 20-30°C for pepper cultivation</Text>
+              <Text style={styles.inputHint}>e.g., Sandy clay loam, Red loam, Lateritic soils</Text>
             </View>
 
-            {/* Soil Type Selection */}
+            {/* Soil Quality Input */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Soil Type</Text>
-              <View style={styles.pickerContainer}>
-                <Picker
-                  selectedValue={soilType}
-                  onValueChange={setSoilType}
-                  style={styles.picker}
-                >
-                  <Picker.Item label="Select Soil Type" value="" style={styles.placeholderItem} />
-                  {soilTypes.map((soil) => (
-                    <Picker.Item 
-                      key={soil.value} 
-                      label={soil.label} 
-                      value={soil.value}
-                      style={styles.pickerItem}
-                    />
-                  ))}
-                </Picker>
-              </View>
+              <Text style={styles.label}>Soil Quality</Text>
+              <TextInput
+                style={styles.textInput}
+                value={soilQuality}
+                onChangeText={setSoilQuality}
+                placeholder="Enter soil quality (e.g., Organic-rich)"
+                maxLength={50}
+              />
+              <Text style={styles.inputHint}>e.g., Organic-rich, Moderate organic, High fertility</Text>
+            </View>
+
+            {/* Drainage Input */}
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Drainage</Text>
+              <TextInput
+                style={styles.textInput}
+                value={drainage}
+                onChangeText={setDrainage}
+                placeholder="Enter drainage condition (e.g., Moderate drainage)"
+                maxLength={50}
+              />
+              <Text style={styles.inputHint}>e.g., Well drained, Moderate drainage, Poor drainage</Text>
             </View>
           </View>
 
           {/* Environmental Status Display */}
-          {(rainfall || humidity || temperature) && (
+          {(elevation || annualRainfall || avgTemperature || humidity) && (
             <View style={styles.statusSection}>
               <Text style={styles.sectionTitle}>Current Conditions</Text>
               <View style={styles.statusGrid}>
@@ -410,9 +491,10 @@ export default function PepperVarietiesScreen({ navigation }) {
             <Text style={styles.tipTitle}>🎯 Selection Tips</Text>
             <Text style={styles.tipText}>
               • Match variety to your specific climate conditions{'\n'}
-              • Consider disease resistance in your area{'\n'}
-              • Evaluate market demand for different varieties{'\n'}
-              • Consult local agricultural extension officers{'\n'}
+              • Consider elevation and temperature variations{'\n'}
+              • Evaluate soil texture and drainage capacity{'\n'}
+              • Assess rainfall patterns and humidity levels{'\n'}
+              • Consider soil quality and organic content{'\n'}
               • Start with small trial plots before scaling up
             </Text>
           </View>
@@ -691,5 +773,4 @@ const styles = StyleSheet.create({
     color: '#6c757d',
     lineHeight: 20,
   },
-
 });

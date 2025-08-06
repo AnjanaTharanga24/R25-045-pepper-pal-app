@@ -1,5 +1,7 @@
+#diseases_detection.txt
+
 tensorflow>=2.10.0
 Pillow>=9.0.0
-numpy>=1.21.0
+numpy==1.24.4
 gdown>=4.6.0
 marshmallow>=3.18.0

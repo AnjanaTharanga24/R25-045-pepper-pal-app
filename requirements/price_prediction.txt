@@ -1,6 +1,7 @@
+#price_prediction.txt
+
 -r base.txt  # Include all base requirements
 
-# Your specific requirements
 tensorflow==2.15.0
 scikit-learn==1.3.2
 waitress==2.1.2

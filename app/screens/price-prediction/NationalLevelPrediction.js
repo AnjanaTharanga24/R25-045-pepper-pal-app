@@ -12,8 +12,9 @@ import {
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
+import { BASE_URL } from '../../config/config';
 
-const BASE_URL = 'http://192.168.8.131:8000'; // Replace with your actual API URL
+// const BASE_URL = 'http://192.168.8.131:8000'; 
 
 export default function NationalPredictionScreen({ navigation }) {
   const [date, setDate] = useState(new Date());

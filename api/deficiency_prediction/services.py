@@ -6,17 +6,18 @@ import os
 
 class DeficiencyPredictionService:
     def __init__(self):
-        self.model = None
+        self.interpreter = None
         self.classes = ['Calcium', 'Heathly', 'Magnesium', 'Potasium']
-        self.model_path = 'models/DiseaseIdentification.keras'
+        self.model_path = 'models/DiseaseIdentificationTfLite.tflite'
         
     def load_model(self):
-        """Load the model if not already loaded"""
-        if self.model is None:
+        """Load the TFLite model if not already loaded"""
+        if self.interpreter is None:
             if not os.path.exists(self.model_path):
                 raise FileNotFoundError(f"Model file not found at {self.model_path}")
-            self.model = tf.keras.models.load_model(self.model_path)
-        return self.model
+            self.interpreter = tf.lite.Interpreter(model_path=self.model_path)
+            self.interpreter.allocate_tensors()
+        return self.interpreter
     
     def prepare_image(self, image_bytes):
         """Prepare image for prediction"""
@@ -35,7 +36,7 @@ class DeficiencyPredictionService:
             img_array = np.array(img) / 255.0  # normalize to 0-1 range
             
             # Expand dimensions to add batch size (1)
-            img_array = np.expand_dims(img_array, axis=0)
+            img_array = np.expand_dims(img_array, axis=0).astype(np.float32)
             
             return img_array
         except Exception as e:
@@ -232,18 +233,26 @@ class DeficiencyPredictionService:
         return fertilizer_recommendations.get(deficiency, {}).get(age_category, [])
     
     def predict_deficiency(self, image_bytes, age):
-        """Main prediction function"""
+        """Main prediction function using TFLite model"""
         try:
             # Load model
-            model = self.load_model()
+            interpreter = self.load_model()
+            
+            # Get input and output details
+            input_details = interpreter.get_input_details()
+            output_details = interpreter.get_output_details()
             
             # Prepare image
             img_array = self.prepare_image(image_bytes)
             
-            # Get predictions from the model
-            predictions = model.predict(img_array)
+            # Set input tensor and run inference
+            interpreter.set_tensor(input_details[0]['index'], img_array)
+            interpreter.invoke()
             
-            # Get predicted class
+            # Get predictions
+            predictions = interpreter.get_tensor(output_details[0]['index'])
+            
+            # Get predicted class and confidence
             predicted_class_idx = np.argmax(predictions, axis=1)[0]
             deficiency = self.classes[predicted_class_idx]
             confidence = float(np.max(predictions))
@@ -262,6 +271,8 @@ class DeficiencyPredictionService:
                 result['recommendation_count'] = len(fertilizers)
             else:
                 result['message'] = 'Plant appears healthy. No fertilizer recommendations needed.'
+                result['fertilizers'] = []
+                result['recommendation_count'] = 0
             
             return result
             

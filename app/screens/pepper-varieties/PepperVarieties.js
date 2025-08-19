@@ -1,13 +1,21 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Alert, TextInput } from 'react-native';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  TouchableOpacity, 
+  SafeAreaView, 
+  ScrollView, 
+  Alert, 
+  TextInput,
+  ActivityIndicator
+} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import axios from 'axios';
+import { BASE_URL } from '../../config/config';
 
 export default function PepperVarietiesScreen({ navigation }) {
-  // Commented out district and DS division states
-  // const [selectedDistrict, setSelectedDistrict] = useState('');
-  // const [selectedDSDivision, setSelectedDSDivision] = useState('');
-  
-  // New input states
+  // Input states
   const [elevation, setElevation] = useState('');
   const [annualRainfall, setAnnualRainfall] = useState('');
   const [avgTemperature, setAvgTemperature] = useState('');
@@ -17,18 +25,8 @@ export default function PepperVarietiesScreen({ navigation }) {
   const [drainage, setDrainage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // Commented out district data
-  /*
-  const districtData = {
-    'Ampara': ['Addalachchenai', 'Akkarajpattu', 'Alayadivembu', 'Ampara', 'Damana', 'Dehiattakandiya', 'Irakkamam', 'Kalmunai', 'Karaitivu', 'Lahugala', 'Mahaoya', 'Navithanveli', 'Nintavur', 'Padiyathalawa', 'Sainthamaruthu', 'Sammanthurai', 'Thirukkovil', 'Uhana'],
-    // ... rest of district data
-  };
-
-  const districts = Object.keys(districtData);
-  const dsDivisions = selectedDistrict ? districtData[selectedDistrict] : [];
-  */
-
   const soilTextureOptions = [
+    { label: 'Select Soil Texture', value: '' },
     { label: 'Sandy clay loam', value: 'Sandy clay loam' },
     { label: 'Red loam', value: 'Red loam' },
     { label: 'Lateritic soils', value: 'Lateritic soils' },
@@ -38,6 +36,7 @@ export default function PepperVarietiesScreen({ navigation }) {
   ];
 
   const soilQualityOptions = [
+    { label: 'Select Soil Quality', value: '' },
     { label: 'Organic-rich', value: 'Organic-rich' },
     { label: 'Moderate organic', value: 'Moderate organic' },
     { label: 'Low organic', value: 'Low organic' },
@@ -47,30 +46,14 @@ export default function PepperVarietiesScreen({ navigation }) {
   ];
 
   const drainageOptions = [
+    { label: 'Select Drainage', value: '' },
     { label: 'Well drained', value: 'Well drained' },
     { label: 'Moderate drainage', value: 'Moderate drainage' },
     { label: 'Poor drainage', value: 'Poor drainage' },
     { label: 'Excellent drainage', value: 'Excellent drainage' }
   ];
 
-  // Commented out district change handler
-  // const handleDistrictChange = (district) => {
-  //   setSelectedDistrict(district);
-  //   setSelectedDSDivision(''); // Reset DS division when district changes
-  // };
-
   const validateInputs = () => {
-    // Commented out district validations
-    // if (!selectedDistrict) {
-    //   Alert.alert('Missing Information', 'Please select a district');
-    //   return false;
-    // }
-    // if (!selectedDSDivision) {
-    //   Alert.alert('Missing Information', 'Please select a DS division');
-    //   return false;
-    // }
-
-    // New validations
     const elevationNum = parseFloat(elevation);
     const rainfallNum = parseFloat(annualRainfall);
     const temperatureNum = parseFloat(avgTemperature);
@@ -114,12 +97,37 @@ export default function PepperVarietiesScreen({ navigation }) {
     return true;
   };
 
+  // API call function
+  const getPepperRecommendation = async (requestData) => {
+    try {
+      const response = await axios.post(`${BASE_URL}/api/pepper/suggest-pepper`, requestData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        timeout: 10000, // 10 seconds timeout
+      });
+      return response.data;
+    } catch (error) {
+      console.error('API Error:', error);
+      if (error.response) {
+        // Server responded with error status
+        throw new Error(error.response.data.error || 'Server error occurred');
+      } else if (error.request) {
+        // Request was made but no response received
+        throw new Error('Network error. Please check your connection.');
+      } else {
+        // Something else happened
+        throw new Error('An unexpected error occurred');
+      }
+    }
+  };
+
   const onGetRecommendation = async () => {
     if (!validateInputs()) return;
     
     setIsLoading(true);
     try {
-      // Updated payload structure
+      // Prepare payload for API
       const payload = {
         elevation: parseFloat(elevation),
         annual_rainfall: parseFloat(annualRainfall),
@@ -132,78 +140,84 @@ export default function PepperVarietiesScreen({ navigation }) {
       
       console.log('Pepper varieties recommendation payload:', payload);
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Call the API
+      const result = await getPepperRecommendation(payload);
       
-      // Mock recommendation based on inputs
-      const recommendations = getRecommendation(payload);
-      
+      if (result.success) {
+        // Show successful result
+        Alert.alert(
+          'Pepper Variety Recommendation',
+          `Recommended Variety: ${result.predicted_variety}\n\nBased on your conditions:\n• Elevation: ${payload.elevation}m\n• Rainfall: ${payload.annual_rainfall}mm\n• Temperature: ${payload.avg_temperature}°C\n• Humidity: ${payload.humidity}%\n• Soil: ${payload.soil_texture}\n• Quality: ${payload.soil_quality}\n• Drainage: ${payload.drainage}`,
+          [
+            { text: 'OK' }
+          ]
+        );
+      } else {
+        Alert.alert('Error', result.error || 'Failed to get recommendation');
+      }
+    } catch (error) {
       Alert.alert(
-        'Pepper Variety Recommendations',
-        recommendations,
+        'Error', 
+        error.message || 'Failed to get recommendations. Please try again.',
         [{ text: 'OK' }]
       );
-    } catch (error) {
-      Alert.alert('Error', 'Failed to get recommendations. Please try again.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const getRecommendation = (data) => {
-    const { annual_rainfall: rain, humidity: hum, avg_temperature: temp, soil_texture: soil, elevation: elev } = data;
+  // Show detailed information about the recommended variety
+  const showDetailedInfo = (variety, conditions) => {
+    let detailedInfo = getDetailedRecommendation(variety, conditions);
     
-    let recommendations = [];
-    
-    // Logic for different pepper varieties based on conditions
-    if (temp >= 20 && temp <= 30 && rain >= 1500 && rain <= 2500 && hum >= 70) {
-      if (soil === 'Red loam' || soil === 'Loamy soil' || soil === 'Sandy clay loam') {
-        recommendations.push('🌶️ Panniyur-1: Excellent for your conditions\n• High yield variety\n• Disease resistant\n• Premium quality');
-      }
-    }
-    
-    if (temp >= 18 && temp <= 28 && rain >= 1200 && rain <= 2000) {
-      if (soil === 'Sandy clay loam' || soil === 'Lateritic soils') {
-        recommendations.push('🌶️ Subhakya: Good adaptation\n• Moderate yield\n• Suitable for your soil\n• Good market demand');
-      }
-    }
-    
-    if (temp >= 22 && temp <= 32 && hum >= 65 && elev < 1000) {
-      recommendations.push('🌶️ Kottanadan: Traditional variety\n• Well adapted to local conditions\n• Strong flavor profile\n• Good for spice trade');
-    }
-    
-    if (rain >= 2000 && hum >= 75) {
-      recommendations.push('🌶️ Karimunda: High rainfall variety\n• Thrives in humid conditions\n• Compact growth\n• Good for intercropping');
-    }
+    Alert.alert(
+      `About ${variety}`,
+      detailedInfo,
+      [{ text: 'OK' }]
+    );
+  };
 
-    // High elevation recommendations
-    if (elev > 800 && temp >= 18 && temp <= 25) {
-      recommendations.push('🌶️ High Altitude Variety: Suitable for elevation\n• Cold tolerant\n• Good quality pepper\n• Slower growth but premium product');
+  const getDetailedRecommendation = (variety, data) => {
+    const { annual_rainfall: rain, humidity: hum, avg_temperature: temp, elevation: elev } = data;
+    
+    let info = `🌶️ ${variety}\n\n`;
+    
+    // Add variety-specific information based on the prediction
+    if (variety.toLowerCase().includes('highland')) {
+      info += `Characteristics:\n• Best suited for high elevation areas\n• Cold tolerant variety\n• Premium quality pepper\n• Slower growth but higher value\n\n`;
+      info += `Growing Tips:\n• Provide wind protection\n• Use mulching for temperature control\n• Monitor for altitude-related stress\n• Harvest when fully mature for best quality`;
+    } else if (variety.toLowerCase().includes('wet climate')) {
+      info += `Characteristics:\n• Thrives in high rainfall conditions\n• High humidity tolerance\n• Good disease resistance\n• Suitable for monsoon cultivation\n\n`;
+      info += `Growing Tips:\n• Ensure excellent drainage\n• Monitor for fungal diseases\n• Regular pruning for air circulation\n• Use raised beds if necessary`;
+    } else {
+      info += `Characteristics:\n• Standard variety for general cultivation\n• Good adaptability\n• Moderate yield potential\n• Suitable for diverse conditions\n\n`;
+      info += `Growing Tips:\n• Regular watering schedule\n• Balanced fertilization\n• Monitor soil pH (6.0-7.0)\n• Proper spacing for growth`;
     }
     
-    // Fallback recommendations
-    if (recommendations.length === 0) {
-      recommendations.push('🌶️ Local varieties recommended\n• Consult local agricultural officers\n• Consider climate-adapted varieties\n• Focus on soil improvement');
-    }
-    
-    // Add general tips based on conditions
-    recommendations.push('\n💡 Condition-specific Tips:');
+    // Add condition-specific advice
+    info += `\n\n📊 Your Conditions Analysis:\n`;
     
     if (elev > 1000) {
-      recommendations.push('• High elevation: Consider wind protection\n• Use mulching for temperature regulation');
+      info += `• High elevation: Consider wind protection and temperature management\n`;
     }
     
     if (rain > 2500) {
-      recommendations.push('• High rainfall: Ensure excellent drainage\n• Monitor for fungal diseases');
+      info += `• High rainfall: Focus on drainage and disease prevention\n`;
+    } else if (rain < 1200) {
+      info += `• Low rainfall: Implement irrigation and water conservation\n`;
     }
     
     if (hum > 85) {
-      recommendations.push('• High humidity: Improve air circulation\n• Regular pruning essential');
+      info += `• High humidity: Ensure good air circulation\n`;
     }
-
-    recommendations.push('• Regular soil testing recommended\n• Consider organic fertilizers\n• Monitor for pests and diseases');
     
-    return recommendations.join('\n\n');
+    if (temp > 30) {
+      info += `• High temperature: Provide shade during hottest hours\n`;
+    } else if (temp < 20) {
+      info += `• Cool temperature: Consider season timing and protection\n`;
+    }
+    
+    return info;
   };
 
   const getEnvironmentalStatus = () => {
@@ -258,62 +272,12 @@ export default function PepperVarietiesScreen({ navigation }) {
         <View style={styles.titleSection}>
           <Text style={styles.title}>Pepper Variety Recommendations</Text>
           <Text style={styles.subtitle}>
-            Get personalized pepper variety suggestions based on your environmental conditions
+            Get AI-powered pepper variety suggestions based on your environmental conditions
           </Text>
         </View>
 
         {/* Input Form */}
         <View style={styles.formContainer}>
-          {/* Commented out District and DS Division Selection */}
-          {/*
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>District</Text>
-            <View style={styles.pickerContainer}>
-              <Picker
-                selectedValue={selectedDistrict}
-                onValueChange={handleDistrictChange}
-                style={styles.picker}
-              >
-                <Picker.Item label="Select District" value="" style={styles.placeholderItem} />
-                {districts.map((district) => (
-                  <Picker.Item 
-                    key={district} 
-                    label={district} 
-                    value={district}
-                    style={styles.pickerItem}
-                  />
-                ))}
-              </Picker>
-            </View>
-          </View>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>DS Division</Text>
-            <View style={[styles.pickerContainer, !selectedDistrict && styles.disabledPicker]}>
-              <Picker
-                selectedValue={selectedDSDivision}
-                onValueChange={setSelectedDSDivision}
-                style={styles.picker}
-                enabled={!!selectedDistrict}
-              >
-                <Picker.Item 
-                  label={selectedDistrict ? "Select DS Division" : "Select District First"} 
-                  value="" 
-                  style={styles.placeholderItem} 
-                />
-                {dsDivisions.map((division) => (
-                  <Picker.Item 
-                    key={division} 
-                    label={division} 
-                    value={division}
-                    style={styles.pickerItem}
-                  />
-                ))}
-              </Picker>
-            </View>
-          </View>
-          */}
-
           {/* Environmental Inputs */}
           <View style={styles.environmentalSection}>
             <Text style={styles.sectionTitle}>Environmental Conditions</Text>
@@ -328,6 +292,7 @@ export default function PepperVarietiesScreen({ navigation }) {
                 placeholder="Enter elevation in meters"
                 keyboardType="numeric"
                 maxLength={4}
+                editable={!isLoading}
               />
               <Text style={styles.inputHint}>Typical range: 0-2500m for pepper cultivation</Text>
             </View>
@@ -342,6 +307,7 @@ export default function PepperVarietiesScreen({ navigation }) {
                 placeholder="Enter annual rainfall"
                 keyboardType="numeric"
                 maxLength={4}
+                editable={!isLoading}
               />
               <Text style={styles.inputHint}>Typical range: 1200-3000mm for pepper cultivation</Text>
             </View>
@@ -356,6 +322,7 @@ export default function PepperVarietiesScreen({ navigation }) {
                 placeholder="Enter average temperature"
                 keyboardType="numeric"
                 maxLength={4}
+                editable={!isLoading}
               />
               <Text style={styles.inputHint}>Optimal range: 20-30°C for pepper cultivation</Text>
             </View>
@@ -370,47 +337,78 @@ export default function PepperVarietiesScreen({ navigation }) {
                 placeholder="Enter humidity percentage"
                 keyboardType="numeric"
                 maxLength={3}
+                editable={!isLoading}
               />
               <Text style={styles.inputHint}>Optimal range: 70-85% for pepper growth</Text>
             </View>
 
-            {/* Soil Texture Input */}
+            {/* Soil Texture Picker */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Soil Texture</Text>
-              <TextInput
-                style={styles.textInput}
-                value={soilTexture}
-                onChangeText={setSoilTexture}
-                placeholder="Enter soil texture (e.g., Sandy clay loam)"
-                maxLength={50}
-              />
-              <Text style={styles.inputHint}>e.g., Sandy clay loam, Red loam, Lateritic soils</Text>
+              <View style={styles.pickerContainer}>
+                <Picker
+                  selectedValue={soilTexture}
+                  onValueChange={setSoilTexture}
+                  style={styles.picker}
+                  enabled={!isLoading}
+                  dropdownIconColor="#2d5c3e"
+                >
+                  {soilTextureOptions.map((option) => (
+                    <Picker.Item 
+                      key={option.value} 
+                      label={option.label} 
+                      value={option.value}
+                      style={option.value === '' ? styles.placeholderItem : styles.pickerItem}
+                    />
+                  ))}
+                </Picker>
+              </View>
             </View>
 
-            {/* Soil Quality Input */}
+            {/* Soil Quality Picker */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Soil Quality</Text>
-              <TextInput
-                style={styles.textInput}
-                value={soilQuality}
-                onChangeText={setSoilQuality}
-                placeholder="Enter soil quality (e.g., Organic-rich)"
-                maxLength={50}
-              />
-              <Text style={styles.inputHint}>e.g., Organic-rich, Moderate organic, High fertility</Text>
+              <View style={styles.pickerContainer}>
+                <Picker
+                  selectedValue={soilQuality}
+                  onValueChange={setSoilQuality}
+                  style={styles.picker}
+                  enabled={!isLoading}
+                  dropdownIconColor="#2d5c3e"
+                >
+                  {soilQualityOptions.map((option) => (
+                    <Picker.Item 
+                      key={option.value} 
+                      label={option.label} 
+                      value={option.value}
+                      style={option.value === '' ? styles.placeholderItem : styles.pickerItem}
+                    />
+                  ))}
+                </Picker>
+              </View>
             </View>
 
-            {/* Drainage Input */}
+            {/* Drainage Picker */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Drainage</Text>
-              <TextInput
-                style={styles.textInput}
-                value={drainage}
-                onChangeText={setDrainage}
-                placeholder="Enter drainage condition (e.g., Moderate drainage)"
-                maxLength={50}
-              />
-              <Text style={styles.inputHint}>e.g., Well drained, Moderate drainage, Poor drainage</Text>
+              <View style={styles.pickerContainer}>
+                <Picker
+                  selectedValue={drainage}
+                  onValueChange={setDrainage}
+                  style={styles.picker}
+                  enabled={!isLoading}
+                  dropdownIconColor="#2d5c3e"
+                >
+                  {drainageOptions.map((option) => (
+                    <Picker.Item 
+                      key={option.value} 
+                      label={option.label} 
+                      value={option.value}
+                      style={option.value === '' ? styles.placeholderItem : styles.pickerItem}
+                    />
+                  ))}
+                </Picker>
+              </View>
             </View>
           </View>
 
@@ -436,39 +434,38 @@ export default function PepperVarietiesScreen({ navigation }) {
             disabled={isLoading}
             activeOpacity={0.8}
           >
-            <Text style={styles.recommendButtonText}>
-              {isLoading ? 'Analyzing Conditions...' : 'Get Variety Recommendations'}
-            </Text>
-            {!isLoading && <Text style={styles.buttonIcon}>🌶️</Text>}
+            {isLoading ? (
+              <>
+                <ActivityIndicator size="small" color="#ffffff" />
+                <Text style={[styles.recommendButtonText, { marginLeft: 8 }]}>
+                  Analyzing Conditions...
+                </Text>
+              </>
+            ) : (
+              <>
+                <Text style={styles.recommendButtonText}>
+                  Get AI Variety Recommendations
+                </Text>
+                <Text style={styles.buttonIcon}>🤖</Text>
+              </>
+            )}
           </TouchableOpacity>
         </View>
 
         {/* Information Section */}
         <View style={styles.infoSection}>
-          <Text style={styles.sectionTitle}>About Pepper Varieties</Text>
-          
-          <View style={styles.infoCard}>
-            <View style={styles.infoHeader}>
-              <Text style={styles.infoIcon}>🌱</Text>
-              <Text style={styles.infoTitle}>Popular Varieties</Text>
-            </View>
-            <Text style={styles.infoDescription}>
-              • Panniyur-1: High yielding, disease resistant{'\n'}
-              • Subhakya: Good for commercial cultivation{'\n'}
-              • Kottanadan: Traditional variety with strong flavor{'\n'}
-              • Karimunda: Suitable for high rainfall areas
-            </Text>
-          </View>
+
+     
 
           <View style={styles.infoCard}>
             <View style={styles.infoHeader}>
-              <Text style={styles.infoIcon}>🌍</Text>
-              <Text style={styles.infoTitle}>Growing Conditions</Text>
+              <Text style={styles.infoIcon}>🤖</Text>
+              <Text style={styles.infoTitle}>AI-Powered Recommendations</Text>
             </View>
             <Text style={styles.infoDescription}>
-              Pepper thrives in tropical conditions with consistent rainfall, 
-              high humidity, and well-drained soils. Proper variety selection 
-              based on local conditions is crucial for successful cultivation.
+              Our system analyzes your specific environmental conditions including 
+              elevation, rainfall, temperature, humidity, and soil properties to 
+              recommend the most suitable pepper varieties for your location.
             </Text>
           </View>
 
@@ -485,20 +482,6 @@ export default function PepperVarietiesScreen({ navigation }) {
           </View>
         </View>
 
-        {/* Tips Section */}
-        <View style={styles.tipsSection}>
-          <View style={styles.tipCard}>
-            <Text style={styles.tipTitle}>🎯 Selection Tips</Text>
-            <Text style={styles.tipText}>
-              • Match variety to your specific climate conditions{'\n'}
-              • Consider elevation and temperature variations{'\n'}
-              • Evaluate soil texture and drainage capacity{'\n'}
-              • Assess rainfall patterns and humidity levels{'\n'}
-              • Consider soil quality and organic content{'\n'}
-              • Start with small trial plots before scaling up
-            </Text>
-          </View>
-        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -615,10 +598,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 3,
-  },
-  disabledPicker: {
-    backgroundColor: '#f8f9fa',
-    borderColor: '#dee2e6',
   },
   picker: {
     height: 50,

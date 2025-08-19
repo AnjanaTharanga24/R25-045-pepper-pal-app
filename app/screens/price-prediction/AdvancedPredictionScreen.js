@@ -12,8 +12,9 @@ import {
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
+import { BASE_URL } from '../../config/config';
 
-const BASE_URL = 'http://192.168.8.131:8000'; // Replace with your actual API URL
+// const BASE_URL = 'http://192.168.8.131:8000';
 
 export default function AdvancedPredictionScreen({ navigation }) {
   const [rainfall, setRainfall] = useState('150');
@@ -309,15 +310,6 @@ export default function AdvancedPredictionScreen({ navigation }) {
 
         {/* Additional Info */}
         <View style={styles.additionalInfo}>
-          <View style={styles.tipCard}>
-            <Text style={styles.tipTitle}>💡 Advanced Tips</Text>
-            <Text style={styles.tipText}>
-              • Consider multiple factors for accurate predictions{'\n'}
-              • Monitor weather patterns regularly{'\n'}
-              • Track economic indicators for better insights{'\n'}
-              • Seasonal trends affect long-term planning
-            </Text>
-          </View>
 
           <View style={styles.disclaimerCard}>
             <Text style={styles.disclaimerTitle}>⚠️ Disclaimer</Text>

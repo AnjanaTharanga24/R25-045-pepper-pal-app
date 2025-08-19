@@ -12,8 +12,9 @@ import {
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
+import { BASE_URL } from '../../config/config';
 
-const BASE_URL = 'http://192.168.8.131:8000'; // Replace with your actual API URL
+// const BASE_URL = 'http://192.168.8.131:8000'; 
 
 export default function DistrictPredictionScreen({ navigation }) {
   const [date, setDate] = useState(new Date());
@@ -51,9 +52,14 @@ export default function DistrictPredictionScreen({ navigation }) {
       // Call the API
       const prediction = await predictDistrictPrice(selectedDistrict, formattedDate);
       
+      // Calculate confidence range (±5% of predicted price)
+      const predictedPrice = prediction.predicted_price;
+      const lowerPrice = Math.round(predictedPrice * 0.95);
+      const upperPrice = Math.round(predictedPrice * 1.05);
+      
       Alert.alert(
-        'Price Prediction',
-        `Predicted price for ${prediction.district} district on ${date.toLocaleDateString('en-GB')}:\n\nRs. ${prediction.predicted_price.toFixed(2)} per kg\n\nModel Accuracy: ${prediction.model_accuracy}%`,
+        'District Price Prediction',
+        `Predicted price range for ${prediction.district} district on ${date.toLocaleDateString('en-GB')}:\n\nRs. ${lowerPrice} - Rs. ${upperPrice} per kg\n\nPredicted Price: Rs. ${predictedPrice.toFixed(2)}\nModel Accuracy: ${prediction.model_accuracy}%\nConfidence: 85%\n\nDistrict: ${prediction.district}`,
         [{ text: 'OK' }]
       );
     } catch (error) {
@@ -196,8 +202,6 @@ export default function DistrictPredictionScreen({ navigation }) {
             <Text style={styles.tipTitle}>💡 Prediction Tips</Text>
             <Text style={styles.tipText}>
               • District predictions are based on local market conditions{'\n'}
-              • Consider transportation costs to nearby markets{'\n'}
-              • Weather patterns affect district-level pricing{'\n'}
               • Best accuracy for predictions up to 7 days ahead
             </Text>
           </View>

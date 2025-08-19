@@ -12,8 +12,7 @@ import {
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
-
-const BASE_URL = 'http://192.168.8.131:8000'; // Replace with your actual API URL
+import { BASE_URL } from '../../config/config';
 
 export default function NationalPredictionScreen({ navigation }) {
   const [date, setDate] = useState(new Date());
@@ -51,9 +50,14 @@ export default function NationalPredictionScreen({ navigation }) {
       // Call the API
       const prediction = await predictNationalPrice(selectedQuality, formattedDate);
       
+      // Calculate confidence range (±5% of predicted price)
+      const predictedPrice = prediction.predicted_price;
+      const lowerPrice = Math.round(predictedPrice * 0.95);
+      const upperPrice = Math.round(predictedPrice * 1.05);
+      
       Alert.alert(
         'National Price Prediction',
-        `Predicted national average price for ${prediction.pepper_type} quality on ${date.toLocaleDateString('en-GB')}:\n\nRs. ${prediction.predicted_price.toFixed(2)} per kg\n\nModel Accuracy: ${prediction.model_accuracy}%\nMarket Coverage: All Districts`,
+        `Predicted national average price range for ${prediction.pepper_type} quality on ${date.toLocaleDateString('en-GB')}:\n\nRs. ${lowerPrice} - Rs. ${upperPrice} per kg\n\nPredicted Price: Rs. ${predictedPrice.toFixed(2)}\nModel Accuracy: ${prediction.model_accuracy}%\nMarket Coverage: All Districts`,
         [{ text: 'OK' }]
       );
     } catch (error) {
@@ -112,6 +116,7 @@ export default function NationalPredictionScreen({ navigation }) {
                 onValueChange={(itemValue) => setSelectedQuality(itemValue)}
                 style={styles.picker}
                 dropdownIconColor="#2d5c3e"
+                enabled={!isLoading}
               >
                 {qualityTypes.map((quality) => (
                   <Picker.Item 
@@ -236,7 +241,6 @@ export default function NationalPredictionScreen({ navigation }) {
             <Text style={styles.tipText}>
               • National predictions cover all major markets{'\n'}
               • Quality grades affect pricing significantly{'\n'}
-              • Weather patterns influence national averages{'\n'}
               • Best accuracy for predictions up to 7 days ahead
             </Text>
           </View>

@@ -310,15 +310,6 @@ export default function AdvancedPredictionScreen({ navigation }) {
 
         {/* Additional Info */}
         <View style={styles.additionalInfo}>
-          <View style={styles.tipCard}>
-            <Text style={styles.tipTitle}>💡 Advanced Tips</Text>
-            <Text style={styles.tipText}>
-              • Consider multiple factors for accurate predictions{'\n'}
-              • Monitor weather patterns regularly{'\n'}
-              • Track economic indicators for better insights{'\n'}
-              • Seasonal trends affect long-term planning
-            </Text>
-          </View>
 
           <View style={styles.disclaimerCard}>
             <Text style={styles.disclaimerTitle}>⚠️ Disclaimer</Text>

@@ -149,10 +149,6 @@ export default function PepperVarietiesScreen({ navigation }) {
           'Pepper Variety Recommendation',
           `Recommended Variety: ${result.predicted_variety}\n\nBased on your conditions:\n• Elevation: ${payload.elevation}m\n• Rainfall: ${payload.annual_rainfall}mm\n• Temperature: ${payload.avg_temperature}°C\n• Humidity: ${payload.humidity}%\n• Soil: ${payload.soil_texture}\n• Quality: ${payload.soil_quality}\n• Drainage: ${payload.drainage}`,
           [
-            {
-              text: 'Get More Info',
-              onPress: () => showDetailedInfo(result.predicted_variety, payload)
-            },
             { text: 'OK' }
           ]
         );
@@ -458,20 +454,8 @@ export default function PepperVarietiesScreen({ navigation }) {
 
         {/* Information Section */}
         <View style={styles.infoSection}>
-          <Text style={styles.sectionTitle}>About Pepper Varieties</Text>
-          
-          <View style={styles.infoCard}>
-            <View style={styles.infoHeader}>
-              <Text style={styles.infoIcon}>🌱</Text>
-              <Text style={styles.infoTitle}>Popular Varieties</Text>
-            </View>
-            <Text style={styles.infoDescription}>
-              • Panniyur-1: High yielding, disease resistant{'\n'}
-              • Subhakya: Good for commercial cultivation{'\n'}
-              • Kottanadan: Traditional variety with strong flavor{'\n'}
-              • Karimunda: Suitable for high rainfall areas
-            </Text>
-          </View>
+
+     
 
           <View style={styles.infoCard}>
             <View style={styles.infoHeader}>
@@ -498,20 +482,6 @@ export default function PepperVarietiesScreen({ navigation }) {
           </View>
         </View>
 
-        {/* Tips Section */}
-        <View style={styles.tipsSection}>
-          <View style={styles.tipCard}>
-            <Text style={styles.tipTitle}>🎯 Selection Tips</Text>
-            <Text style={styles.tipText}>
-              • Enter accurate environmental data for best results{'\n'}
-              • Consider seasonal variations in your inputs{'\n'}
-              • Evaluate soil texture and drainage capacity carefully{'\n'}
-              • Test soil pH and nutrient levels if possible{'\n'}
-              • Start with small trial plots before scaling up{'\n'}
-              • Consult local agricultural officers for additional guidance
-            </Text>
-          </View>
-        </View>
       </ScrollView>
     </SafeAreaView>
   );

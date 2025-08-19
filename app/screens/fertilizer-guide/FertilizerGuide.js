@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -11,10 +11,19 @@ import {
   Modal,
   ActivityIndicator,
   TextInput,
-  Platform
+  Platform,
+  Linking,
+  PermissionsAndroid,
+  Dimensions
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as MediaLibrary from 'expo-media-library';
+import * as FileSystem from 'expo-file-system';
+import * as DocumentPicker from 'expo-document-picker';
+import axios from 'axios';
+
+const { width } = Dimensions.get('window');
+import { BASE_URL } from '../../config/config';
 
 export default function FertilizerGuide({ navigation }) {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -22,16 +31,90 @@ export default function FertilizerGuide({ navigation }) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [analysisResult, setAnalysisResult] = useState(null);
+  const [permissionStatus, setPermissionStatus] = useState({
+    camera: null,
+    mediaLibrary: null,
+    storage: null
+  });
 
-  // Permission handlers (same as disease detection)
-  const requestCameraPermission = async () => {
-    const { status } = await ImagePicker.requestCameraPermissionsAsync();
-    return status === 'granted';
+  useEffect(() => {
+    requestPermissions();
+  }, []);
+
+  // Permission handling (same as disease detection)
+  const requestAndroidPermissions = async () => {
+    if (Platform.OS !== 'android') return true;
+
+    try {
+      const androidVersion = Platform.Version;
+      console.log('Android Version:', androidVersion);
+
+      if (androidVersion >= 33) {
+        const permissions = [
+          PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
+          PermissionsAndroid.PERMISSIONS.CAMERA,
+        ];
+
+        const granted = await PermissionsAndroid.requestMultiple(permissions);
+        
+        console.log('Android 13+ permissions:', granted);
+        
+        return (
+          granted[PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES] === PermissionsAndroid.RESULTS.GRANTED &&
+          granted[PermissionsAndroid.PERMISSIONS.CAMERA] === PermissionsAndroid.RESULTS.GRANTED
+        );
+      } else if (androidVersion >= 23) {
+        const permissions = [
+          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+          PermissionsAndroid.PERMISSIONS.CAMERA,
+        ];
+
+        const granted = await PermissionsAndroid.requestMultiple(permissions);
+        
+        console.log('Android 6-12 permissions:', granted);
+        
+        return (
+          granted[PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE] === PermissionsAndroid.RESULTS.GRANTED &&
+          granted[PermissionsAndroid.PERMISSIONS.CAMERA] === PermissionsAndroid.RESULTS.GRANTED
+        );
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Android permission error:', error);
+      return false;
+    }
   };
 
-  const requestGalleryPermission = async () => {
-    const { status } = await MediaLibrary.requestPermissionsAsync();
-    return status === 'granted';
+  const requestPermissions = async () => {
+    try {
+      const androidPermissionGranted = await requestAndroidPermissions();
+      
+      const cameraStatus = await ImagePicker.requestCameraPermissionsAsync();
+      const mediaStatus = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      const mediaLibraryStatus = await MediaLibrary.requestPermissionsAsync();
+      
+      const status = {
+        camera: cameraStatus.status,
+        mediaLibrary: mediaStatus.status,
+        storage: androidPermissionGranted ? 'granted' : 'denied'
+      };
+      
+      setPermissionStatus(status);
+      
+      if (status.camera !== 'granted' || status.mediaLibrary !== 'granted' || !androidPermissionGranted) {
+        Alert.alert(
+          'Permissions Required',
+          'This app needs camera and gallery permissions to function properly.',
+          [
+            { text: 'Cancel', style: 'cancel' },
+            { text: 'Open Settings', onPress: () => Linking.openSettings() }
+          ]
+        );
+      }
+    } catch (error) {
+      console.error('Error requesting permissions:', error);
+    }
   };
 
   const handleImagePicker = () => {
@@ -41,42 +124,120 @@ export default function FertilizerGuide({ navigation }) {
   const openCamera = async () => {
     setShowOptions(false);
     
-    const hasPermission = await requestCameraPermission();
-    if (!hasPermission) {
-      Alert.alert('Permission Required', 'Camera permission is required to take photos.');
-      return;
-    }
+    try {
+      const { status } = await ImagePicker.getCameraPermissionsAsync();
+      
+      if (status !== 'granted') {
+        const { status: newStatus } = await ImagePicker.requestCameraPermissionsAsync();
+        if (newStatus !== 'granted') {
+          Alert.alert('Permission Required', 'Camera permission is required to take photos.');
+          return;
+        }
+      }
 
-    const result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      quality: 0.8,
-      allowsEditing: false,
-    });
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 0.8,
+        allowsEditing: false,
+      });
 
-    if (!result.canceled && result.assets?.[0]) {
-      setSelectedImage(result.assets[0]);
-      setAnalysisResult(null);
+      if (!result.canceled && result.assets?.[0]) {
+        setSelectedImage(result.assets[0]);
+        setAnalysisResult(null);
+      }
+    } catch (error) {
+      console.error('Camera error:', error);
+      Alert.alert('Error', 'Failed to open camera. Please try again.');
     }
   };
 
   const openGallery = async () => {
     setShowOptions(false);
     
-    const hasPermission = await requestGalleryPermission();
-    if (!hasPermission) {
-      Alert.alert('Permission Required', 'Gallery permission is required to select photos.');
-      return;
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 0.8,
+        allowsEditing: false,
+        aspect: [4, 3],
+      });
+
+      console.log('Image picker result:', result);
+
+      if (!result.canceled && result.assets?.[0]) {
+        setSelectedImage(result.assets[0]);
+        setAnalysisResult(null);
+        return;
+      }
+
+      await pickDocument();
+    } catch (error) {
+      console.error('Gallery error:', error);
+      Alert.alert('Error', 'Failed to access gallery. Trying alternative method...');
+      await pickDocument();
     }
+  };
 
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      quality: 0.8,
-      allowsEditing: false,
-    });
+  const pickDocument = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: 'image/*',
+        copyToCacheDirectory: true,
+      });
+      
+      if (result.type === 'success') {
+        const fileInfo = await FileSystem.getInfoAsync(result.uri);
+        if (!fileInfo.exists) {
+          throw new Error('Selected file does not exist');
+        }
+        
+        setSelectedImage({ 
+          uri: result.uri,
+          width: 0,
+          height: 0,
+          fileName: result.name || 'selected_image.jpg'
+        });
+        setAnalysisResult(null);
+      }
+    } catch (error) {
+      console.error('Document picker error:', error);
+      Alert.alert('Error', 'Failed to select image. Please try another method.');
+    }
+  };
 
-    if (!result.canceled && result.assets?.[0]) {
-      setSelectedImage(result.assets[0]);
-      setAnalysisResult(null);
+  // API call function for deficiency prediction
+  const predictDeficiency = async (imageUri, age) => {
+    try {
+      const formData = new FormData();
+      
+      // Append image file
+      formData.append('image', {
+        uri: imageUri,
+        type: 'image/jpeg',
+        name: 'plant_image.jpg',
+      });
+
+      // Append age parameter
+      formData.append('age', age.toString());
+
+      console.log('Sending API request to:', `${BASE_URL}/api/deficiency/predict`);
+      console.log('Age:', age);
+
+      const response = await axios.post(`${BASE_URL}/api/deficiency/predict`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        timeout: 30000,
+      });
+      
+      console.log('API Response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('API Error:', error);
+      if (error.response) {
+        console.error('Error Response:', error.response.data);
+      }
+      throw error;
     }
   };
 
@@ -86,95 +247,89 @@ export default function FertilizerGuide({ navigation }) {
       return;
     }
 
-    if (!plantAge || isNaN(plantAge) || parseFloat(plantAge) <= 0) {
-      Alert.alert('Invalid Age', 'Please enter a valid plant age in years.');
+    if (!plantAge || isNaN(plantAge) || parseFloat(plantAge) < 0) {
+      Alert.alert('Invalid Age', 'Please enter a valid plant age in years (0 or greater).');
+      return;
+    }
+
+    const age = parseFloat(plantAge);
+    if (age > 50) {
+      Alert.alert('Invalid Age', 'Plant age must be 50 years or less.');
       return;
     }
 
     setIsAnalyzing(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      const prediction = await predictDeficiency(selectedImage.uri, age);
       
-      const age = parseFloat(plantAge);
-      const mockResults = [
-        {
-          stage: age < 1 ? 'Seedling' : age < 3 ? 'Young Plant' : age < 7 ? 'Mature Plant' : 'Old Plant',
-          npkRatio: age < 1 ? '20-20-20' : age < 3 ? '15-15-15' : age < 7 ? '10-10-10' : '8-8-8',
-          primaryNeeds: age < 1 ? ['High Nitrogen for Growth', 'Balanced Nutrients'] : 
-                       age < 3 ? ['Moderate Nutrition', 'Root Development'] :
-                       age < 7 ? ['Fruit Production Support', 'Potassium Rich'] :
-                       ['Maintenance Feeding', 'Low Nutrients'],
-          soilCondition: 'Good drainage detected',
-          deficiencies: age < 1 ? [] : ['Slight nitrogen deficiency', 'Adequate phosphorus'],
-          recommendations: [
-            {
-              fertilizer: age < 1 ? 'Organic Compost + NPK 20-20-20' : 
-                         age < 3 ? 'NPK 15-15-15 + Organic Matter' :
-                         age < 7 ? 'NPK 10-10-10 + Potash' :
-                         'NPK 8-8-8 + Compost',
-              quantity: age < 1 ? '50g per plant monthly' :
-                       age < 3 ? '100g per plant monthly' :
-                       age < 7 ? '150g per plant monthly' :
-                       '100g per plant monthly',
-              frequency: 'Monthly during growing season',
-              method: 'Apply around root zone, 6 inches from stem'
-            },
-            {
-              fertilizer: 'Organic Compost',
-              quantity: age < 1 ? '500g per plant' :
-                       age < 3 ? '1kg per plant' :
-                       age < 7 ? '2kg per plant' :
-                       '1.5kg per plant',
-              frequency: 'Every 3 months',
-              method: 'Mix with top soil around plant base'
-            },
-            {
-              fertilizer: 'Liquid Fertilizer',
-              quantity: '10ml per liter of water',
-              frequency: 'Bi-weekly foliar spray',
-              method: 'Spray on leaves early morning or evening'
-            }
-          ],
-          additionalTips: [
-            'Water thoroughly after fertilizer application',
-            'Test soil pH regularly (ideal: 5.5-7.0)',
-            'Add organic matter to improve soil structure',
-            'Monitor plant response and adjust accordingly'
-          ],
-          seasonalAdvice: {
-            rainy: 'Reduce fertilizer frequency, focus on drainage',
-            dry: 'Increase watering with diluted liquid fertilizer',
-            flowering: 'Boost potassium and phosphorus',
-            fruiting: 'Maintain balanced nutrition with extra potassium'
-          }
-        }
-      ];
-      
-      setAnalysisResult(mockResults[0]);
+      if (prediction.status === 'success' && prediction.data) {
+        const result = {
+          predicted_class: prediction.data.predicted_class,
+          confidence: prediction.data.confidence,
+          confidence_percentage: prediction.data.confidence_percentage,
+          fertilizers: prediction.data.fertilizers || [],
+          recommendation_count: prediction.data.recommendation_count || 0,
+          message: prediction.data.message || null,
+          age: age,
+          stage: getPlantStage(age)
+        };
+        
+        setAnalysisResult(result);
+      } else {
+        throw new Error('Invalid response format');
+      }
       
     } catch (error) {
-      Alert.alert('Error', 'Failed to analyze requirements. Please try again.');
+      let errorMessage = 'Failed to analyze deficiency. Please try again.';
+      
+      if (error.response) {
+        const responseData = error.response.data;
+        errorMessage = responseData.error || responseData.message || errorMessage;
+      } else if (error.request) {
+        errorMessage = 'Network error. Please check your connection and ensure the server is running.';
+      } else if (error.code === 'ECONNABORTED') {
+        errorMessage = 'Request timeout. The server may be busy.';
+      }
+      
+      Alert.alert('Analysis Error', errorMessage);
     } finally {
       setIsAnalyzing(false);
     }
+  };
+
+  // Helper functions
+  const getPlantStage = (age) => {
+    if (age < 1) return 'Seedling';
+    if (age < 3) return 'Young Plant';
+    if (age < 7) return 'Mature Plant';
+    return 'Established Plant';
+  };
+
+  const getDeficiencyColor = (deficiency) => {
+    const colors = {
+      'Heathly': '#28a745',
+      'Calcium': '#dc3545',
+      'Potasium': '#ffc107',
+      'Magnesium': '#17a2b8'
+    };
+    return colors[deficiency] || '#6c757d';
+  };
+
+  const getDeficiencyDescription = (deficiency) => {
+    const descriptions = {
+      'Heathly': 'Your plant appears healthy with no nutrient deficiencies detected.',
+      'Calcium': 'Calcium deficiency can cause blossom end rot and poor fruit development.',
+      'Potasium': 'Potassium deficiency affects fruit quality and plant disease resistance.',
+      'Magnesium': 'Magnesium deficiency causes yellowing between leaf veins (chlorosis).'
+    };
+    return descriptions[deficiency] || 'Nutrient deficiency detected.';
   };
 
   const clearData = () => {
     setSelectedImage(null);
     setPlantAge('');
     setAnalysisResult(null);
-  };
-
-  const getStageColor = (stage) => {
-    switch (stage.toLowerCase()) {
-      case 'seedling': return '#28a745';
-      case 'young plant': return '#17a2b8';
-      case 'mature plant': return '#ffc107';
-      case 'old plant': return '#6c757d';
-      default: return '#28a745';
-    }
   };
 
   return (
@@ -261,7 +416,7 @@ export default function FertilizerGuide({ navigation }) {
               <Text style={styles.ageUnit}>years</Text>
             </View>
             <Text style={styles.inputHint}>
-              Enter the approximate age of your pepper plant from planting
+              Enter the approximate age of your pepper plant (0-50 years)
             </Text>
           </View>
         </View>
@@ -278,10 +433,10 @@ export default function FertilizerGuide({ navigation }) {
               {isAnalyzing ? (
                 <View style={styles.loadingContainer}>
                   <ActivityIndicator size="small" color="#ffffff" />
-                  <Text style={styles.loadingText}>Analyzing...</Text>
+                  <Text style={styles.loadingText}>Analyzing Deficiencies...</Text>
                 </View>
               ) : (
-                <Text style={styles.analyzeButtonText}>🌱 Get Fertilizer Advice</Text>
+                <Text style={styles.analyzeButtonText}>🌱 Analyze Nutrient Needs</Text>
               )}
             </TouchableOpacity>
           </View>
@@ -290,66 +445,90 @@ export default function FertilizerGuide({ navigation }) {
         {/* Analysis Results */}
         {analysisResult && (
           <View style={styles.resultsSection}>
-            <Text style={styles.sectionTitle}>Fertilizer Recommendations</Text>
+            <Text style={styles.sectionTitle}>Analysis Results</Text>
             
-            {/* Plant Stage Card */}
-            <View style={styles.stageCard}>
-              <View style={styles.stageHeader}>
-                <Text style={styles.stageTitle}>Plant Stage</Text>
-                <View style={[styles.stageBadge, { backgroundColor: getStageColor(analysisResult.stage) }]}>
-                  <Text style={styles.stageBadgeText}>{analysisResult.stage}</Text>
+            {/* Deficiency Detection Card */}
+            <View style={styles.deficiencyCard}>
+              <View style={styles.deficiencyHeader}>
+                <View style={styles.deficiencyInfo}>
+                  <Text style={styles.deficiencyName}>{analysisResult.predicted_class}</Text>
+                  <View style={[
+                    styles.deficiencyBadge, 
+                    { backgroundColor: getDeficiencyColor(analysisResult.predicted_class) }
+                  ]}>
+                    <Text style={styles.deficiencyBadgeText}>
+                      {analysisResult.predicted_class === 'Heathly' ? 'Healthy' : 'Deficient'}
+                    </Text>
+                  </View>
                 </View>
+                <Text style={styles.confidence}>{analysisResult.confidence_percentage}%</Text>
               </View>
-              <Text style={styles.npkRatio}>Recommended NPK: {analysisResult.npkRatio}</Text>
-              <Text style={styles.soilCondition}>{analysisResult.soilCondition}</Text>
-            </View>
-
-            {/* Primary Needs */}
-            <View style={styles.needsCard}>
-              <Text style={styles.cardTitle}>🎯 Primary Nutritional Needs</Text>
-              {analysisResult.primaryNeeds.map((need, index) => (
-                <View key={index} style={styles.needItem}>
-                  <Text style={styles.needBullet}>•</Text>
-                  <Text style={styles.needText}>{need}</Text>
-                </View>
-              ))}
+              
+              <View style={styles.confidenceBar}>
+                <View 
+                  style={[
+                    styles.confidenceFill, 
+                    { 
+                      width: `${analysisResult.confidence_percentage}%`,
+                      backgroundColor: getDeficiencyColor(analysisResult.predicted_class)
+                    }
+                  ]} 
+                />
+              </View>
+              
+              <View style={styles.plantStageInfo}>
+                <Text style={styles.plantStageLabel}>Plant Stage:</Text>
+                <Text style={styles.plantStageValue}>{analysisResult.stage}</Text>
+                <Text style={styles.plantAgeValue}>({analysisResult.age} years old)</Text>
+              </View>
+              
+              <Text style={styles.deficiencyDescription}>
+                {getDeficiencyDescription(analysisResult.predicted_class)}
+              </Text>
             </View>
 
             {/* Fertilizer Recommendations */}
-            <View style={styles.recommendationsCard}>
-              <Text style={styles.cardTitle}>🌿 Fertilizer Schedule</Text>
-              {analysisResult.recommendations.map((rec, index) => (
-                <View key={index} style={styles.recommendationItem}>
-                  <View style={styles.fertilizerHeader}>
-                    <Text style={styles.fertilizerName}>{rec.fertilizer}</Text>
-                    <Text style={styles.fertilizerQuantity}>{rec.quantity}</Text>
+            {analysisResult.fertilizers && analysisResult.fertilizers.length > 0 ? (
+              <View style={styles.recommendationsCard}>
+                <Text style={styles.cardTitle}>🌿 Fertilizer Recommendations</Text>
+                <Text style={styles.recommendationCount}>
+                  {analysisResult.recommendation_count} recommendation(s) for your {analysisResult.stage.toLowerCase()}
+                </Text>
+                
+                {analysisResult.fertilizers.map((fertilizer, index) => (
+                  <View key={index} style={styles.fertilizerItem}>
+                    <View style={styles.fertilizerHeader}>
+                      <Text style={styles.fertilizerName}>{fertilizer.fertilizer}</Text>
+                      <View style={[
+                        styles.fertilizerTypeBadge,
+                        { backgroundColor: fertilizer.type === 'Chemical' ? '#dc3545' : '#28a745' }
+                      ]}>
+                        <Text style={styles.fertilizerTypeText}>{fertilizer.type}</Text>
+                      </View>
+                    </View>
+                    <Text style={styles.fertilizerDose}>
+                      <Text style={styles.doseLabel}>Dose: </Text>
+                      {fertilizer.dose}
+                    </Text>
                   </View>
-                  <Text style={styles.fertilizerDetails}>
-                    {rec.frequency} • {rec.method}
-                  </Text>
-                </View>
-              ))}
-            </View>
+                ))}
+              </View>
+            ) : analysisResult.message ? (
+              <View style={styles.healthyCard}>
+                <Text style={styles.cardTitle}>✅ Plant Status</Text>
+                <Text style={styles.healthyMessage}>{analysisResult.message}</Text>
+                <Text style={styles.healthyAdvice}>
+                  Continue with regular care and monitoring. Consider periodic soil testing to maintain optimal nutrient levels.
+                </Text>
+              </View>
+            ) : null}
 
-            {/* Seasonal Advice */}
-            <View style={styles.seasonalCard}>
-              <Text style={styles.cardTitle}>🌦️ Seasonal Care Tips</Text>
-              {Object.entries(analysisResult.seasonalAdvice).map(([season, advice]) => (
-                <View key={season} style={styles.seasonItem}>
-                  <Text style={styles.seasonName}>
-                    {season.charAt(0).toUpperCase() + season.slice(1)} Season:
-                  </Text>
-                  <Text style={styles.seasonAdvice}>{advice}</Text>
-                </View>
-              ))}
-            </View>
-
-            {/* Additional Tips */}
-            <View style={styles.tipsCard}>
-              <Text style={styles.cardTitle}>💡 Additional Tips</Text>
-              {analysisResult.additionalTips.map((tip, index) => (
+            {/* General Care Tips based on Age */}
+            <View style={styles.careTipsCard}>
+              <Text style={styles.cardTitle}>💡 Age-Based Care Tips</Text>
+              {getCareTipsForAge(analysisResult.age).map((tip, index) => (
                 <View key={index} style={styles.tipItem}>
-                  <Text style={styles.tipBullet}>✓</Text>
+                  <Text style={styles.tipBullet}>•</Text>
                   <Text style={styles.tipText}>{tip}</Text>
                 </View>
               ))}
@@ -359,34 +538,33 @@ export default function FertilizerGuide({ navigation }) {
 
         {/* Information Section */}
         <View style={styles.infoSection}>
-          <Text style={styles.sectionTitle}>Growing Guide</Text>
+          <Text style={styles.sectionTitle}>Nutrient Deficiency Guide</Text>
           
           <View style={styles.guideCard}>
-            <Text style={styles.guideTitle}>🌱 Growth Stages</Text>
+            <Text style={styles.guideTitle}>🔍 Common Deficiencies</Text>
             <Text style={styles.guideText}>
-              <Text style={styles.stageName}>0-1 years:</Text> Seedling stage - High growth nutrients{'\n'}
-              <Text style={styles.stageName}>1-3 years:</Text> Young plant - Balanced nutrition{'\n'}
-              <Text style={styles.stageName}>3-7 years:</Text> Mature plant - Focus on fruit production{'\n'}
-              <Text style={styles.stageName}>7+ years:</Text> Established plant - Maintenance feeding
+              <Text style={styles.deficiencyType}>Calcium:</Text> Causes blossom end rot, stunted growth{'\n'}
+              <Text style={styles.deficiencyType}>Potassium:</Text> Yellow leaf edges, weak stems{'\n'}
+              <Text style={styles.deficiencyType}>Magnesium:</Text> Yellowing between leaf veins{'\n'}
             </Text>
           </View>
 
           <View style={styles.guideCard}>
             <Text style={styles.guideTitle}>📏 Application Guidelines</Text>
             <Text style={styles.guideText}>
-              • Apply fertilizer when soil is moist{'\n'}
-              • Keep fertilizer 6 inches away from plant stem{'\n'}
+              • Apply fertilizer to moist soil{'\n'}
+              • Keep 6 inches away from plant stem{'\n'}
               • Water thoroughly after application{'\n'}
-              • Avoid fertilizing during extreme weather{'\n'}
-              • Monitor plant response and adjust as needed
+              • Monitor plant response weekly{'\n'}
+              • Adjust based on weather conditions
             </Text>
           </View>
 
           <View style={styles.warningCard}>
             <Text style={styles.warningTitle}>⚠️ Important Notes</Text>
             <Text style={styles.warningText}>
-              These recommendations are based on general guidelines. Soil testing and local 
-              agricultural expert consultation are recommended for optimal results. Over-fertilization 
+              AI predictions are estimates based on visual analysis. For accurate diagnosis, 
+              consider soil testing and consultation with agricultural experts. Over-fertilization 
               can harm plants and the environment.
             </Text>
           </View>
@@ -432,6 +610,39 @@ export default function FertilizerGuide({ navigation }) {
     </SafeAreaView>
   );
 }
+
+// Helper function to get care tips based on age
+const getCareTipsForAge = (age) => {
+  if (age < 1) {
+    return [
+      'Focus on establishing strong root system',
+      'Use diluted fertilizers to avoid burning young roots',
+      'Ensure consistent moisture but avoid waterlogging',
+      'Provide protection from extreme weather'
+    ];
+  } else if (age < 3) {
+    return [
+      'Increase fertilizer strength gradually',
+      'Focus on balanced NPK nutrition',
+      'Start training plant structure',
+      'Monitor for early pest and disease signs'
+    ];
+  } else if (age < 7) {
+    return [
+      'Optimize nutrition for fruit production',
+      'Increase potassium during flowering and fruiting',
+      'Maintain consistent watering schedule',
+      'Prune for better air circulation'
+    ];
+  } else {
+    return [
+      'Reduce fertilizer frequency for mature plants',
+      'Focus on soil health and organic matter',
+      'Monitor for age-related stress signs',
+      'Consider rejuvenation pruning if needed'
+    ];
+  }
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -522,7 +733,7 @@ const styles = StyleSheet.create({
     color: '#2d5c3e',
   },
   
-  // Upload Area (same as disease detection)
+  // Upload Area
   uploadArea: {
     backgroundColor: '#ffffff',
     borderRadius: 16,
@@ -690,8 +901,8 @@ const styles = StyleSheet.create({
     color: '#2d5c3e',
   },
   
-  // Stage Card
-  stageCard: {
+  // Deficiency Card
+  deficiencyCard: {
     backgroundColor: '#ffffff',
     borderRadius: 16,
     padding: 20,
@@ -703,51 +914,78 @@ const styles = StyleSheet.create({
     borderLeftWidth: 4,
     borderLeftColor: '#28a745',
   },
-  stageHeader: {
+  deficiencyHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 16,
   },
-  stageTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+  deficiencyInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  deficiencyName: {
+    fontSize: 20,
+    fontWeight: '700',
     color: '#2d5c3e',
+    marginRight: 12,
   },
-  stageBadge: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+  deficiencyBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
     borderRadius: 8,
   },
-  stageBadgeText: {
+  deficiencyBadgeText: {
     fontSize: 12,
     fontWeight: '600',
     color: '#ffffff',
   },
-  npkRatio: {
-    fontSize: 16,
+  confidence: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#2d5c3e',
+  },
+  confidenceBar: {
+    height: 8,
+    backgroundColor: '#e9ecef',
+    borderRadius: 4,
+    marginBottom: 16,
+    overflow: 'hidden',
+  },
+  confidenceFill: {
+    height: '100%',
+    borderRadius: 4,
+  },
+  plantStageInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  plantStageLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#6c757d',
+    marginRight: 8,
+  },
+  plantStageValue: {
+    fontSize: 14,
     fontWeight: '600',
     color: '#2d5c3e',
-    marginBottom: 8,
+    marginRight: 8,
   },
-  soilCondition: {
+  plantAgeValue: {
     fontSize: 14,
     color: '#6c757d',
+    fontStyle: 'italic',
+  },
+  deficiencyDescription: {
+    fontSize: 15,
+    color: '#6c757d',
+    lineHeight: 22,
   },
   
-  // Cards
-  needsCard: {
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 20,
-    shadowColor: '#2d5c3e',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 5,
-    borderLeftWidth: 4,
-    borderLeftColor: '#17a2b8',
-  },
+  // Recommendations Card
   recommendationsCard: {
     backgroundColor: '#ffffff',
     borderRadius: 16,
@@ -760,58 +998,19 @@ const styles = StyleSheet.create({
     borderLeftWidth: 4,
     borderLeftColor: '#ffc107',
   },
-  seasonalCard: {
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 20,
-    shadowColor: '#2d5c3e',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 5,
-    borderLeftWidth: 4,
-    borderLeftColor: '#fd7e14',
-  },
-  tipsCard: {
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 20,
-    shadowColor: '#2d5c3e',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 5,
-    borderLeftWidth: 4,
-    borderLeftColor: '#6f42c1',
-  },
   cardTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: '#2d5c3e',
-    marginBottom: 16,
-  },
-  
-  // Need Items
-  needItem: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
     marginBottom: 8,
   },
-  needBullet: {
-    fontSize: 16,
-    color: '#17a2b8',
-    marginRight: 8,
-    marginTop: 2,
-  },
-  needText: {
-    fontSize: 15,
+  recommendationCount: {
+    fontSize: 14,
     color: '#6c757d',
-    flex: 1,
-    lineHeight: 22,
+    marginBottom: 16,
+    fontStyle: 'italic',
   },
-  
-  // Recommendation Items
-  recommendationItem: {
+  fertilizerItem: {
     marginBottom: 16,
     paddingBottom: 16,
     borderBottomWidth: 1,
@@ -820,51 +1019,78 @@ const styles = StyleSheet.create({
   fertilizerHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     marginBottom: 8,
   },
   fertilizerName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#2d5c3e',
-    flex: 1,
-  },
-  fertilizerQuantity: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#ffc107',
-  },
-  fertilizerDetails: {
-    fontSize: 14,
-    color: '#6c757d',
-    lineHeight: 20,
-  },
-  
-  // Season Items
-  seasonItem: {
-    marginBottom: 12,
-  },
-  seasonName: {
     fontSize: 15,
     fontWeight: '600',
     color: '#2d5c3e',
-    marginBottom: 4,
+    flex: 1,
+    marginRight: 12,
+    lineHeight: 20,
   },
-  seasonAdvice: {
+  fertilizerTypeBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  fertilizerTypeText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#ffffff',
+  },
+  fertilizerDose: {
     fontSize: 14,
     color: '#6c757d',
     lineHeight: 20,
   },
+  doseLabel: {
+    fontWeight: '600',
+    color: '#2d5c3e',
+  },
   
-  // Tip Items
+  // Healthy Card
+  healthyCard: {
+    backgroundColor: '#d4edda',
+    borderRadius: 16,
+    padding: 20,
+    borderLeftWidth: 4,
+    borderLeftColor: '#28a745',
+  },
+  healthyMessage: {
+    fontSize: 16,
+    color: '#155724',
+    fontWeight: '600',
+    marginBottom: 12,
+  },
+  healthyAdvice: {
+    fontSize: 14,
+    color: '#155724',
+    lineHeight: 20,
+  },
+  
+  // Care Tips Card
+  careTipsCard: {
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: '#2d5c3e',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 5,
+    borderLeftWidth: 4,
+    borderLeftColor: '#17a2b8',
+  },
   tipItem: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     marginBottom: 8,
   },
   tipBullet: {
-    fontSize: 14,
-    color: '#28a745',
+    fontSize: 16,
+    color: '#17a2b8',
     marginRight: 8,
     marginTop: 2,
   },
@@ -904,7 +1130,7 @@ const styles = StyleSheet.create({
     color: '#6c757d',
     lineHeight: 20,
   },
-  stageName: {
+  deficiencyType: {
     fontWeight: '600',
     color: '#2d5c3e',
   },
@@ -927,7 +1153,7 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   
-  // Modal Styles (same as disease detection)
+  // Modal Styles
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',

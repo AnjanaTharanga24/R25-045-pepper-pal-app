@@ -15,7 +15,7 @@ from api.district_prediction.routes import district_bp
 from api.new_price_prediction.routes import new_price_bp
 from api.diseases_detection.routes import disease_bp
 from api.pepper_recommendation.routes import pepper_bp
-from api.deficiency_prediction.routes import deficiency_bp
+from api.deficiency_prediction.routes import deficiency_bp  # ADD THIS LINE
 
 def create_app():
     app = Flask(__name__)
@@ -29,7 +29,7 @@ def create_app():
     app.register_blueprint(new_price_bp)
     app.register_blueprint(disease_bp)
     app.register_blueprint(pepper_bp)
-    app.register_blueprint(deficiency_bp)
+    app.register_blueprint(deficiency_bp)  # ADD THIS LINE
     
     @app.route('/')
     def home():
@@ -64,7 +64,7 @@ def create_app():
                     "description": "Get pepper variety recommendations"
                 },
                 {
-                    "name": "deficiency-prediction",
+                    "name": "deficiency-prediction",  # ADD THIS SERVICE BLOCK
                     "endpoint": "/api/deficiency",
                     "description": "Detect nutrient deficiencies and get fertilizer recommendations"
                 }

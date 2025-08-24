@@ -8,10 +8,8 @@ from tensorflow.keras.models import load_model
 from sklearn.exceptions import InconsistentVersionWarning
 import warnings
 
-# Suppress sklearn version warning
 warnings.filterwarnings("ignore", category=InconsistentVersionWarning)
 
-# Initialize cached models
 loaded_models = {}
 latest_data = {}
 
@@ -24,14 +22,11 @@ def load_model_pickle(pepper_type):
         raise FileNotFoundError(f"No model directory found for {pepper_type}")
     
     try:
-        # Load components
         with open(model_dir / "model_components.pkl", "rb") as f:
             components = pickle.load(f)
         
-        # Load Keras model
         model = load_model(model_dir / "lstm_model.h5")
-        
-        # Load latest data
+    
         data_path = model_dir / "latest_data.csv"
         if data_path.exists():
             data = pd.read_csv(data_path)
@@ -60,7 +55,6 @@ def predict_price(pepper_type, target_date):
         model_info = get_model(pepper_type)
         target_date = pd.to_datetime(target_date)
         
-        # Get the latest data
         if pepper_type not in latest_data:
             raise ValueError(f"No data available for {pepper_type}")
             
@@ -70,16 +64,13 @@ def predict_price(pepper_type, target_date):
         if target_date <= last_date:
             raise ValueError(f"Date must be after {last_date.strftime('%Y-%m-%d')}")
         
-        # Calculate prediction steps
         steps = (target_date.year - last_date.year) * 12 + (target_date.month - last_date.month)
         
-        # Prepare data for prediction
         scaler = model_info['scaler']
         seq_length = model_info['params']['seq_length']
         scaled_data = scaler.transform(type_data[['National_Price']].values)
         last_sequence = scaled_data[-seq_length:].reshape(1, seq_length, 1)
         
-        # Make prediction
         current_sequence = last_sequence.copy()
         for _ in range(steps):
             next_pred = model_info['model'].predict(current_sequence, verbose=0)

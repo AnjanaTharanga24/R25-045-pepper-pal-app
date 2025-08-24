@@ -9,16 +9,13 @@ class PricePredictionService:
     
     def validate_and_predict(self, input_data):
         """Validate input and make prediction"""
-        # Validate input
         errors = self.schema.validate(input_data)
         if errors:
             raise ValueError(errors)
         
-        # Prepare input data
         processed_data = self._preprocess_input(input_data)
         input_df = pd.DataFrame([processed_data])[self.model.columns_order]
         
-        # Make prediction
         return float(self.model.model.predict(input_df)[0])
     
     def _preprocess_input(self, input_data):

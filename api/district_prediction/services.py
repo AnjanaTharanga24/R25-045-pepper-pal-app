@@ -8,10 +8,8 @@ from tensorflow.keras.models import load_model
 from sklearn.exceptions import InconsistentVersionWarning
 import warnings
 
-# Suppress sklearn version warning
 warnings.filterwarnings("ignore", category=InconsistentVersionWarning)
 
-# Initialize cached models and data
 loaded_district_models = {}
 district_latest_data = {}
 
@@ -31,14 +29,11 @@ def load_district_model(district):
         raise FileNotFoundError(f"No model directory found for {district}")
     
     try:
-        # Load components
         with open(model_dir / "model_components.pkl", "rb") as f:
             components = pickle.load(f)
         
-        # Load Keras model
         model = load_model(model_dir / "lstm_model.h5")
         
-        # Load latest data
         data_path = model_dir / "latest_data.csv"
         if data_path.exists():
             data = pd.read_csv(data_path)
@@ -61,7 +56,6 @@ def predict_district_price(district, target_date):
         model_info = get_district_model(district)
         target_date = pd.to_datetime(target_date)
         
-        # Get the latest data
         if district not in district_latest_data:
             raise ValueError(f"No data available for {district}")
             
@@ -71,16 +65,13 @@ def predict_district_price(district, target_date):
         if target_date <= last_date:
             raise ValueError(f"Date must be after {last_date.strftime('%Y-%m-%d')}")
         
-        # Calculate prediction steps
         steps = (target_date.year - last_date.year) * 12 + (target_date.month - last_date.month)
-        
-        # Prepare data for prediction
+
         scaler = model_info['scaler']
         seq_length = model_info['params']['seq_length']
         scaled_data = scaler.transform(type_data[['GR-1 - Price']].values)
         last_sequence = scaled_data[-seq_length:].reshape(1, seq_length, 1)
         
-        # Make prediction
         current_sequence = last_sequence.copy()
         for _ in range(steps):
             next_pred = model_info['model'].predict(current_sequence, verbose=0)
@@ -113,7 +104,6 @@ def get_available_districts():
 def get_district_history(district):
     """Get historical price data for a district"""
     if district not in district_latest_data:
-        # Try to load data if not already loaded
         try:
             current_dir = Path(__file__).parent
             data_path = current_dir / "district_models" / district / "latest_data.csv"

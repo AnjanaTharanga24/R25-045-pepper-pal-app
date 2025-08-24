@@ -38,11 +38,9 @@ def price_ui():
 @price_bp.route("/models", methods=["GET"])
 def available_models():
     """List available models"""
-    # Implement this endpoint
     pass
 
 @price_bp.route("/history/<pepper_type>", methods=["GET"])
 def get_history(pepper_type):
     """Get price history"""
-    # Implement this endpoint
     pass

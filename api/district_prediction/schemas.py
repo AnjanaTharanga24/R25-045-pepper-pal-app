@@ -2,7 +2,7 @@ from marshmallow import Schema, fields
 
 class DistrictPredictionRequestSchema(Schema):
     district = fields.Str(required=True)
-    target_date = fields.Str(required=True)  # Removed pepper_type
+    target_date = fields.Str(required=True)
 
 class DistrictPredictionResponseSchema(Schema):
     district = fields.Str()

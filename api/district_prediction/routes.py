@@ -3,7 +3,6 @@ from marshmallow import ValidationError
 from .services import predict_district_price
 from .schemas import DistrictPredictionRequestSchema, DistrictPredictionResponseSchema
 
-# Create the blueprint first
 district_bp = Blueprint('district', __name__, url_prefix='/district')
 
 @district_bp.route("/predict", methods=["POST"])

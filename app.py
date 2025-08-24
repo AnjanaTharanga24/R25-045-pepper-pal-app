@@ -1,11 +1,8 @@
-# Add this at the very top of your app.py file, before any other imports
 import os
 import warnings
 
-# Disable oneDNN for consistent numerical results
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
-# Suppress sklearn version warnings
 warnings.filterwarnings("ignore", category=UserWarning, module="sklearn")
 
 from flask import Flask
@@ -15,21 +12,20 @@ from api.district_prediction.routes import district_bp
 from api.new_price_prediction.routes import new_price_bp
 from api.diseases_detection.routes import disease_bp
 from api.pepper_recommendation.routes import pepper_bp
-from api.deficiency_prediction.routes import deficiency_bp  # ADD THIS LINE
+from api.deficiency_prediction.routes import deficiency_bp  
 
 def create_app():
     app = Flask(__name__)
     CORS(app)
     app.config['JSON_SORT_KEYS'] = False
-    app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB upload limit
+    app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
     
-    # Register blueprints
     app.register_blueprint(price_bp)
     app.register_blueprint(district_bp)
     app.register_blueprint(new_price_bp)
     app.register_blueprint(disease_bp)
     app.register_blueprint(pepper_bp)
-    app.register_blueprint(deficiency_bp)  # ADD THIS LINE
+    app.register_blueprint(deficiency_bp)
     
     @app.route('/')
     def home():
@@ -64,7 +60,7 @@ def create_app():
                     "description": "Get pepper variety recommendations"
                 },
                 {
-                    "name": "deficiency-prediction",  # ADD THIS SERVICE BLOCK
+                    "name": "deficiency-prediction", 
                     "endpoint": "/api/deficiency",
                     "description": "Detect nutrient deficiencies and get fertilizer recommendations"
                 }

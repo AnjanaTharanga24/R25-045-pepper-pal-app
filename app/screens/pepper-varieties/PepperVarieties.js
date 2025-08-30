@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   View, 
   Text, 
@@ -15,7 +15,8 @@ import axios from 'axios';
 import { BASE_URL } from '../../config/config';
 
 export default function PepperVarietiesScreen({ navigation }) {
-  // Input states
+  const [district, setDistrict] = useState('');
+  const [dsDivision, setDsDivision] = useState('');
   const [elevation, setElevation] = useState('');
   const [annualRainfall, setAnnualRainfall] = useState('');
   const [avgTemperature, setAvgTemperature] = useState('');
@@ -24,34 +25,116 @@ export default function PepperVarietiesScreen({ navigation }) {
   const [soilQuality, setSoilQuality] = useState('');
   const [drainage, setDrainage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [dsDivisions, setDsDivisions] = useState([]);
+  const [districts, setDistricts] = useState([]);
+
+  const districtData = {
+    Ampara: ["Addalachchenai", "Akkarajpattu", "Alayadiyembu", "Ampara", "Damana", "Dehiattakandiya", "Irakkamam", "Kalmunai", "Karaitivu", "Lahugala", "Mahaoya", "Navithanveli", "Nintavur", "Padiyathalawa", "Sainthamaruthu", "Sammanthurai", "Samanthurai", "Thirukkovli", "Uhana"],
+    Anuradhapura: ["Galenbindunuwewa", "Gainewa", "Horovprothana", "Ipalogama", "Kahatagasdigiliya", "Kebithigollewa", "Kekirawa", "Mahavilachchiya", "Medawachchiya", "Mihintale", "Nachchaduwa", "Nuwaragam Palatha C", "Nuwaragam Palatha Ei", "Palagala", "Rambewa", "Rathmalgahawewa", "Thalawa", "Thambuttegama", "Yaya Palatha"],
+    Badulla: ["Badulla", "Bandarawela", "Ella", "Hali-Ela", "Haputale", "Kandaketiya", "Lunugala", "Mahiyanganaya", "Meegahakivula", "Passara", "Rideemaliyadda", "Soranatota", "Uva Paranagama", "Weilmada"],
+    Batticaloa: ["Batticaloa", "Eravur Pattu", "Kattankudy", "Koralai Pattu", "Koralai Pattu Central", "Koralai Pattu North", "Koralai Pattu South", "Koralai Pattu West", "Mammuai North", "Mammuai Pattu", "Mammuai South", "Mammuai South West", "Mammuai West", "Poratiwu Pattu"],
+    Colombo: ["Colombo", "Dehiwala", "Homagama", "Kaduwela", "Kesbewa", "Kolonnawa", "Maharagama", "Moratuwa", "Padukka", "Ratmalana", "Seethawaka", "Sri Jayawardenepura K", "Thimbirigasyaya"],
+    Galle: ["Ambalangoda", "Baddegama", "Balapitiya", "Benthota", "Bope-Poddala", "Elpitiya", "Galle", "Gonapinuwala", "Habaraduwa", "Hikkaduwa", "Imaduwa", "Karandeniya", "Nagoda", "Neluwa", "Thawalama", "Welivitiya-Divithura", "Yakkalamulla"],
+    Gampaha: ["Attanagalla", "Biyagama", "Divulapitiya", "Dompe", "Gampaha", "Ja-Ela", "Katana", "Kelaniya", "Mahara", "Minuwangoda", "Mirigama", "Negombo", "Wattala"],
+    Hambantota: ["Ambalantota", "Angunukolapelessa", "Bellatta", "Hambantota", "Katuwana", "Lunugamvehera", "Okewela", "Sooriyawewa", "Tangalle", "Thissamaharama", "Walasmulla", "Weeraketiya"],
+    Jaffna: ["Chavakachcheri", "Delft", "Islands North", "Islands South", "Jaffna", "Karainagar", "Karaveddy", "Kayts", "Kopay", "Nallur", "Point Pedro", "Sandilipay", "Tellippalai", "Uduvil", "Valikamam East", "Valikamam North", "Valikamam South", "Valikamam South Wes", "Valikamam West"],
+    Kalutara: ["Agalawatta", "Bandaragama", "Beruwala", "Bulathsinhala", "Dodangoda", "Horana", "Ingiriya", "Kalutara", "Matugama", "Millaniya", "Panadura", "Walallavita"],
+    Kandy: ["Akurana", "Dethota", "Doluwa", "Gangawata Korale", "Harispattuwa", "Kundasale", "Medadumbara", "Minipe", "Pathahewaheta", "Pasbage Korale", "Thumpane", "Udapalatha", "Udunuwara", "Udadumbara", "Yatinuwara"],
+    Kegalle: ["Aranayaka", "Bulathkohuptiya", "Daraniyagala", "Dehiowita", "Deraniyagala", "Galigamuwa", "Kegalle", "Mawanella", "Rambukkana", "Ruwanwella", "Warakapola", "Yatiyantota"],
+    Kilinochchi: ["Karachchi", "Kandavalai", "Pachchilaipalli", "Poonakary"],
+    Kurunegala: ["Alawwa", "Ambampola", "Bamunakotuwa", "Ehetuwewa", "Galgamuwa", "Ganewatta", "Giribawa", "Ibbagamuwa", "Kobeigane", "Kuliyapitiya East", "Kuliyapitiya West", "Kurunegala", "Mahawa", "Mallowapitiya", "Maspotha", "Nikaweratiya", "Panduwasnuwara", "Pannala", "Polgahawela", "Polpithigama", "Rasnayakapura", "Rideegama", "Udubaddawa", "Wariyapola", "Weerambugedara"],
+    Mannar: ["Madhu", "Mannar", "Manthai West", "Musali", "Nanaddan"],
+    Matale: ["Dambulla", "Galewela", "Laggala-Pallegama", "Matale", "Naula", "Rattota", "Ukuwela", "Wilgamuwa", "Yatawatta"],
+    Matara: ["Akurassa", "Athuraliya", "Devinuwara", "Dickwella", "Hakmana", "Kamburupitiya", "Kirinda Puhulwella", "Kotapola", "Malimbada", "Matara", "Mulatiyana", "Pasgoda", "Pitabeddara", "Thihagoda", "Weligama", "Welipitiya"],
+    Monaragala: ["Badalkumbura", "Bibile", "Buttala", "Kataragama", "Madulla", "Monaragala", "Sevanagala", "Siyambalanduwa", "Thanamalvila", "Wellawaya"],
+    Mullaitivu: ["Manthai East", "Maritimepattu", "Oddusuddan", "Puthukkudiyiruppu", "Thunukkai", "Weiloya"],
+    NuwaraEliya: ["Ambagamuwa", "Hanguranketha", "Kothmale", "Nuwara Eliya", "Walapane"],
+    Polonnaruwa: ["Dimbulagala", "Elahera", "Hingurakgoda", "Lankapura", "Medirigiriya", "Thamankaduwa", "Welikanda"],
+    Puttalam: ["Anamaduwa", "Arachchikattuwa", "Chilaw", "Dankotuwa", "Kalpitiya", "Karuwalagaswewa", "Mahakumbukkadawai", "Mundalama", "Nattandiya", "Nawagaththegama", "Pallama", "Puttalam", "Vanathavilluwa", "Wennappuwa"],
+    Ratnapura: ["Ayagama", "Balangoda", "Eheliyagoda", "Elapatha", "Embilipitiya", "Godakawela", "Imbulpe", "Kalawana", "Kirielta", "Kolonna", "Kuruwita", "Niwithigala", "Opanayaka", "Pelmadulla", "Ratnapura", "Weligepola"],
+    Trincomalee: ["Gomarankadawala", "Kantalai", "Kinniya", "Kuchehaveli", "Morawewa", "Muttur", "Padavi Siripura", "Seruvila", "Thambalagamuwa", "Trincomalee", "Verugal"],
+    Vavuniya: ["Vavuniya", "Vavuniya North", "Vavuniya South", "Venkalacheddikulam"]
+  };
 
   const soilTextureOptions = [
     { label: 'Select Soil Texture', value: '' },
     { label: 'Sandy clay loam', value: 'Sandy clay loam' },
-    { label: 'Red loam', value: 'Red loam' },
     { label: 'Lateritic soils', value: 'Lateritic soils' },
-    { label: 'Loamy soil', value: 'Loamy soil' },
-    { label: 'Clay loam', value: 'Clay loam' },
-    { label: 'Sandy loam', value: 'Sandy loam' }
+    { label: 'Red loam', value: 'Red loam' },
+    { label: 'Loamy', value: 'Loamy' }
   ];
 
-  const soilQualityOptions = [
-    { label: 'Select Soil Quality', value: '' },
-    { label: 'Organic-rich', value: 'Organic-rich' },
-    { label: 'Moderate organic', value: 'Moderate organic' },
-    { label: 'Low organic', value: 'Low organic' },
-    { label: 'High fertility', value: 'High fertility' },
-    { label: 'Medium fertility', value: 'Medium fertility' },
-    { label: 'Low fertility', value: 'Low fertility' }
-  ];
+  useEffect(() => {
+    const districtsList = Object.keys(districtData).sort();
+    setDistricts(districtsList);
+  }, []);
 
-  const drainageOptions = [
-    { label: 'Select Drainage', value: '' },
-    { label: 'Well drained', value: 'Well drained' },
-    { label: 'Moderate drainage', value: 'Moderate drainage' },
-    { label: 'Poor drainage', value: 'Poor drainage' },
-    { label: 'Excellent drainage', value: 'Excellent drainage' }
-  ];
+  useEffect(() => {
+    if (district) {
+      const divisions = districtData[district] || [];
+      setDsDivisions(divisions);
+      setDsDivision('');
+    } else {
+      setDsDivisions([]);
+      setDsDivision('');
+    }
+  }, [district]);
+
+  useEffect(() => {
+    if (soilTexture === 'Sandy clay loam') {
+      setSoilQuality('Organic-rich');
+      setDrainage('Moderate drainage');
+    } else if (soilTexture === 'Lateritic soils') {
+      setSoilQuality('Sandy loam');
+      setDrainage('Moist');
+    } else if (soilTexture === 'Red loam') {
+      setSoilQuality('Slightly acidic');
+      setDrainage('Good drainage');
+    } else if (soilTexture === 'Loamy') {
+      setSoilQuality('Well-drained');
+      setDrainage('Rich in organic matter');
+    } else {
+      setSoilQuality('');
+      setDrainage('');
+    }
+  }, [soilTexture]);
+
+  const fetchClimateData = async () => {
+    if (!district || !dsDivision) {
+      Alert.alert('Missing Information', 'Please select both district and DS division');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const response = await axios.post(`${BASE_URL}/api/pepper/get-climate-data`, {
+        district: district,
+        ds_division: dsDivision
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        timeout: 10000,
+      });
+
+      if (response.data.success && response.data.climate_data) {
+        const climateData = response.data.climate_data;
+        setElevation(climateData['Elevation (m)']?.toString() || '');
+        setAnnualRainfall(climateData['Annual Rainfall (mm)']?.toString() || '');
+        setAvgTemperature(climateData['Avg Temperature (°C)']?.toString() || '');
+        setHumidity(climateData['Humidity (%)']?.toString() || '');
+        
+        Alert.alert('Success', 'Climate data loaded successfully!');
+      } else {
+        Alert.alert('Error', response.data.error || 'Failed to fetch climate data');
+      }
+    } catch (error) {
+      console.error('Climate data fetch error:', error);
+      Alert.alert('Error', 'Failed to fetch climate data. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const validateInputs = () => {
     const elevationNum = parseFloat(elevation);
@@ -84,39 +167,25 @@ export default function PepperVarietiesScreen({ navigation }) {
       return false;
     }
 
-    if (!soilQuality) {
-      Alert.alert('Missing Information', 'Please select soil quality');
-      return false;
-    }
-
-    if (!drainage) {
-      Alert.alert('Missing Information', 'Please select drainage condition');
-      return false;
-    }
-
     return true;
   };
 
-  // API call function
   const getPepperRecommendation = async (requestData) => {
     try {
       const response = await axios.post(`${BASE_URL}/api/pepper/suggest-pepper`, requestData, {
         headers: {
           'Content-Type': 'application/json',
         },
-        timeout: 10000, // 10 seconds timeout
+        timeout: 10000,
       });
       return response.data;
     } catch (error) {
       console.error('API Error:', error);
       if (error.response) {
-        // Server responded with error status
         throw new Error(error.response.data.error || 'Server error occurred');
       } else if (error.request) {
-        // Request was made but no response received
         throw new Error('Network error. Please check your connection.');
       } else {
-        // Something else happened
         throw new Error('An unexpected error occurred');
       }
     }
@@ -127,7 +196,6 @@ export default function PepperVarietiesScreen({ navigation }) {
     
     setIsLoading(true);
     try {
-      // Prepare payload for API
       const payload = {
         elevation: parseFloat(elevation),
         annual_rainfall: parseFloat(annualRainfall),
@@ -138,86 +206,22 @@ export default function PepperVarietiesScreen({ navigation }) {
         drainage: drainage
       };
       
-      console.log('Pepper varieties recommendation payload:', payload);
-      
-      // Call the API
       const result = await getPepperRecommendation(payload);
       
       if (result.success) {
-        // Show successful result
         Alert.alert(
           'Pepper Variety Recommendation',
           `Recommended Variety: ${result.predicted_variety}\n\nBased on your conditions:\n• Elevation: ${payload.elevation}m\n• Rainfall: ${payload.annual_rainfall}mm\n• Temperature: ${payload.avg_temperature}°C\n• Humidity: ${payload.humidity}%\n• Soil: ${payload.soil_texture}\n• Quality: ${payload.soil_quality}\n• Drainage: ${payload.drainage}`,
-          [
-            { text: 'OK' }
-          ]
+          [{ text: 'OK' }]
         );
       } else {
         Alert.alert('Error', result.error || 'Failed to get recommendation');
       }
     } catch (error) {
-      Alert.alert(
-        'Error', 
-        error.message || 'Failed to get recommendations. Please try again.',
-        [{ text: 'OK' }]
-      );
+      Alert.alert('Error', error.message || 'Failed to get recommendations. Please try again.');
     } finally {
       setIsLoading(false);
     }
-  };
-
-  // Show detailed information about the recommended variety
-  const showDetailedInfo = (variety, conditions) => {
-    let detailedInfo = getDetailedRecommendation(variety, conditions);
-    
-    Alert.alert(
-      `About ${variety}`,
-      detailedInfo,
-      [{ text: 'OK' }]
-    );
-  };
-
-  const getDetailedRecommendation = (variety, data) => {
-    const { annual_rainfall: rain, humidity: hum, avg_temperature: temp, elevation: elev } = data;
-    
-    let info = `🌶️ ${variety}\n\n`;
-    
-    // Add variety-specific information based on the prediction
-    if (variety.toLowerCase().includes('highland')) {
-      info += `Characteristics:\n• Best suited for high elevation areas\n• Cold tolerant variety\n• Premium quality pepper\n• Slower growth but higher value\n\n`;
-      info += `Growing Tips:\n• Provide wind protection\n• Use mulching for temperature control\n• Monitor for altitude-related stress\n• Harvest when fully mature for best quality`;
-    } else if (variety.toLowerCase().includes('wet climate')) {
-      info += `Characteristics:\n• Thrives in high rainfall conditions\n• High humidity tolerance\n• Good disease resistance\n• Suitable for monsoon cultivation\n\n`;
-      info += `Growing Tips:\n• Ensure excellent drainage\n• Monitor for fungal diseases\n• Regular pruning for air circulation\n• Use raised beds if necessary`;
-    } else {
-      info += `Characteristics:\n• Standard variety for general cultivation\n• Good adaptability\n• Moderate yield potential\n• Suitable for diverse conditions\n\n`;
-      info += `Growing Tips:\n• Regular watering schedule\n• Balanced fertilization\n• Monitor soil pH (6.0-7.0)\n• Proper spacing for growth`;
-    }
-    
-    // Add condition-specific advice
-    info += `\n\n📊 Your Conditions Analysis:\n`;
-    
-    if (elev > 1000) {
-      info += `• High elevation: Consider wind protection and temperature management\n`;
-    }
-    
-    if (rain > 2500) {
-      info += `• High rainfall: Focus on drainage and disease prevention\n`;
-    } else if (rain < 1200) {
-      info += `• Low rainfall: Implement irrigation and water conservation\n`;
-    }
-    
-    if (hum > 85) {
-      info += `• High humidity: Ensure good air circulation\n`;
-    }
-    
-    if (temp > 30) {
-      info += `• High temperature: Provide shade during hottest hours\n`;
-    } else if (temp < 20) {
-      info += `• Cool temperature: Consider season timing and protection\n`;
-    }
-    
-    return info;
   };
 
   const getEnvironmentalStatus = () => {
@@ -228,22 +232,18 @@ export default function PepperVarietiesScreen({ navigation }) {
 
     let status = [];
     
-    // Elevation status
     if (elevationNum < 300) status.push({ text: 'Low Elevation', color: '#28a745', icon: '🏞️' });
     else if (elevationNum <= 800) status.push({ text: 'Medium Elevation', color: '#ffc107', icon: '⛰️' });
     else status.push({ text: 'High Elevation', color: '#17a2b8', icon: '🏔️' });
     
-    // Rainfall status
     if (rainfallNum < 1200) status.push({ text: 'Low Rainfall', color: '#dc3545', icon: '🌵' });
     else if (rainfallNum <= 2500) status.push({ text: 'Good Rainfall', color: '#28a745', icon: '🌧️' });
     else status.push({ text: 'High Rainfall', color: '#ffc107', icon: '⛈️' });
     
-    // Humidity status
     if (humidityNum < 60) status.push({ text: 'Low Humidity', color: '#dc3545', icon: '🏜️' });
     else if (humidityNum <= 85) status.push({ text: 'Good Humidity', color: '#28a745', icon: '💧' });
     else status.push({ text: 'High Humidity', color: '#ffc107', icon: '🌫️' });
     
-    // Temperature status
     if (temperatureNum < 18) status.push({ text: 'Cool', color: '#17a2b8', icon: '❄️' });
     else if (temperatureNum <= 32) status.push({ text: 'Optimal Temp', color: '#28a745', icon: '🌡️' });
     else status.push({ text: 'Hot', color: '#dc3545', icon: '🔥' });
@@ -255,7 +255,6 @@ export default function PepperVarietiesScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity 
           style={styles.backButton}
@@ -268,7 +267,6 @@ export default function PepperVarietiesScreen({ navigation }) {
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Title Section */}
         <View style={styles.titleSection}>
           <Text style={styles.title}>Pepper Variety Recommendations</Text>
           <Text style={styles.subtitle}>
@@ -276,13 +274,67 @@ export default function PepperVarietiesScreen({ navigation }) {
           </Text>
         </View>
 
-        {/* Input Form */}
         <View style={styles.formContainer}>
-          {/* Environmental Inputs */}
           <View style={styles.environmentalSection}>
+            <Text style={styles.sectionTitle}>Location Information</Text>
+            
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>District</Text>
+              <View style={styles.pickerContainer}>
+                <Picker
+                  selectedValue={district}
+                  onValueChange={setDistrict}
+                  style={styles.picker}
+                  enabled={!isLoading}
+                  dropdownIconColor="#2d5c3e"
+                >
+                  <Picker.Item label="Select District" value="" style={styles.placeholderItem} />
+                  {districts.map((districtName) => (
+                    <Picker.Item 
+                      key={districtName} 
+                      label={districtName} 
+                      value={districtName}
+                      style={styles.pickerItem}
+                    />
+                  ))}
+                </Picker>
+              </View>
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>DS Division</Text>
+              <View style={styles.pickerContainer}>
+                <Picker
+                  selectedValue={dsDivision}
+                  onValueChange={setDsDivision}
+                  style={styles.picker}
+                  enabled={!isLoading && district !== ''}
+                  dropdownIconColor="#2d5c3e"
+                >
+                  <Picker.Item label="Select DS Division" value="" style={styles.placeholderItem} />
+                  {dsDivisions.map((division) => (
+                    <Picker.Item 
+                      key={division} 
+                      label={division} 
+                      value={division}
+                      style={styles.pickerItem}
+                    />
+                  ))}
+                </Picker>
+              </View>
+            </View>
+
+            <TouchableOpacity
+              style={[styles.fetchButton, (!district || !dsDivision || isLoading) && styles.disabledButton]}
+              onPress={fetchClimateData}
+              disabled={!district || !dsDivision || isLoading}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.fetchButtonText}>Fetch Climate Data</Text>
+            </TouchableOpacity>
+
             <Text style={styles.sectionTitle}>Environmental Conditions</Text>
             
-            {/* Elevation Input */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Elevation (meters)</Text>
               <TextInput
@@ -297,7 +349,6 @@ export default function PepperVarietiesScreen({ navigation }) {
               <Text style={styles.inputHint}>Typical range: 0-2500m for pepper cultivation</Text>
             </View>
 
-            {/* Annual Rainfall Input */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Annual Rainfall (mm)</Text>
               <TextInput
@@ -312,7 +363,6 @@ export default function PepperVarietiesScreen({ navigation }) {
               <Text style={styles.inputHint}>Typical range: 1200-3000mm for pepper cultivation</Text>
             </View>
 
-            {/* Average Temperature Input */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Average Temperature (°C)</Text>
               <TextInput
@@ -327,7 +377,6 @@ export default function PepperVarietiesScreen({ navigation }) {
               <Text style={styles.inputHint}>Optimal range: 20-30°C for pepper cultivation</Text>
             </View>
 
-            {/* Humidity Input */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Humidity (%)</Text>
               <TextInput
@@ -342,7 +391,6 @@ export default function PepperVarietiesScreen({ navigation }) {
               <Text style={styles.inputHint}>Optimal range: 70-85% for pepper growth</Text>
             </View>
 
-            {/* Soil Texture Picker */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Soil Texture</Text>
               <View style={styles.pickerContainer}>
@@ -365,7 +413,6 @@ export default function PepperVarietiesScreen({ navigation }) {
               </View>
             </View>
 
-            {/* Soil Quality Picker */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Soil Quality</Text>
               <View style={styles.pickerContainer}>
@@ -373,22 +420,14 @@ export default function PepperVarietiesScreen({ navigation }) {
                   selectedValue={soilQuality}
                   onValueChange={setSoilQuality}
                   style={styles.picker}
-                  enabled={!isLoading}
+                  enabled={false}
                   dropdownIconColor="#2d5c3e"
                 >
-                  {soilQualityOptions.map((option) => (
-                    <Picker.Item 
-                      key={option.value} 
-                      label={option.label} 
-                      value={option.value}
-                      style={option.value === '' ? styles.placeholderItem : styles.pickerItem}
-                    />
-                  ))}
+                  <Picker.Item label={soilQuality || "Auto-selected based on soil texture"} value={soilQuality} style={styles.pickerItem} />
                 </Picker>
               </View>
             </View>
 
-            {/* Drainage Picker */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Drainage</Text>
               <View style={styles.pickerContainer}>
@@ -396,23 +435,15 @@ export default function PepperVarietiesScreen({ navigation }) {
                   selectedValue={drainage}
                   onValueChange={setDrainage}
                   style={styles.picker}
-                  enabled={!isLoading}
+                  enabled={false}
                   dropdownIconColor="#2d5c3e"
                 >
-                  {drainageOptions.map((option) => (
-                    <Picker.Item 
-                      key={option.value} 
-                      label={option.label} 
-                      value={option.value}
-                      style={option.value === '' ? styles.placeholderItem : styles.pickerItem}
-                    />
-                  ))}
+                  <Picker.Item label={drainage || "Auto-selected based on soil texture"} value={drainage} style={styles.pickerItem} />
                 </Picker>
               </View>
             </View>
           </View>
 
-          {/* Environmental Status Display */}
           {(elevation || annualRainfall || avgTemperature || humidity) && (
             <View style={styles.statusSection}>
               <Text style={styles.sectionTitle}>Current Conditions</Text>
@@ -427,7 +458,6 @@ export default function PepperVarietiesScreen({ navigation }) {
             </View>
           )}
 
-          {/* Get Recommendation Button */}
           <TouchableOpacity
             style={[styles.recommendButton, isLoading && styles.disabledButton]}
             onPress={onGetRecommendation}
@@ -452,11 +482,7 @@ export default function PepperVarietiesScreen({ navigation }) {
           </TouchableOpacity>
         </View>
 
-        {/* Information Section */}
         <View style={styles.infoSection}>
-
-     
-
           <View style={styles.infoCard}>
             <View style={styles.infoHeader}>
               <Text style={styles.infoIcon}>🤖</Text>
@@ -481,7 +507,6 @@ export default function PepperVarietiesScreen({ navigation }) {
             </Text>
           </View>
         </View>
-
       </ScrollView>
     </SafeAreaView>
   );
@@ -492,8 +517,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f0f9f0',
   },
-  
-  // Header
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -523,13 +546,9 @@ const styles = StyleSheet.create({
   placeholder: {
     width: 40,
   },
-  
-  // Content
   content: {
     flex: 1,
   },
-  
-  // Title Section
   titleSection: {
     paddingHorizontal: 20,
     paddingVertical: 24,
@@ -548,14 +567,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 24,
   },
-  
-  // Form Container
   formContainer: {
     paddingHorizontal: 20,
     gap: 20,
   },
-  
-  // Input Groups
   inputGroup: {
     marginBottom: 4,
   },
@@ -585,8 +600,6 @@ const styles = StyleSheet.create({
     marginTop: 6,
     fontStyle: 'italic',
   },
-  
-  // Picker
   pickerContainer: {
     backgroundColor: '#ffffff',
     borderRadius: 12,
@@ -611,8 +624,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#6c757d',
   },
-  
-  // Environmental Section
   environmentalSection: {
     marginTop: 16,
   },
@@ -622,8 +633,23 @@ const styles = StyleSheet.create({
     color: '#2d5c3e',
     marginBottom: 16,
   },
-  
-  // Status Section
+  fetchButton: {
+    backgroundColor: '#17a2b8',
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+    marginBottom: 20,
+    shadowColor: '#17a2b8',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 6,
+  },
+  fetchButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#ffffff',
+  },
   statusSection: {
     marginTop: 16,
   },
@@ -655,8 +681,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
   },
-  
-  // Recommend Button
   recommendButton: {
     backgroundColor: '#28a745',
     borderRadius: 12,
@@ -684,8 +708,6 @@ const styles = StyleSheet.create({
   buttonIcon: {
     fontSize: 18,
   },
-  
-  // Information Section
   infoSection: {
     paddingHorizontal: 20,
     paddingTop: 24,
@@ -718,36 +740,6 @@ const styles = StyleSheet.create({
     color: '#2d5c3e',
   },
   infoDescription: {
-    fontSize: 14,
-    color: '#6c757d',
-    lineHeight: 20,
-  },
-  
-  // Tips Section
-  tipsSection: {
-    paddingHorizontal: 20,
-    paddingTop: 24,
-    paddingBottom: 32,
-  },
-  tipCard: {
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    padding: 16,
-    borderLeftWidth: 3,
-    borderLeftColor: '#ffa500',
-    shadowColor: '#2d5c3e',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  tipTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#2d5c3e',
-    marginBottom: 8,
-  },
-  tipText: {
     fontSize: 14,
     color: '#6c757d',
     lineHeight: 20,

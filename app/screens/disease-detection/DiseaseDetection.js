@@ -509,13 +509,7 @@ export default function DiseaseDetection({ navigation }) {
                     <Text style={styles.diseaseIcon}>{analysisResult.icon}</Text>
                     <Text style={styles.diseaseName}>{analysisResult.disease}</Text>
                   </View>
-                  <View style={[
-                    styles.severityBadge, 
-                    { backgroundColor: getSeverityColor(analysisResult.severity) }
-                  ]}>
-                    <Text style={styles.severityIcon}>{getSeverityIcon(analysisResult.severity)}</Text>
-                    <Text style={styles.severityText}>{analysisResult.severity}</Text>
-                  </View>
+                 
                 </View>
                 <View style={styles.confidenceContainer}>
                   <Text style={styles.confidence}>{analysisResult.confidence}%</Text>

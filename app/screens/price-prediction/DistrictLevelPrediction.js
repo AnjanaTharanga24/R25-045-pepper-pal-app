@@ -59,7 +59,7 @@ export default function DistrictPredictionScreen({ navigation }) {
       
       Alert.alert(
         'District Price Prediction',
-        `Predicted price range for ${prediction.district} district on ${date.toLocaleDateString('en-GB')}:\n\nRs. ${lowerPrice} - Rs. ${upperPrice} per kg\n\nPredicted Price: Rs. ${predictedPrice.toFixed(2)}\nModel Accuracy: ${prediction.model_accuracy}%\nConfidence: 85%\n\nDistrict: ${prediction.district}`,
+        `Predicted price range for ${prediction.district} district on ${date.toLocaleDateString('en-GB')}:\n\nRs. ${lowerPrice} - Rs. ${upperPrice} per kg\n\nPredicted Price: Rs. ${predictedPrice.toFixed(2)}\nDistrict: ${prediction.district}`,
         [{ text: 'OK' }]
       );
     } catch (error) {

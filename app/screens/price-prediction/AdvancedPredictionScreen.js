@@ -14,19 +14,23 @@ import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 import { BASE_URL } from '../../config/config';
 
-// const BASE_URL = 'http://192.168.8.131:8000';
-
 export default function AdvancedPredictionScreen({ navigation }) {
   const [rainfall, setRainfall] = useState('150');
   const [priceType, setPriceType] = useState('GR1');
   const [inflationRate, setInflationRate] = useState('12');
   const [seasonality, setSeasonality] = useState('NO');
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Error state management
+  const [errors, setErrors] = useState({
+    rainfall: '',
+    inflationRate: ''
+  });
 
   const priceTypes = [
     { label: 'GR1 (Grade 1)', value: 'GR1' },
     { label: 'GR2 (Grade 2)', value: 'GR2' },
-    { label: 'White', value: 'WHITE' }  // Updated to match API expectation
+    { label: 'White', value: 'WHITE' }
   ];
 
   const seasonalityOptions = [
@@ -34,21 +38,94 @@ export default function AdvancedPredictionScreen({ navigation }) {
     { label: 'Yes', value: 'YES' }
   ];
 
+  // Enhanced validation function
   const validateInputs = () => {
+    const newErrors = { rainfall: '', inflationRate: '' };
+    let isValid = true;
+
+    // Rainfall validation
     const rainfallNum = parseFloat(rainfall);
+    if (!rainfall.trim()) {
+      newErrors.rainfall = 'Rainfall is required';
+      isValid = false;
+    } else if (isNaN(rainfallNum)) {
+      newErrors.rainfall = 'Please enter a valid number';
+      isValid = false;
+    } else if (rainfallNum < 0) {
+      newErrors.rainfall = 'Rainfall cannot be negative';
+      isValid = false;
+    } else if (rainfallNum < 150) {
+      newErrors.rainfall = 'Rainfall must be at least 150mm for optimal prediction';
+      isValid = false;
+    } else if (rainfallNum > 200) {
+      newErrors.rainfall = 'Rainfall must not exceed 200mm for optimal prediction';
+      isValid = false;
+    }
+
+    // Inflation rate validation
     const inflationNum = parseFloat(inflationRate);
-    
-    if (isNaN(rainfallNum) || rainfallNum < 0 || rainfallNum > 2000) {
-      Alert.alert('Invalid Input', 'Rainfall must be between 0-2000 mm');
-      return false;
+    if (!inflationRate.trim()) {
+      newErrors.inflationRate = 'Inflation rate is required';
+      isValid = false;
+    } else if (isNaN(inflationNum)) {
+      newErrors.inflationRate = 'Please enter a valid number';
+      isValid = false;
+    } else if (inflationNum < 0) {
+      newErrors.inflationRate = 'Inflation rate cannot be negative';
+      isValid = false;
+    } else if (inflationNum > 100) {
+      newErrors.inflationRate = 'Inflation rate cannot exceed 100%';
+      isValid = false;
     }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
+  // Real-time validation for rainfall
+  const handleRainfallChange = (value) => {
+    setRainfall(value);
     
-    if (isNaN(inflationNum) || inflationNum < 0 || inflationNum > 100) {
-      Alert.alert('Invalid Input', 'Inflation rate must be between 0-100%');
-      return false;
+    if (errors.rainfall) {
+      const rainfallNum = parseFloat(value);
+      let newError = '';
+      
+      if (!value.trim()) {
+        newError = 'Rainfall is required';
+      } else if (isNaN(rainfallNum)) {
+        newError = 'Please enter a valid number';
+      } else if (rainfallNum < 0) {
+        newError = 'Rainfall cannot be negative';
+      } else if (rainfallNum < 150) {
+        newError = 'Rainfall must be at least 150mm for optimal prediction';
+      } else if (rainfallNum > 200) {
+        newError = 'Rainfall must not exceed 200mm for optimal prediction';
+      }
+      
+      setErrors(prev => ({ ...prev, rainfall: newError }));
     }
+  };
+
+  // Real-time validation for inflation rate
+  const handleInflationRateChange = (value) => {
+    setInflationRate(value);
     
-    return true;
+    if (errors.inflationRate) {
+      const inflationNum = parseFloat(value);
+      let newError = '';
+      
+      if (!value.trim()) {
+        newError = 'Inflation rate is required';
+      } else if (isNaN(inflationNum)) {
+        newError = 'Please enter a valid number';
+      } else if (inflationNum < 0) {
+        newError = 'Inflation rate cannot be negative';
+      } else if (inflationNum > 100) {
+        newError = 'Inflation rate cannot exceed 100%';
+      }
+      
+      setErrors(prev => ({ ...prev, inflationRate: newError }));
+    }
   };
 
   const predictAdvancedPrice = async (rainfallValue, priceTypeValue, inflationRateValue, seasonalityValue) => {
@@ -71,17 +148,15 @@ export default function AdvancedPredictionScreen({ navigation }) {
     
     setIsLoading(true);
     try {
-      // Call the API
       const prediction = await predictAdvancedPrice(rainfall, priceType, inflationRate, seasonality);
       
-      // Calculate confidence range (±5% of predicted price)
       const predictedPrice = prediction.predicted_price;
       const lowerPrice = Math.round(predictedPrice * 0.95);
       const upperPrice = Math.round(predictedPrice * 1.05);
       
       Alert.alert(
         'Advanced Price Prediction',
-        `Predicted price range for ${priceType} quality:\n\nRs. ${lowerPrice} - Rs. ${upperPrice} per kg\n\nPredicted Price: Rs. ${predictedPrice.toFixed(2)}\nConfidence: 88%\n\nFactors considered:\n• Rainfall: ${rainfall}mm\n• Inflation: ${inflationRate}%\n• Seasonality: ${seasonality === 'NO' ? 'No' : 'Yes'}`,
+        `Predicted price range for ${priceType} quality:\n\nRs. ${lowerPrice} - Rs. ${upperPrice} per kg\n\nPredicted Price: Rs. ${predictedPrice.toFixed(2)}\nFactors considered:\n• Rainfall: ${rainfall}mm\n• Inflation: ${inflationRate}%\n• Seasonality: ${seasonality === 'NO' ? 'No' : 'Yes'}`,
         [{ text: 'OK' }]
       );
     } catch (error) {
@@ -104,21 +179,24 @@ export default function AdvancedPredictionScreen({ navigation }) {
 
   const getRainfallStatus = () => {
     const rainfallNum = parseFloat(rainfall) || 0;
-    if (rainfallNum < 100) return { status: 'Low', color: '#dc3545', icon: '🌵' };
+    if (rainfallNum < 150) return { status: 'Below Optimal', color: '#dc3545', icon: '🌵' };
     if (rainfallNum <= 200) return { status: 'Optimal', color: '#28a745', icon: '🌿' };
-    if (rainfallNum <= 300) return { status: 'High', color: '#ffc107', icon: '🌧️' };
-    return { status: 'Excessive', color: '#dc3545', icon: '⛈️' };
+    return { status: 'Above Optimal', color: '#ffc107', icon: '⛈️' };
   };
 
   const getInflationImpact = () => {
     const inflationNum = parseFloat(inflationRate) || 0;
     if (inflationNum < 5) return { impact: 'Low Impact', color: '#28a745' };
     if (inflationNum <= 15) return { impact: 'Moderate Impact', color: '#ffc107' };
-    return { impact: 'High Impact', color: '#dc3545' };
+    if (inflationNum <= 50) return { impact: 'High Impact', color: '#dc3545' };
+    return { impact: 'Critical Impact', color: '#6f42c1' };
   };
 
   const rainfallStatus = getRainfallStatus();
   const inflationImpact = getInflationImpact();
+
+  // Check if form is valid for button state
+  const isFormValid = !errors.rainfall && !errors.inflationRate && rainfall.trim() && inflationRate.trim();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -151,30 +229,39 @@ export default function AdvancedPredictionScreen({ navigation }) {
         <View style={styles.formContainer}>
           {/* Rainfall Input */}
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Rainfall (mm)</Text>
+            <Text style={styles.label}>Rainfall (mm) *</Text>
             <View style={styles.inputContainer}>
               <TextInput
-                style={styles.textInput}
+                style={[
+                  styles.textInput, 
+                  errors.rainfall ? styles.errorInput : null
+                ]}
                 value={rainfall}
-                onChangeText={setRainfall}
-                placeholder="Enter rainfall in mm"
+                onChangeText={handleRainfallChange}
+                placeholder="Enter rainfall (150-200mm)"
                 keyboardType="numeric"
                 maxLength={6}
                 editable={!isLoading}
               />
-              <View style={[styles.statusBadge, { backgroundColor: rainfallStatus.color + '20' }]}>
-                <Text style={styles.statusIcon}>{rainfallStatus.icon}</Text>
-                <Text style={[styles.statusText, { color: rainfallStatus.color }]}>
-                  {rainfallStatus.status}
-                </Text>
-              </View>
+              {!errors.rainfall && (
+                <View style={[styles.statusBadge, { backgroundColor: rainfallStatus.color + '20' }]}>
+                  <Text style={styles.statusIcon}>{rainfallStatus.icon}</Text>
+                  <Text style={[styles.statusText, { color: rainfallStatus.color }]}>
+                    {rainfallStatus.status}
+                  </Text>
+                </View>
+              )}
             </View>
-            <Text style={styles.inputHint}>Optimal range: 150-200mm</Text>
+            {errors.rainfall ? (
+              <Text style={styles.errorText}>❌ {errors.rainfall}</Text>
+            ) : (
+              <Text style={styles.inputHint}>Optimal range: 150-200mm for best predictions</Text>
+            )}
           </View>
 
           {/* Price Type Selection */}
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Price Type</Text>
+            <Text style={styles.label}>Price Type *</Text>
             <View style={styles.pickerContainer}>
               <Picker
                 selectedValue={priceType}
@@ -197,24 +284,33 @@ export default function AdvancedPredictionScreen({ navigation }) {
 
           {/* Inflation Rate Input */}
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Inflation Rate (%)</Text>
+            <Text style={styles.label}>Inflation Rate (%) *</Text>
             <View style={styles.inputContainer}>
               <TextInput
-                style={styles.textInput}
+                style={[
+                  styles.textInput,
+                  errors.inflationRate ? styles.errorInput : null
+                ]}
                 value={inflationRate}
-                onChangeText={setInflationRate}
-                placeholder="Enter inflation rate"
+                onChangeText={handleInflationRateChange}
+                placeholder="Enter inflation rate (0-100%)"
                 keyboardType="numeric"
                 maxLength={5}
                 editable={!isLoading}
               />
-              <View style={[styles.statusBadge, { backgroundColor: inflationImpact.color + '20' }]}>
-                <Text style={[styles.statusText, { color: inflationImpact.color }]}>
-                  {inflationImpact.impact}
-                </Text>
-              </View>
+              {!errors.inflationRate && (
+                <View style={[styles.statusBadge, { backgroundColor: inflationImpact.color + '20' }]}>
+                  <Text style={[styles.statusText, { color: inflationImpact.color }]}>
+                    {inflationImpact.impact}
+                  </Text>
+                </View>
+              )}
             </View>
-            <Text style={styles.inputHint}>Current economic inflation rate</Text>
+            {errors.inflationRate ? (
+              <Text style={styles.errorText}>❌ {errors.inflationRate}</Text>
+            ) : (
+              <Text style={styles.inputHint}>Current economic inflation rate (0-100%)</Text>
+            )}
           </View>
 
           {/* Seasonality Selection */}
@@ -241,11 +337,23 @@ export default function AdvancedPredictionScreen({ navigation }) {
             <Text style={styles.inputHint}>Is seasonal effect present?</Text>
           </View>
 
+          {/* Validation Summary */}
+          {(errors.rainfall || errors.inflationRate) && (
+            <View style={styles.validationSummary}>
+              <Text style={styles.validationTitle}>⚠️ Please fix the following errors:</Text>
+              {errors.rainfall && <Text style={styles.validationError}>• {errors.rainfall}</Text>}
+              {errors.inflationRate && <Text style={styles.validationError}>• {errors.inflationRate}</Text>}
+            </View>
+          )}
+
           {/* Predict Button */}
           <TouchableOpacity
-            style={[styles.predictButton, isLoading && styles.disabledButton]}
+            style={[
+              styles.predictButton, 
+              (isLoading || !isFormValid) && styles.disabledButton
+            ]}
             onPress={onPredict}
-            disabled={isLoading}
+            disabled={isLoading || !isFormValid}
             activeOpacity={0.8}
           >
             {isLoading ? (
@@ -257,6 +365,12 @@ export default function AdvancedPredictionScreen({ navigation }) {
               </>
             )}
           </TouchableOpacity>
+
+          {!isFormValid && !isLoading && (
+            <Text style={styles.buttonHint}>
+              Please correct all errors above to enable prediction
+            </Text>
+          )}
         </View>
 
         {/* Factor Explanation Section */}
@@ -270,7 +384,7 @@ export default function AdvancedPredictionScreen({ navigation }) {
             </View>
             <Text style={styles.factorDescription}>
               Rainfall directly affects pepper plant growth and yield. Optimal rainfall (150-200mm) 
-              supports healthy growth, while excessive or insufficient rainfall can impact quality and supply.
+              supports healthy growth, while insufficient or excessive rainfall can impact quality and supply.
             </Text>
           </View>
 
@@ -281,7 +395,7 @@ export default function AdvancedPredictionScreen({ navigation }) {
             </View>
             <Text style={styles.factorDescription}>
               Economic inflation affects production costs, transportation, and overall market pricing. 
-              Higher inflation typically leads to increased commodity prices.
+              Higher inflation typically leads to increased commodity prices. Must be between 0-100%.
             </Text>
           </View>
 
@@ -308,14 +422,29 @@ export default function AdvancedPredictionScreen({ navigation }) {
           </View>
         </View>
 
+        {/* Input Requirements */}
+        <View style={styles.requirementsSection}>
+          <Text style={styles.sectionTitle}>Input Requirements</Text>
+          
+          <View style={styles.requirementCard}>
+            <Text style={styles.requirementTitle}>🎯 Validation Rules</Text>
+            <View style={styles.requirementsList}>
+              <Text style={styles.requirementItem}>• Rainfall: Must be between 150-200mm (cannot be negative)</Text>
+              <Text style={styles.requirementItem}>• Inflation Rate: Must be between 0-100% (cannot exceed 100%)</Text>
+              <Text style={styles.requirementItem}>• All required fields must be filled</Text>
+              <Text style={styles.requirementItem}>• Only numeric values are accepted for rainfall and inflation</Text>
+            </View>
+          </View>
+        </View>
+
         {/* Additional Info */}
         <View style={styles.additionalInfo}>
-
           <View style={styles.disclaimerCard}>
             <Text style={styles.disclaimerTitle}>⚠️ Disclaimer</Text>
             <Text style={styles.disclaimerText}>
               Advanced predictions use multiple variables and machine learning models. 
-              Results are estimates and actual prices may vary due to unforeseen market conditions.
+              Results are estimates and actual prices may vary due to unforeseen market conditions. 
+              Please ensure all inputs are within the specified ranges for accurate predictions.
             </Text>
           </View>
         </View>
@@ -425,11 +554,21 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 3,
   },
+  errorInput: {
+    borderColor: '#dc3545',
+    backgroundColor: '#fff5f5',
+  },
   inputHint: {
     fontSize: 12,
     color: '#6c757d',
     marginTop: 6,
     fontStyle: 'italic',
+  },
+  errorText: {
+    fontSize: 12,
+    color: '#dc3545',
+    marginTop: 6,
+    fontWeight: '500',
   },
   statusBadge: {
     flexDirection: 'row',
@@ -445,6 +584,28 @@ const styles = StyleSheet.create({
   statusText: {
     fontSize: 12,
     fontWeight: '600',
+  },
+  
+  // Validation Summary
+  validationSummary: {
+    backgroundColor: '#fff5f5',
+    borderRadius: 12,
+    padding: 16,
+    borderLeftWidth: 4,
+    borderLeftColor: '#dc3545',
+    marginTop: 8,
+  },
+  validationTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#dc3545',
+    marginBottom: 8,
+  },
+  validationError: {
+    fontSize: 13,
+    color: '#dc3545',
+    marginBottom: 4,
+    lineHeight: 18,
   },
   
   // Picker
@@ -497,6 +658,41 @@ const styles = StyleSheet.create({
   buttonIcon: {
     fontSize: 18,
   },
+  buttonHint: {
+    fontSize: 12,
+    color: '#6c757d',
+    textAlign: 'center',
+    marginTop: 8,
+    fontStyle: 'italic',
+  },
+  
+  // Requirements Section
+  requirementsSection: {
+    paddingHorizontal: 20,
+    paddingTop: 24,
+    gap: 12,
+  },
+  requirementCard: {
+    backgroundColor: '#e3f2fd',
+    borderRadius: 12,
+    padding: 16,
+    borderLeftWidth: 3,
+    borderLeftColor: '#2196f3',
+  },
+  requirementTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1976d2',
+    marginBottom: 12,
+  },
+  requirementsList: {
+    gap: 6,
+  },
+  requirementItem: {
+    fontSize: 13,
+    color: '#1976d2',
+    lineHeight: 18,
+  },
   
   // Factor Section
   factorSection: {
@@ -548,29 +744,6 @@ const styles = StyleSheet.create({
     paddingTop: 24,
     paddingBottom: 32,
     gap: 16,
-  },
-  tipCard: {
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    padding: 16,
-    borderLeftWidth: 3,
-    borderLeftColor: '#ffa500',
-    shadowColor: '#2d5c3e',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  tipTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#2d5c3e',
-    marginBottom: 8,
-  },
-  tipText: {
-    fontSize: 14,
-    color: '#6c757d',
-    lineHeight: 20,
   },
   disclaimerCard: {
     backgroundColor: '#fff3cd',

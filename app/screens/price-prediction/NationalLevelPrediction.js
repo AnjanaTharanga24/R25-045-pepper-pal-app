@@ -57,7 +57,7 @@ export default function NationalPredictionScreen({ navigation }) {
       
       Alert.alert(
         'National Price Prediction',
-        `Predicted national average price range for ${prediction.pepper_type} quality on ${date.toLocaleDateString('en-GB')}:\n\nRs. ${lowerPrice} - Rs. ${upperPrice} per kg\n\nPredicted Price: Rs. ${predictedPrice.toFixed(2)}\nModel Accuracy: ${prediction.model_accuracy}%\nMarket Coverage: All Districts`,
+        `Predicted national average price range for ${prediction.pepper_type} quality on ${date.toLocaleDateString('en-GB')}:\n\nRs. ${lowerPrice} - Rs. ${upperPrice} per kg\n\nPredicted Price: Rs. ${predictedPrice.toFixed(2)}\nMarket Coverage: All Districts`,
         [{ text: 'OK' }]
       );
     } catch (error) {

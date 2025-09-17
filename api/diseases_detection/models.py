@@ -3,6 +3,7 @@ import tensorflow as tf
 import gdown
 import numpy as np
 from PIL import Image
+import scipy.stats  # for entropy calculation
 
 class DiseaseDetectionModel:
     def __init__(self):
@@ -50,7 +51,7 @@ class DiseaseDetectionModel:
     
     def preprocess_image(self, image_path):
         """Preprocess image for model input"""
-        img = Image.open(image_path).resize((244, 244))
+        img = Image.open(image_path).resize((244, 244)).convert('RGB')
         img_array = np.array(img).astype(np.float32) / 255.0
         img_array = np.expand_dims(img_array, axis=0)
         return img_array
@@ -68,12 +69,20 @@ class DiseaseDetectionModel:
             # Get results
             output_data = self.interpreter.get_tensor(self.output_details[0]['index'])
             confidence = float(np.max(output_data))
-            predicted_index = np.argmax(output_data)
+            predicted_index = int(np.argmax(output_data))
             predicted_label = self.class_names[predicted_index]
-            
+
+            # --- NEW: Entropy calculation ---
+            entropy = float(scipy.stats.entropy(output_data[0]))
+
+            # --- NEW: Reject overconfident low-entropy predictions ---
+            if confidence > 0.95 and entropy < 0.5:
+                raise ValueError("This image does not appear to be a valid pepper leaf. Please upload a proper leaf image.")
+
             return {
                 'disease': predicted_label,
-                'confidence': confidence,
+                'confidence': round(confidence, 4),
+                'entropy': round(entropy, 4),  # NEW field
                 'treatment': self.treatments.get(predicted_label, "No treatment recommendation available.")
             }
             

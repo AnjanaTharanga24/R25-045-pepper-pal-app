@@ -3,29 +3,31 @@ import tensorflow as tf
 import gdown
 import numpy as np
 from PIL import Image
-import scipy.stats  # for entropy calculation
 
 class DiseaseDetectionModel:
     def __init__(self):
-        self.model_path = 'pickle_models/pepper_model.tflite'
-        self.file_id = '1YnDz5wccNoRVV4aepFBmCI0F-geBQWXe'
+        # Updated model path and Google Drive file ID
+        self.model_path = 'pickle_models/final_pepper_model.tflite'
+        self.file_id = '1GiKRe1BNswLLQ_yqrPehL1bqdTEaHRqs'
         self.download_url = f'https://drive.google.com/uc?id={self.file_id}'
         self.interpreter = None
         self.input_details = None
         self.output_details = None
         
-        # Class labels
+        # Updated class labels - now 5 classes including Non-Pepper_Source
         self.class_names = [
-            'Healthy', 
-            'Lace Bug Infection', 
-            'Vine borer Infection', 
+            'Healthy',
+            'Lace Bug Infection',
+            'Non-Pepper_Source',
+            'Vine borer Infection',
             'Yellow Mottle Infection'
         ]
         
-        # Treatment recommendations
+        # Updated treatment recommendations
         self.treatments = {
             'Healthy': 'No treatment needed.',
             'Lace Bug Infection': 'Spray neem oil or insecticidal soap every 7 days.',
+            'Non-Pepper_Source': 'This is not a pepper leaf. Please upload a proper pepper leaf image.',
             'Vine borer Infection': 'Use pheromone traps or apply biological control methods.',
             'Yellow Mottle Infection': 'Apply recommended fungicides and improve soil drainage.'
         }
@@ -72,17 +74,9 @@ class DiseaseDetectionModel:
             predicted_index = int(np.argmax(output_data))
             predicted_label = self.class_names[predicted_index]
 
-            # --- NEW: Entropy calculation ---
-            entropy = float(scipy.stats.entropy(output_data[0]))
-
-            # --- NEW: Reject overconfident low-entropy predictions ---
-            if confidence > 0.95 and entropy < 0.5:
-                raise ValueError("This image does not appear to be a valid pepper leaf. Please upload a proper leaf image.")
-
             return {
                 'disease': predicted_label,
                 'confidence': round(confidence, 4),
-                'entropy': round(entropy, 4),  # NEW field
                 'treatment': self.treatments.get(predicted_label, "No treatment recommendation available.")
             }
             

@@ -401,7 +401,7 @@ export default function FertilizerGuide({ navigation }) {
 
           {/* Plant Age Input */}
           <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>Plant Age (Days)</Text>
+            <Text style={styles.inputLabel}>Plant Age (Years)</Text>
             <View style={styles.ageInputContainer}>
               <Text style={styles.ageIcon}>🕐</Text>
               <TextInput
@@ -413,10 +413,10 @@ export default function FertilizerGuide({ navigation }) {
                 keyboardType="decimal-pad"
                 maxLength={4}
               />
-              <Text style={styles.ageUnit}>days</Text>
+              <Text style={styles.ageUnit}>Years</Text>
             </View>
             <Text style={styles.inputHint}>
-              Enter the approximate age of your pepper plant (0-50 days)
+              Enter the approximate age of your pepper plant
             </Text>
           </View>
         </View>
@@ -479,7 +479,7 @@ export default function FertilizerGuide({ navigation }) {
               <View style={styles.plantStageInfo}>
                 <Text style={styles.plantStageLabel}>Plant Stage:</Text>
                 <Text style={styles.plantStageValue}>{analysisResult.stage}</Text>
-                <Text style={styles.plantAgeValue}>({analysisResult.age} days old)</Text>
+                <Text style={styles.plantAgeValue}>({analysisResult.age} years old)</Text>
               </View>
               
               <Text style={styles.deficiencyDescription}>

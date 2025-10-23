@@ -57,7 +57,7 @@ def create_app():
                 {
                     "name": "pepper-recommendation",
                     "endpoint": "/api/pepper",
-                    "description": "Get pepper variety recommendations"
+                    "description": "Get pepper variety recommendations and climate/soil data"
                 },
                 {
                     "name": "deficiency-prediction", 

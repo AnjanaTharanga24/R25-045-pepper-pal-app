@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from .services import DiseaseDetectionService
 from .schemas import DiseaseDetectionResponseSchema, ErrorResponseSchema
 
-# ✅ Define the blueprint first
+# Define the blueprint
 disease_bp = Blueprint('disease', __name__, url_prefix='/api/disease')
 
 # Initialize service & schemas
@@ -22,6 +22,11 @@ def predict_disease():
             return jsonify({'error': 'No file selected'}), 400
 
         result = disease_service.predict_disease(file)
+        
+        # Optional: Return 400 status if Non-Pepper_Source is detected
+        if result.get('disease') == 'Non-Pepper_Source':
+            return jsonify(result), 400
+        
         return jsonify(result), 200
 
     except ValueError as ve:

@@ -1,7 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, Dimensions, SafeAreaView } from 'react-native';
-
-const { width, height } = Dimensions.get('window');
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
 
 export default function HomeScreen({ navigation }) {
   const features = [
@@ -33,39 +31,17 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Simple Header */}
+      {/* Header */}
       <View style={styles.header}>
-        <View style={styles.headerTop}>
-          <View style={styles.logoSection}>
-            <View style={styles.logoContainer}>
-              <Image 
-                source={require('../assets/logo.png')}
-                style={styles.logo}
-                resizeMode="contain"
-              />
-            </View>
-            <View style={styles.brandInfo}>
-              <Text style={styles.appName}>PepperPal</Text>
-              <Text style={styles.tagline}>Smart Farming</Text>
-            </View>
-          </View>
-          
-          <View style={styles.headerActions}>
-            <TouchableOpacity style={styles.iconButton}>
-              <Text style={styles.icon}>🔔</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.iconButton}>
-              <Text style={styles.icon}>⚙️</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+        <Text style={styles.appName}>PepperPal</Text>
+        <Text style={styles.tagline}>Smart Farming</Text>
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Welcome Section */}
         <View style={styles.welcomeSection}>
           <Text style={styles.greeting}>Good Morning, Farmer</Text>
-          <Text style={styles.subtitle}>Let's manage your pepper farm efficiently</Text>
+          <Text style={styles.subtitle}>Manage your pepper farm efficiently</Text>
         </View>
 
         {/* Features Section */}
@@ -78,18 +54,13 @@ export default function HomeScreen({ navigation }) {
                 key={index}
                 style={styles.featureCard}
                 onPress={() => navigation.navigate(feature.screen)}
-                activeOpacity={0.7}
               >
-                <View style={styles.featureIcon}>
-                  <Text style={styles.featureIconText}>{feature.icon}</Text>
-                </View>
-                <View style={styles.featureContent}>
+                <Text style={styles.featureIcon}>{feature.icon}</Text>
+                <View style={styles.featureText}>
                   <Text style={styles.featureTitle}>{feature.title}</Text>
                   <Text style={styles.featureSubtitle}>{feature.subtitle}</Text>
                 </View>
-                <View style={styles.featureArrow}>
-                  <Text style={styles.arrowText}>→</Text>
-                </View>
+                <Text style={styles.arrow}>→</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -97,7 +68,6 @@ export default function HomeScreen({ navigation }) {
 
         <View style={styles.bottomSpacing} />
       </ScrollView>
-
     </SafeAreaView>
   );
 }
@@ -105,66 +75,24 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f9f0',
+    backgroundColor: '#f8fff8',
   },
   
-  // Simple Header
+  // Header
   header: {
-    backgroundColor: '#2d5c3e', 
-    paddingHorizontal: 20,
-    paddingTop: 10,
-    paddingBottom: 20,
-  },
-  headerTop: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    backgroundColor: '#2d5c3e',
+    padding: 20,
     alignItems: 'center',
-  },
-  logoSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  logoContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 12,
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  logo: {
-    width: 32,
-    height: 32,
-  },
-  brandInfo: {
-    justifyContent: 'center',
   },
   appName: {
     fontSize: 24,
     fontWeight: '700',
     color: '#ffffff',
-    letterSpacing: -0.5,
+    marginBottom: 4,
   },
   tagline: {
     fontSize: 14,
-    color: '#b8d8c4', // Light green for tagline
-    fontWeight: '500',
-  },
-  headerActions: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  iconButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  icon: {
-    fontSize: 18,
+    color: '#b8d8c4',
   },
   
   // Content
@@ -174,263 +102,68 @@ const styles = StyleSheet.create({
   
   // Welcome Section
   welcomeSection: {
-    paddingHorizontal: 20,
-    paddingVertical: 24,
-    backgroundColor: '#4a7c59', // Medium green
-    marginBottom: 16,
+    padding: 20,
+    backgroundColor: '#4a7c59',
+    marginBottom: 20,
   },
   greeting: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '600',
     color: '#ffffff',
     marginBottom: 4,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#d1e7dd',
-    lineHeight: 24,
-  },
-  
-  // Market Card
-  marketCard: {
-    backgroundColor: '#ffffff',
-    marginHorizontal: 20,
-    borderRadius: 16,
-    padding: 20,
-    shadowColor: '#2d5c3e',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 5,
-    borderLeftWidth: 4,
-    borderLeftColor: '#28a745', // Success green
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#2d5c3e',
-  },
-  liveStatus: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  liveIndicator: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#28a745',
-    marginRight: 6,
-  },
-  liveText: {
-    fontSize: 12,
-    color: '#28a745',
-    fontWeight: '600',
-  },
-  marketInfo: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  priceSection: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-  },
-  currentPrice: {
-    fontSize: 32,
-    fontWeight: '700',
-    color: '#2d5c3e',
-  },
-  priceUnit: {
-    fontSize: 16,
-    color: '#6c757d',
-    marginLeft: 8,
-  },
-  changeSection: {
-    alignItems: 'flex-end',
-  },
-  priceChange: {
-    fontSize: 18,
-    color: '#28a745',
-    fontWeight: '600',
-  },
-  changeLabel: {
-    fontSize: 12,
-    color: '#6c757d',
-    marginTop: 2,
-  },
-  
-  // Quality Card
-  qualityCard: {
-    backgroundColor: '#ffffff',
-    marginHorizontal: 20,
-    marginTop: 16,
-    borderRadius: 16,
-    padding: 20,
-    shadowColor: '#2d5c3e',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 5,
-    borderLeftWidth: 4,
-    borderLeftColor: '#ffa500', // Orange accent
-  },
-  qualityHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  qualityTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#2d5c3e',
-    flex: 1,
-  },
-  qualityBadge: {
-    backgroundColor: '#ffa500', // Orange
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
-  },
-  badgeText: {
-    fontSize: 12,
-    color: '#ffffff',
-    fontWeight: '600',
-  },
-  qualityDescription: {
-    fontSize: 15,
-    color: '#6c757d',
-    lineHeight: 22,
-    marginBottom: 20,
-  },
-  qualityMetrics: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingTop: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#e9ecef',
-  },
-  metric: {
-    alignItems: 'center',
-  },
-  metricValue: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#2d5c3e',
-    marginBottom: 4,
-  },
-  metricLabel: {
-    fontSize: 12,
-    color: '#6c757d',
   },
   
   // Features Section
   featuresSection: {
-    paddingHorizontal: 20,
-    marginTop: 32,
+    padding: 16,
   },
   sectionTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '600',
     color: '#2d5c3e',
     marginBottom: 16,
+    marginLeft: 4,
   },
   featuresGrid: {
     gap: 12,
   },
   featureCard: {
     backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 20,
+    borderRadius: 12,
+    padding: 16,
     flexDirection: 'row',
     alignItems: 'center',
-    shadowColor: '#2d5c3e',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
-    borderLeftWidth: 3,
+    borderLeftWidth: 4,
     borderLeftColor: '#4a7c59',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
   featureIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 12,
-    backgroundColor: '#f0f9f0',
-    justifyContent: 'center',
-    alignItems: 'center',
+    fontSize: 24,
     marginRight: 16,
   },
-  featureIconText: {
-    fontSize: 24,
-  },
-  featureContent: {
+  featureText: {
     flex: 1,
   },
   featureTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: '#2d5c3e',
-    marginBottom: 4,
+    marginBottom: 2,
   },
   featureSubtitle: {
-    fontSize: 14,
-    color: '#6c757d',
-    lineHeight: 20,
-  },
-  featureArrow: {
-    width: 32,
-    height: 32,
-    borderRadius: 8,
-    backgroundColor: '#f0f9f0',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  arrowText: {
-    fontSize: 16,
-    color: '#4a7c59',
-    fontWeight: '600',
-  },
-  
-  // Navigation Bar
-  navigationBar: {
-    flexDirection: 'row',
-    backgroundColor: '#ffffff',
-    borderTopWidth: 1,
-    borderTopColor: '#e9ecef',
-    paddingVertical: 8,
-    paddingHorizontal: 20,
-    shadowColor: '#2d5c3e',
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 5,
-  },
-  navItem: {
-    flex: 1,
-    alignItems: 'center',
-    paddingVertical: 8,
-  },
-  activeNavItem: {
-  },
-  navIcon: {
-    fontSize: 20,
-    marginBottom: 4,
-  },
-  activeNavIcon: {
-  },
-  navLabel: {
     fontSize: 12,
     color: '#6c757d',
-    fontWeight: '500',
   },
-  activeNavLabel: {
+  arrow: {
+    fontSize: 16,
     color: '#4a7c59',
     fontWeight: '600',
   },

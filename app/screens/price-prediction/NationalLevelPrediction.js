@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -10,7 +10,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Picker } from "@react-native-picker/picker";
+import ModalSelector from "react-native-modal-selector";
 import axios from "axios";
 import { BASE_URL } from "../../config/config";
 
@@ -18,13 +18,20 @@ export default function NationalPredictionScreen({ navigation }) {
   const [date, setDate] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
   const [selectedQuality, setSelectedQuality] = useState("GR1");
+  const [selectedQualityLabel, setSelectedQualityLabel] = useState("GR1 (Grade 1)");
   const [isLoading, setIsLoading] = useState(false);
 
   const qualityTypes = [
-    { label: "GR1 (Grade 1)", value: "GR1" },
-    { label: "GR2 (Grade 2)", value: "GR2" },
-    { label: "White", value: "White" },
+    { key: "GR1", label: "GR1 (Grade 1)" },
+    { key: "GR2", label: "GR2 (Grade 2)" },
+    { key: "White", label: "White" },
   ];
+
+  // Set initial label for selectedQuality
+  useEffect(() => {
+    const initialQuality = qualityTypes.find(q => q.key === selectedQuality);
+    setSelectedQualityLabel(initialQuality ? initialQuality.label : "Select Quality Type");
+  }, [selectedQuality]);
 
   const predictNationalPrice = async (pepperType, targetDate) => {
     try {
@@ -44,16 +51,9 @@ export default function NationalPredictionScreen({ navigation }) {
 
     setIsLoading(true);
     try {
-      // Format the date as YYYY-MM-DD
       const formattedDate = date.toISOString().split("T")[0];
+      const prediction = await predictNationalPrice(selectedQuality, formattedDate);
 
-      // Call the API
-      const prediction = await predictNationalPrice(
-        selectedQuality,
-        formattedDate
-      );
-
-      // Calculate confidence range (±5% of predicted price)
       const predictedPrice = prediction.predicted_price + 190;
       const lowerPrice = Math.round(predictedPrice - 50);
       const upperPrice = Math.round(predictedPrice + 50);
@@ -62,11 +62,10 @@ export default function NationalPredictionScreen({ navigation }) {
         "National Price Prediction",
         `Predicted national average price range for ${
           prediction.pepper_type
-        } quality on ${date.toLocaleDateString(
-          "en-GB"
-        )}:\n\nRs. ${lowerPrice} - Rs. ${upperPrice} per kg\n\nPredicted Price: Rs. ${predictedPrice.toFixed(
-          2
-        )}\nMarket Coverage: All Districts`,
+        } quality on ${date.toLocaleDateString("en-GB")}:\n\n` +
+        `Rs. ${lowerPrice} - Rs. ${upperPrice} per kg\n\n` +
+        `Predicted Price: Rs. ${predictedPrice.toFixed(2)}\n` +
+        `Market Coverage: All Districts`,
         [{ text: "OK" }]
       );
     } catch (error) {
@@ -85,70 +84,56 @@ export default function NationalPredictionScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={styles.backIcon}>←</Text>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={styles.backText}>← Back</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>National Prediction</Text>
-        <View style={styles.placeholder} />
       </View>
 
-      <ScrollView
-        style={styles.content}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
-        {/* Title Section */}
-        <View style={styles.titleSection}>
-          <Text style={styles.title}>National Level Price Prediction</Text>
-          <Text style={styles.subtitle}>
-            Get nationwide average price forecasts by quality grade
-          </Text>
-        </View>
+      <ScrollView style={styles.content}>
+        <Text style={styles.title}>National Price Prediction</Text>
+        <Text style={styles.subtitle}>Get nationwide average price forecasts</Text>
 
-        {/* Input Form */}
-        <View style={styles.formContainer}>
+        <View style={styles.form}>
           {/* Quality Selection */}
-          <View style={styles.inputGroup}>
+          <View style={styles.field}>
             <Text style={styles.label}>Select Quality Type</Text>
-            <View style={styles.pickerContainer}>
-              <Picker
-                selectedValue={selectedQuality}
-                onValueChange={(itemValue) => setSelectedQuality(itemValue)}
-                style={styles.picker}
-                dropdownIconColor="#2d5c3e"
-                enabled={!isLoading}
-              >
-                {qualityTypes.map((quality) => (
-                  <Picker.Item
-                    key={quality.value}
-                    label={quality.label}
-                    value={quality.value}
-                    style={styles.pickerItem}
-                  />
-                ))}
-              </Picker>
-            </View>
+            <ModalSelector
+              data={qualityTypes}
+              initValue="Select Quality Type"
+              onChange={(option) => {
+                setSelectedQuality(option.key);
+                setSelectedQualityLabel(option.label);
+              }}
+              style={[styles.pickerBox, isLoading && styles.disabledPicker]}
+              disabled={isLoading}
+              selectStyle={styles.modalSelector}
+              selectTextStyle={styles.modalSelectorText}
+              initValueTextStyle={styles.modalSelectorText}
+              cancelText="Cancel"
+              cancelStyle={styles.modalCancelButton}
+              cancelTextStyle={styles.modalCancelText}
+            >
+              <View style={[styles.pickerBox, isLoading && styles.disabledPicker]}>
+                <Text style={[styles.modalSelectorText, !selectedQualityLabel && styles.placeholderText]}>
+                  {selectedQualityLabel || "Select Quality Type"}
+                </Text>
+              </View>
+            </ModalSelector>
           </View>
 
           {/* Date Selection */}
-          <View style={styles.inputGroup}>
+          <View style={styles.field}>
             <Text style={styles.label}>Select Date</Text>
             <TouchableOpacity
-              style={styles.dateInput}
+              style={[styles.dateBox, isLoading && styles.disabledPicker]}
               onPress={() => setShowPicker(true)}
               disabled={isLoading}
             >
-              <View style={styles.dateContent}>
-                <Text style={styles.dateIcon}>📅</Text>
-                <Text style={styles.dateText}>
-                  {date.toLocaleDateString("en-GB")}
-                </Text>
-              </View>
+              <Text style={styles.dateText}>
+                📅 {date.toLocaleDateString("en-GB")}
+              </Text>
             </TouchableOpacity>
           </View>
 
@@ -163,23 +148,10 @@ export default function NationalPredictionScreen({ navigation }) {
                 if (selectedDate) setDate(selectedDate);
               }}
             />
-          )} 
+          )}
 
-          {/* {showPicker && (
-            <DateTimePicker
-              value={date}
-              mode="date"
-              display="default"
-              // No date restrictions at all
-              onChange={(_, selectedDate) => {
-                setShowPicker(false);
-                if (selectedDate) setDate(selectedDate);
-              }}
-            />
-          )} */}
-
-          {/* Selected Info Card */}
-          <View style={styles.infoCard}>
+          {/* Info Display */}
+          <View style={styles.infoBox}>
             <Text style={styles.infoTitle}>Prediction Details</Text>
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>Quality Type:</Text>
@@ -195,87 +167,36 @@ export default function NationalPredictionScreen({ navigation }) {
               <Text style={styles.infoLabel}>Market Type:</Text>
               <Text style={styles.infoValue}>National Average</Text>
             </View>
-            <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>Coverage:</Text>
-              <Text style={styles.infoValue}>All Districts</Text>
-            </View>
           </View>
 
           {/* Predict Button */}
           <TouchableOpacity
-            style={[styles.predictButton, isLoading && styles.disabledButton]}
+            style={[styles.btn, isLoading && styles.btnDisabled]}
             onPress={onPredict}
             disabled={isLoading}
-            activeOpacity={0.8}
           >
             {isLoading ? (
-              <ActivityIndicator size="small" color="#ffffff" />
+              <ActivityIndicator size="small" color="#fff" />
             ) : (
-              <>
-                <Text style={styles.predictButtonText}>
-                  Get National Prediction
-                </Text>
-                <Text style={styles.buttonIcon}>🚀</Text>
-              </>
+              <Text style={styles.btnText}>Get Price Prediction</Text>
             )}
           </TouchableOpacity>
         </View>
 
-        {/* Quality Info Section */}
-        <View style={styles.qualityInfoSection}>
-          <Text style={styles.sectionTitle}>Quality Grade Information</Text>
-
-          <View style={styles.qualityCard}>
-            <View style={styles.qualityHeader}>
-              <Text style={styles.qualityGrade}>GR1</Text>
-              <Text style={styles.qualityBadge}>Premium</Text>
-            </View>
-            <Text style={styles.qualityDescription}>
-              Highest quality grade with superior appearance, minimal defects,
-              and excellent market value.
-            </Text>
-          </View>
-
-          <View style={styles.qualityCard}>
-            <View style={styles.qualityHeader}>
-              <Text style={styles.qualityGrade}>GR2</Text>
-              <Text style={styles.qualityBadge}>Standard</Text>
-            </View>
-            <Text style={styles.qualityDescription}>
-              Good quality grade with acceptable appearance and minor defects,
-              widely accepted in markets.
-            </Text>
-          </View>
-
-          <View style={styles.qualityCard}>
-            <View style={styles.qualityHeader}>
-              <Text style={styles.qualityGrade}>White</Text>
-              <Text style={styles.qualityBadge}>Specialty</Text>
-            </View>
-            <Text style={styles.qualityDescription}>
-              Specialty white variety with unique market demand and specific
-              pricing patterns.
-            </Text>
-          </View>
-        </View>
-
-        {/* Additional Info */}
-        <View style={styles.additionalInfo}>
-          <View style={styles.tipCard}>
-            <Text style={styles.tipTitle}>💡 Prediction Tips</Text>
+        {/* Tips */}
+        <View style={styles.tips}>
+          <View style={styles.tipBox}>
+            <Text style={styles.tipTitle}>💡 Tips</Text>
             <Text style={styles.tipText}>
-              • National predictions cover all major markets{"\n"}• Quality
-              grades affect pricing significantly{"\n"}• Best accuracy for
-              predictions up to 7 days ahead
+              • National predictions cover all major markets{'\n'}
+              • Best accuracy for 7 days ahead
             </Text>
           </View>
 
-          <View style={styles.disclaimerCard}>
+          <View style={styles.disclaimerBox}>
             <Text style={styles.disclaimerTitle}>⚠️ Disclaimer</Text>
             <Text style={styles.disclaimerText}>
-              Predictions are estimates based on historical data and market
-              trends. Actual prices may vary due to market volatility and
-              external factors.
+              Predictions are estimates. Actual prices may vary due to market conditions.
             </Text>
           </View>
         </View>
@@ -287,293 +208,178 @@ export default function NationalPredictionScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f0f9f0",
+    backgroundColor: '#f5f5f5',
   },
-
-  // Header
   header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: "#2d5c3e",
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#2d5c3e',
+    padding: 16,
   },
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 10,
-    backgroundColor: "rgba(255, 255, 255, 0.15)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  backIcon: {
-    fontSize: 20,
-    color: "#ffffff",
-    fontWeight: "600",
+  backText: {
+    color: '#fff',
+    fontSize: 16,
   },
   headerTitle: {
+    color: '#fff',
     fontSize: 18,
-    fontWeight: "600",
-    color: "#ffffff",
+    fontWeight: '600',
+    marginLeft: 16,
   },
-  placeholder: {
-    width: 40,
-  },
-
-  // Content
   content: {
     flex: 1,
-  },
-  scrollContent: {
-    paddingBottom: 20,
-  },
-
-  // Title Section
-  titleSection: {
-    paddingHorizontal: 20,
-    paddingVertical: 24,
-    alignItems: "center",
+    padding: 16,
   },
   title: {
-    fontSize: 22,
-    fontWeight: "700",
-    color: "#2d5c3e",
-    textAlign: "center",
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: "#6c757d",
-    textAlign: "center",
-    lineHeight: 24,
-  },
-
-  // Form Container
-  formContainer: {
-    paddingHorizontal: 20,
-    gap: 20,
-  },
-
-  // Input Groups
-  inputGroup: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#2d5c3e',
     marginBottom: 4,
   },
-  label: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#2d5c3e",
-    marginBottom: 12,
+  subtitle: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 20,
   },
-  pickerContainer: {
-    backgroundColor: "#ffffff",
-    borderRadius: 12,
-    borderWidth: 1.5,
-    borderColor: "#28a745",
-    overflow: "hidden",
-    shadowColor: "#2d5c3e",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  picker: {
-    height: 50,
-    backgroundColor: "#ffffff",
-  },
-  pickerItem: {
-    fontSize: 16,
-    color: "#2d5c3e",
-  },
-
-  // Date Input
-  dateInput: {
-    backgroundColor: "#ffffff",
-    borderRadius: 12,
-    borderWidth: 1.5,
-    borderColor: "#28a745",
+  form: {
+    backgroundColor: '#fff',
     padding: 16,
-    shadowColor: "#2d5c3e",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
+    borderRadius: 8,
+    marginBottom: 16,
   },
-  dateContent: {
-    flexDirection: "row",
-    alignItems: "center",
+  field: {
+    marginBottom: 16,
   },
-  dateIcon: {
-    fontSize: 20,
-    marginRight: 12,
+  label: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 8,
+  },
+  pickerBox: {
+    borderWidth: 1,
+    borderColor: '#28a745',
+    borderRadius: 4,
+    backgroundColor: '#fff',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    justifyContent: 'center',
+  },
+  disabledPicker: {
+    backgroundColor: '#e9ecef',
+    opacity: 0.6,
+  },
+  modalSelector: {
+    borderWidth: 0,
+  },
+  modalSelectorText: {
+    fontSize: 15,
+    color: '#2d5c3e',
+    fontWeight: '500',
+  },
+  placeholderText: {
+    color: '#666',
+    fontWeight: '400',
+  },
+  modalCancelButton: {
+    backgroundColor: '#dc3545',
+    borderRadius: 8,
+  },
+  modalCancelText: {
+    color: '#ffffff',
+    fontWeight: '600',
+  },
+  dateBox: {
+    borderWidth: 1,
+    borderColor: '#28a745',
+    borderRadius: 4,
+    padding: 14,
+    backgroundColor: '#fff',
   },
   dateText: {
-    fontSize: 16,
-    color: "#2d5c3e",
-    fontWeight: "500",
+    fontSize: 15,
+    color: '#2d5c3e',
+    fontWeight: '500',
   },
-
-  // Info Card
-  infoCard: {
-    backgroundColor: "#ffffff",
-    borderRadius: 12,
-    padding: 16,
-    borderLeftWidth: 4,
-    borderLeftColor: "#17a2b8",
-    shadowColor: "#2d5c3e",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
+  infoBox: {
+    backgroundColor: '#f8f9fa',
+    padding: 12,
+    borderRadius: 4,
+    marginBottom: 16,
+    borderLeftWidth: 3,
+    borderLeftColor: '#17a2b8',
   },
   infoTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#2d5c3e",
-    marginBottom: 12,
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#2d5c3e',
+    marginBottom: 8,
   },
   infoRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 4,
   },
   infoLabel: {
-    fontSize: 14,
-    color: "#6c757d",
-    fontWeight: "500",
+    fontSize: 13,
+    color: '#666',
   },
   infoValue: {
-    fontSize: 14,
-    color: "#2d5c3e",
-    fontWeight: "600",
+    fontSize: 13,
+    color: '#2d5c3e',
+    fontWeight: '600',
   },
-
-  // Predict Button
-  predictButton: {
-    backgroundColor: "#28a745",
-    borderRadius: 12,
-    padding: 16,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    shadowColor: "#28a745",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 6,
-    marginTop: 8,
+  btn: {
+    backgroundColor: '#28a745',
+    padding: 14,
+    borderRadius: 4,
+    alignItems: 'center',
   },
-  disabledButton: {
-    backgroundColor: "#6c757d",
-    shadowOpacity: 0.1,
+  btnDisabled: {
+    backgroundColor: '#ccc',
   },
-  predictButtonText: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#ffffff",
-    marginRight: 8,
+  btnText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
-  buttonIcon: {
-    fontSize: 18,
-  },
-
-  // Quality Info Section
-  qualityInfoSection: {
-    paddingHorizontal: 20,
-    paddingTop: 24,
+  tips: {
     gap: 12,
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#2d5c3e",
-    marginBottom: 8,
-  },
-  qualityCard: {
-    backgroundColor: "#ffffff",
-    borderRadius: 12,
-    padding: 16,
+  tipBox: {
+    backgroundColor: '#fff',
+    padding: 12,
+    borderRadius: 4,
     borderLeftWidth: 3,
-    borderLeftColor: "#28a745",
-    shadowColor: "#2d5c3e",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  qualityHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 8,
-  },
-  qualityGrade: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#2d5c3e",
-  },
-  qualityBadge: {
-    fontSize: 12,
-    fontWeight: "600",
-    color: "#28a745",
-    backgroundColor: "#d4edda",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-  },
-  qualityDescription: {
-    fontSize: 14,
-    color: "#6c757d",
-    lineHeight: 20,
-  },
-
-  // Additional Info
-  additionalInfo: {
-    paddingHorizontal: 20,
-    paddingTop: 24,
-    paddingBottom: 32,
-    gap: 16,
-  },
-  tipCard: {
-    backgroundColor: "#ffffff",
-    borderRadius: 12,
-    padding: 16,
-    borderLeftWidth: 3,
-    borderLeftColor: "#ffa500",
-    shadowColor: "#2d5c3e",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
+    borderLeftColor: '#ffa500',
   },
   tipTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#2d5c3e",
-    marginBottom: 8,
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#2d5c3e',
+    marginBottom: 6,
   },
   tipText: {
-    fontSize: 14,
-    color: "#6c757d",
-    lineHeight: 20,
+    fontSize: 13,
+    color: '#666',
+    lineHeight: 18,
   },
-  disclaimerCard: {
-    backgroundColor: "#fff3cd",
-    borderRadius: 12,
-    padding: 16,
+  disclaimerBox: {
+    backgroundColor: '#fff3cd',
+    padding: 12,
+    borderRadius: 4,
     borderLeftWidth: 3,
-    borderLeftColor: "#ffc107",
+    borderLeftColor: '#ffc107',
   },
   disclaimerTitle: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#856404",
-    marginBottom: 8,
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#856404',
+    marginBottom: 6,
   },
   disclaimerText: {
-    fontSize: 13,
-    color: "#856404",
-    lineHeight: 18,
+    fontSize: 12,
+    color: '#856404',
+    lineHeight: 16,
   },
 });

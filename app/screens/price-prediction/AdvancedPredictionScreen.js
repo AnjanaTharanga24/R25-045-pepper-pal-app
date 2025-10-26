@@ -1,80 +1,71 @@
-import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TouchableOpacity, 
-  SafeAreaView, 
-  ScrollView, 
-  Alert, 
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  SafeAreaView,
+  ScrollView,
+  Alert,
   TextInput,
-  ActivityIndicator
+  ActivityIndicator,
 } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import ModalSelector from 'react-native-modal-selector';
 import axios from 'axios';
 import { BASE_URL } from '../../config/config';
 
 export default function AdvancedPredictionScreen({ navigation }) {
   const [rainfall, setRainfall] = useState('150');
   const [priceType, setPriceType] = useState('GR1');
+  const [priceTypeLabel, setPriceTypeLabel] = useState('GR1 (Grade 1)');
   const [inflationRate, setInflationRate] = useState('12');
   const [seasonality, setSeasonality] = useState('NO');
+  const [seasonalityLabel, setSeasonalityLabel] = useState('No');
   const [isLoading, setIsLoading] = useState(false);
-  
-  // Error state management
-  const [errors, setErrors] = useState({
-    rainfall: '',
-    inflationRate: ''
-  });
+  const [errors, setErrors] = useState({ rainfall: '', inflationRate: '' });
 
   const priceTypes = [
-    { label: 'GR1 (Grade 1)', value: 'GR1' },
-    { label: 'GR2 (Grade 2)', value: 'GR2' },
-    { label: 'White', value: 'WHITE' }
+    { key: 'GR1', label: 'GR1 (Grade 1)' },
+    { key: 'GR2', label: 'GR2 (Grade 2)' },
+    { key: 'WHITE', label: 'White' },
   ];
 
   const seasonalityOptions = [
-    { label: 'No', value: 'NO' },
-    { label: 'Yes', value: 'YES' }
+    { key: 'NO', label: 'No' },
+    { key: 'YES', label: 'Yes' },
   ];
 
-  // Enhanced validation function
+  // Set initial labels for priceType and seasonality
+  useEffect(() => {
+    const initialPriceType = priceTypes.find((t) => t.key === priceType);
+    setPriceTypeLabel(initialPriceType ? initialPriceType.label : 'Select Price Type');
+
+    const initialSeasonality = seasonalityOptions.find((s) => s.key === seasonality);
+    setSeasonalityLabel(initialSeasonality ? initialSeasonality.label : 'Select Seasonality');
+  }, [priceType, seasonality]);
+
   const validateInputs = () => {
     const newErrors = { rainfall: '', inflationRate: '' };
     let isValid = true;
 
-    // Rainfall validation
     const rainfallNum = parseFloat(rainfall);
     if (!rainfall.trim()) {
       newErrors.rainfall = 'Rainfall is required';
       isValid = false;
-    } else if (isNaN(rainfallNum)) {
-      newErrors.rainfall = 'Please enter a valid number';
+    } else if (isNaN(rainfallNum) || rainfallNum < 0) {
+      newErrors.rainfall = 'Invalid value';
       isValid = false;
-    } else if (rainfallNum < 0) {
-      newErrors.rainfall = 'Rainfall cannot be negative';
-      isValid = false;
-    } else if (rainfallNum < 150) {
-      newErrors.rainfall = 'Rainfall must be at least 150mm for optimal prediction';
-      isValid = false;
-    } else if (rainfallNum > 200) {
-      newErrors.rainfall = 'Rainfall must not exceed 200mm for optimal prediction';
+    } else if (rainfallNum < 150 || rainfallNum > 200) {
+      newErrors.rainfall = 'Must be 150-200mm';
       isValid = false;
     }
 
-    // Inflation rate validation
     const inflationNum = parseFloat(inflationRate);
     if (!inflationRate.trim()) {
       newErrors.inflationRate = 'Inflation rate is required';
       isValid = false;
-    } else if (isNaN(inflationNum)) {
-      newErrors.inflationRate = 'Please enter a valid number';
-      isValid = false;
-    } else if (inflationNum < 0) {
-      newErrors.inflationRate = 'Inflation rate cannot be negative';
-      isValid = false;
-    } else if (inflationNum > 100) {
-      newErrors.inflationRate = 'Inflation rate cannot exceed 100%';
+    } else if (isNaN(inflationNum) || inflationNum < 0 || inflationNum > 100) {
+      newErrors.inflationRate = 'Must be 0-100%';
       isValid = false;
     }
 
@@ -82,371 +73,234 @@ export default function AdvancedPredictionScreen({ navigation }) {
     return isValid;
   };
 
-  // Real-time validation for rainfall
   const handleRainfallChange = (value) => {
     setRainfall(value);
-    
     if (errors.rainfall) {
       const rainfallNum = parseFloat(value);
       let newError = '';
-      
-      if (!value.trim()) {
-        newError = 'Rainfall is required';
-      } else if (isNaN(rainfallNum)) {
-        newError = 'Please enter a valid number';
-      } else if (rainfallNum < 0) {
-        newError = 'Rainfall cannot be negative';
-      } else if (rainfallNum < 150) {
-        newError = 'Rainfall must be at least 150mm for optimal prediction';
-      } else if (rainfallNum > 200) {
-        newError = 'Rainfall must not exceed 200mm for optimal prediction';
+      if (!value.trim() || isNaN(rainfallNum) || rainfallNum < 0) {
+        newError = 'Invalid value';
+      } else if (rainfallNum < 150 || rainfallNum > 200) {
+        newError = 'Must be 150-200mm';
       }
-      
-      setErrors(prev => ({ ...prev, rainfall: newError }));
+      setErrors((prev) => ({ ...prev, rainfall: newError }));
     }
   };
 
-  // Real-time validation for inflation rate
   const handleInflationRateChange = (value) => {
     setInflationRate(value);
-    
     if (errors.inflationRate) {
       const inflationNum = parseFloat(value);
       let newError = '';
-      
-      if (!value.trim()) {
-        newError = 'Inflation rate is required';
-      } else if (isNaN(inflationNum)) {
-        newError = 'Please enter a valid number';
-      } else if (inflationNum < 0) {
-        newError = 'Inflation rate cannot be negative';
-      } else if (inflationNum > 100) {
-        newError = 'Inflation rate cannot exceed 100%';
+      if (!value.trim() || isNaN(inflationNum) || inflationNum < 0 || inflationNum > 100) {
+        newError = 'Must be 0-100%';
       }
-      
-      setErrors(prev => ({ ...prev, inflationRate: newError }));
-    }
-  };
-
-  const predictAdvancedPrice = async (rainfallValue, priceTypeValue, inflationRateValue, seasonalityValue) => {
-    try {
-      const response = await axios.post(`${BASE_URL}/api/new-price/predict`, {
-        rainfall: parseFloat(rainfallValue),
-        price_type: priceTypeValue,
-        inflation_rate: parseFloat(inflationRateValue),
-        seasonality: seasonalityValue
-      });
-      return response.data;
-    } catch (error) {
-      console.error('API Error:', error);
-      throw error;
+      setErrors((prev) => ({ ...prev, inflationRate: newError }));
     }
   };
 
   const onPredict = async () => {
     if (!validateInputs()) return;
-    
+
     setIsLoading(true);
     try {
-      const prediction = await predictAdvancedPrice(rainfall, priceType, inflationRate, seasonality);
-      
-      const predictedPrice = prediction.predicted_price;
+      const response = await axios.post(`${BASE_URL}/api/new-price/predict`, {
+        rainfall: parseFloat(rainfall),
+        price_type: priceType,
+        inflation_rate: parseFloat(inflationRate),
+        seasonality: seasonality,
+      });
+
+      const predictedPrice = response.data.predicted_price;
       const lowerPrice = Math.round(predictedPrice - 50);
       const upperPrice = Math.round(predictedPrice + 50);
-      
+
       Alert.alert(
         'Advanced Price Prediction',
-        `Predicted price range for ${priceType} quality:\n\nRs. ${lowerPrice} - Rs. ${upperPrice} per kg\n\nPredicted Price: Rs. ${predictedPrice.toFixed(2)}\nFactors considered:\n• Rainfall: ${rainfall}mm\n• Inflation: ${inflationRate}%\n• Seasonality: ${seasonality === 'NO' ? 'No' : 'Yes'}`,
-        [{ text: 'OK' }]
+        `Predicted price range for ${priceType}:\n\n` +
+        `Rs. ${lowerPrice} - Rs. ${upperPrice} per kg\n\n` +
+        `Predicted: Rs. ${predictedPrice.toFixed(2)}\n` +
+        `Rainfall: ${rainfall}mm\n` +
+        `Inflation: ${inflationRate}%\n` +
+        `Seasonality: ${seasonality === 'NO' ? 'No' : 'Yes'}`,
+        [{ text: 'OK' }],
       );
     } catch (error) {
-      let errorMessage = 'Failed to get prediction. Please try again.';
-      if (error.response) {
-        errorMessage = error.response.data.error || errorMessage;
-      } else if (error.request) {
-        errorMessage = 'Network error. Please check your connection.';
-      }
-      
-      Alert.alert(
-        'Error', 
-        errorMessage,
-        [{ text: 'OK' }]
-      );
+      Alert.alert('Error', error.response?.data?.error || 'Network error', [{ text: 'OK' }]);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const getRainfallStatus = () => {
-    const rainfallNum = parseFloat(rainfall) || 0;
-    if (rainfallNum < 150) return { status: 'Below Optimal', color: '#dc3545', icon: '🌵' };
-    if (rainfallNum <= 200) return { status: 'Optimal', color: '#28a745', icon: '🌿' };
-    return { status: 'Above Optimal', color: '#ffc107', icon: '⛈️' };
-  };
-
-  const getInflationImpact = () => {
-    const inflationNum = parseFloat(inflationRate) || 0;
-    if (inflationNum < 5) return { impact: 'Low Impact', color: '#28a745' };
-    if (inflationNum <= 15) return { impact: 'Moderate Impact', color: '#ffc107' };
-    if (inflationNum <= 50) return { impact: 'High Impact', color: '#dc3545' };
-    return { impact: 'Critical Impact', color: '#6f42c1' };
-  };
-
-  const rainfallStatus = getRainfallStatus();
-  const inflationImpact = getInflationImpact();
-
-  // Check if form is valid for button state
   const isFormValid = !errors.rainfall && !errors.inflationRate && rainfall.trim() && inflationRate.trim();
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity 
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={styles.backIcon}>←</Text>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={styles.backText}>← Back</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Advanced Prediction</Text>
-        <View style={styles.placeholder} />
       </View>
 
-      <ScrollView 
-        style={styles.content} 
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
-        {/* Title Section */}
-        <View style={styles.titleSection}>
-          <Text style={styles.title}>Advanced Price Prediction</Text>
-          <Text style={styles.subtitle}>
-            Multi-factor analysis for accurate price forecasting
-          </Text>
-        </View>
+      <ScrollView style={styles.content}>
+        <Text style={styles.title}>Advanced Price Prediction</Text>
+        <Text style={styles.subtitle}>Multi-factor price forecasting</Text>
 
-        {/* Input Form */}
-        <View style={styles.formContainer}>
-          {/* Rainfall Input */}
-          <View style={styles.inputGroup}>
+        <View style={styles.form}>
+          {/* Rainfall */}
+          <View style={styles.field}>
             <Text style={styles.label}>Rainfall (mm) *</Text>
-            <View style={styles.inputContainer}>
-              <TextInput
-                style={[
-                  styles.textInput, 
-                  errors.rainfall ? styles.errorInput : null
-                ]}
-                value={rainfall}
-                onChangeText={handleRainfallChange}
-                placeholder="Enter rainfall (150-200mm)"
-                keyboardType="numeric"
-                maxLength={6}
-                editable={!isLoading}
-              />
-              {!errors.rainfall && (
-                <View style={[styles.statusBadge, { backgroundColor: rainfallStatus.color + '20' }]}>
-                  <Text style={styles.statusIcon}>{rainfallStatus.icon}</Text>
-                  <Text style={[styles.statusText, { color: rainfallStatus.color }]}>
-                    {rainfallStatus.status}
-                  </Text>
-                </View>
-              )}
-            </View>
+            <TextInput
+              style={[styles.input, errors.rainfall && styles.inputError]}
+              value={rainfall}
+              onChangeText={handleRainfallChange}
+              placeholder="150-200mm"
+              keyboardType="numeric"
+              editable={!isLoading}
+            />
             {errors.rainfall ? (
-              <Text style={styles.errorText}>❌ {errors.rainfall}</Text>
+              <Text style={styles.errorText}>{errors.rainfall}</Text>
             ) : (
-              <Text style={styles.inputHint}>Optimal range: 150-200mm for best predictions</Text>
+              <Text style={styles.hint}>Optimal: 150-200mm</Text>
             )}
           </View>
 
-          {/* Price Type Selection */}
-          <View style={styles.inputGroup}>
+          {/* Price Type */}
+          <View style={styles.field}>
             <Text style={styles.label}>Price Type *</Text>
-            <View style={styles.pickerContainer}>
-              <Picker
-                selectedValue={priceType}
-                onValueChange={(itemValue) => setPriceType(itemValue)}
-                style={styles.picker}
-                enabled={!isLoading}
-                dropdownIconColor="#2d5c3e"
-              >
-                {priceTypes.map((type) => (
-                  <Picker.Item 
-                    key={type.value} 
-                    label={type.label} 
-                    value={type.value}
-                    style={styles.pickerItem}
-                  />
-                ))}
-              </Picker>
-            </View>
+            <ModalSelector
+              data={priceTypes}
+              initValue="Select Price Type"
+              onChange={(option) => {
+                setPriceType(option.key);
+                setPriceTypeLabel(option.label);
+              }}
+              style={[styles.pickerBox, isLoading && styles.disabledPicker]}
+              disabled={isLoading}
+              selectStyle={styles.modalSelector}
+              selectTextStyle={styles.modalSelectorText}
+              initValueTextStyle={styles.modalSelectorText}
+              cancelText="Cancel"
+              cancelStyle={styles.modalCancelButton}
+              cancelTextStyle={styles.modalCancelText}
+            >
+              <View style={[styles.pickerBox, isLoading && styles.disabledPicker]}>
+                <Text style={[styles.modalSelectorText, !priceTypeLabel && styles.placeholderText]}>
+                  {priceTypeLabel || 'Select Price Type'}
+                </Text>
+              </View>
+            </ModalSelector>
           </View>
 
-          {/* Inflation Rate Input */}
-          <View style={styles.inputGroup}>
+          {/* Inflation Rate */}
+          <View style={styles.field}>
             <Text style={styles.label}>Inflation Rate (%) *</Text>
-            <View style={styles.inputContainer}>
-              <TextInput
-                style={[
-                  styles.textInput,
-                  errors.inflationRate ? styles.errorInput : null
-                ]}
-                value={inflationRate}
-                onChangeText={handleInflationRateChange}
-                placeholder="Enter inflation rate (0-100%)"
-                keyboardType="numeric"
-                maxLength={5}
-                editable={!isLoading}
-              />
-              {!errors.inflationRate && (
-                <View style={[styles.statusBadge, { backgroundColor: inflationImpact.color + '20' }]}>
-                  <Text style={[styles.statusText, { color: inflationImpact.color }]}>
-                    {inflationImpact.impact}
-                  </Text>
-                </View>
-              )}
-            </View>
+            <TextInput
+              style={[styles.input, errors.inflationRate && styles.inputError]}
+              value={inflationRate}
+              onChangeText={handleInflationRateChange}
+              placeholder="0-100%"
+              keyboardType="numeric"
+              editable={!isLoading}
+            />
             {errors.inflationRate ? (
-              <Text style={styles.errorText}>❌ {errors.inflationRate}</Text>
+              <Text style={styles.errorText}>{errors.inflationRate}</Text>
             ) : (
-              <Text style={styles.inputHint}>Current economic inflation rate (0-100%)</Text>
+              <Text style={styles.hint}>Current rate: 0-100%</Text>
             )}
           </View>
 
-          {/* Seasonality Selection */}
-          <View style={styles.inputGroup}>
+          {/* Seasonality */}
+          <View style={styles.field}>
             <Text style={styles.label}>Seasonality Effect</Text>
-            <View style={styles.pickerContainer}>
-              <Picker
-                selectedValue={seasonality}
-                onValueChange={(itemValue) => setSeasonality(itemValue)}
-                style={styles.picker}
-                enabled={!isLoading}
-                dropdownIconColor="#2d5c3e"
-              >
-                {seasonalityOptions.map((option) => (
-                  <Picker.Item 
-                    key={option.value} 
-                    label={option.label} 
-                    value={option.value}
-                    style={styles.pickerItem}
-                  />
-                ))}
-              </Picker>
-            </View>
-            <Text style={styles.inputHint}>Is seasonal effect present?</Text>
+            <ModalSelector
+              data={seasonalityOptions}
+              initValue="Select Seasonality"
+              onChange={(option) => {
+                setSeasonality(option.key);
+                setSeasonalityLabel(option.label);
+              }}
+              style={[styles.pickerBox, isLoading && styles.disabledPicker]}
+              disabled={isLoading}
+              selectStyle={styles.modalSelector}
+              selectTextStyle={styles.modalSelectorText}
+              initValueTextStyle={styles.modalSelectorText}
+              cancelText="Cancel"
+              cancelStyle={styles.modalCancelButton}
+              cancelTextStyle={styles.modalCancelText}
+            >
+              <View style={[styles.pickerBox, isLoading && styles.disabledPicker]}>
+                <Text style={[styles.modalSelectorText, !seasonalityLabel && styles.placeholderText]}>
+                  {seasonalityLabel || 'Select Seasonality'}
+                </Text>
+              </View>
+            </ModalSelector>
           </View>
 
-          {/* Validation Summary */}
+          {/* Validation Errors */}
           {(errors.rainfall || errors.inflationRate) && (
-            <View style={styles.validationSummary}>
-              <Text style={styles.validationTitle}>⚠️ Please fix the following errors:</Text>
-              {errors.rainfall && <Text style={styles.validationError}>• {errors.rainfall}</Text>}
-              {errors.inflationRate && <Text style={styles.validationError}>• {errors.inflationRate}</Text>}
+            <View style={styles.errorBox}>
+              <Text style={styles.errorTitle}>⚠️ Fix errors:</Text>
+              {errors.rainfall && <Text style={styles.errorItem}>• {errors.rainfall}</Text>}
+              {errors.inflationRate && <Text style={styles.errorItem}>• {errors.inflationRate}</Text>}
             </View>
           )}
 
           {/* Predict Button */}
           <TouchableOpacity
-            style={[
-              styles.predictButton, 
-              (isLoading || !isFormValid) && styles.disabledButton
-            ]}
+            style={[styles.btn, (!isFormValid || isLoading) && styles.btnDisabled]}
             onPress={onPredict}
-            disabled={isLoading || !isFormValid}
-            activeOpacity={0.8}
+            disabled={!isFormValid || isLoading}
           >
             {isLoading ? (
-              <ActivityIndicator size="small" color="#ffffff" />
+              <ActivityIndicator size="small" color="#fff" />
             ) : (
-              <>
-                <Text style={styles.predictButtonText}>Get Advanced Prediction</Text>
-                <Text style={styles.buttonIcon}>🔬</Text>
-              </>
+              <Text style={styles.btnText}>Get Prediction</Text>
             )}
           </TouchableOpacity>
-
-          {!isFormValid && !isLoading && (
-            <Text style={styles.buttonHint}>
-              Please correct all errors above to enable prediction
-            </Text>
-          )}
         </View>
 
-        {/* Factor Explanation Section */}
-        <View style={styles.factorSection}>
+        {/* Info Cards */}
+        <View style={styles.infoSection}>
           <Text style={styles.sectionTitle}>Prediction Factors</Text>
-          
-          <View style={styles.factorCard}>
-            <View style={styles.factorHeader}>
-              <Text style={styles.factorIcon}>🌧️</Text>
-              <Text style={styles.factorTitle}>Rainfall Impact</Text>
-            </View>
-            <Text style={styles.factorDescription}>
-              Rainfall directly affects pepper plant growth and yield. Optimal rainfall (150-200mm) 
-              supports healthy growth, while insufficient or excessive rainfall can impact quality and supply.
+
+          <View style={styles.infoCard}>
+            <Text style={styles.infoCardTitle}>🌧️ Rainfall Impact</Text>
+            <Text style={styles.infoCardText}>
+              Affects plant growth and yield. Optimal: 150-200mm.
             </Text>
           </View>
 
-          <View style={styles.factorCard}>
-            <View style={styles.factorHeader}>
-              <Text style={styles.factorIcon}>📈</Text>
-              <Text style={styles.factorTitle}>Inflation Effect</Text>
-            </View>
-            <Text style={styles.factorDescription}>
-              Economic inflation affects production costs, transportation, and overall market pricing. 
-              Higher inflation typically leads to increased commodity prices. Must be between 0-100%.
+          <View style={styles.infoCard}>
+            <Text style={styles.infoCardTitle}>📈 Inflation Effect</Text>
+            <Text style={styles.infoCardText}>
+              Impacts production costs and pricing. Range: 0-100%.
             </Text>
           </View>
 
-          <View style={styles.factorCard}>
-            <View style={styles.factorHeader}>
-              <Text style={styles.factorIcon}>📅</Text>
-              <Text style={styles.factorTitle}>Seasonal Variation</Text>
-            </View>
-            <Text style={styles.factorDescription}>
-              Seasonal effects can significantly impact pepper prices due to changes in demand 
-              and supply patterns throughout the year.
-            </Text>
-          </View>
-
-          <View style={styles.factorCard}>
-            <View style={styles.factorHeader}>
-              <Text style={styles.factorIcon}>⭐</Text>
-              <Text style={styles.factorTitle}>Quality Grades</Text>
-            </View>
-            <Text style={styles.factorDescription}>
-              Different quality grades command different prices. GR1 (premium) has highest value, 
-              followed by GR2 (standard) and White (specialty variety).
+          <View style={styles.infoCard}>
+            <Text style={styles.infoCardTitle}>📅 Seasonal Variation</Text>
+            <Text style={styles.infoCardText}>
+              Seasonal effects on supply and demand patterns.
             </Text>
           </View>
         </View>
 
-        {/* Input Requirements */}
-        <View style={styles.requirementsSection}>
-          <Text style={styles.sectionTitle}>Input Requirements</Text>
-          
-          <View style={styles.requirementCard}>
-            <Text style={styles.requirementTitle}>🎯 Validation Rules</Text>
-            <View style={styles.requirementsList}>
-              <Text style={styles.requirementItem}>• Rainfall: Must be between 150-200mm (cannot be negative)</Text>
-              <Text style={styles.requirementItem}>• Inflation Rate: Must be between 0-100% (cannot exceed 100%)</Text>
-              <Text style={styles.requirementItem}>• All required fields must be filled</Text>
-              <Text style={styles.requirementItem}>• Only numeric values are accepted for rainfall and inflation</Text>
-            </View>
-          </View>
+        {/* Requirements */}
+        <View style={styles.requirementBox}>
+          <Text style={styles.requirementTitle}>🎯 Input Requirements</Text>
+          <Text style={styles.requirementText}>• Rainfall: 150-200mm</Text>
+          <Text style={styles.requirementText}>• Inflation: 0-100%</Text>
+          <Text style={styles.requirementText}>• All fields required</Text>
         </View>
 
-        {/* Additional Info */}
-        <View style={styles.additionalInfo}>
-          <View style={styles.disclaimerCard}>
-            <Text style={styles.disclaimerTitle}>⚠️ Disclaimer</Text>
-            <Text style={styles.disclaimerText}>
-              Advanced predictions use multiple variables and machine learning models. 
-              Results are estimates and actual prices may vary due to unforeseen market conditions. 
-              Please ensure all inputs are within the specified ranges for accurate predictions.
-            </Text>
-          </View>
+        {/* Disclaimer */}
+        <View style={styles.disclaimer}>
+          <Text style={styles.disclaimerTitle}>⚠️ Disclaimer</Text>
+          <Text style={styles.disclaimerText}>
+            Predictions are estimates. Actual prices may vary due to market conditions.
+          </Text>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -456,311 +310,209 @@ export default function AdvancedPredictionScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f9f0',
+    backgroundColor: '#f5f5f5',
   },
-  
-  // Header
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     backgroundColor: '#2d5c3e',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    padding: 16,
   },
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  backIcon: {
-    fontSize: 20,
-    color: '#ffffff',
-    fontWeight: '600',
+  backText: {
+    color: '#fff',
+    fontSize: 16,
   },
   headerTitle: {
+    color: '#fff',
     fontSize: 18,
     fontWeight: '600',
-    color: '#ffffff',
+    marginLeft: 16,
   },
-  placeholder: {
-    width: 40,
-  },
-  
-  // Content
   content: {
     flex: 1,
-  },
-  scrollContent: {
-    paddingBottom: 20,
-  },
-  
-  // Title Section
-  titleSection: {
-    paddingHorizontal: 20,
-    paddingVertical: 24,
-    alignItems: 'center',
+    padding: 16,
   },
   title: {
-    fontSize: 22,
-    fontWeight: '700',
+    fontSize: 20,
+    fontWeight: 'bold',
     color: '#2d5c3e',
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#6c757d',
-    textAlign: 'center',
-    lineHeight: 24,
-  },
-  
-  // Form Container
-  formContainer: {
-    paddingHorizontal: 20,
-    gap: 20,
-  },
-  
-  // Input Groups
-  inputGroup: {
     marginBottom: 4,
   },
-  label: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#2d5c3e',
-    marginBottom: 12,
+  subtitle: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 16,
   },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  textInput: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    borderWidth: 1.5,
-    borderColor: '#28a745',
+  form: {
+    backgroundColor: '#fff',
     padding: 16,
-    fontSize: 16,
-    color: '#2d5c3e',
-    shadowColor: '#2d5c3e',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
+    borderRadius: 8,
+    marginBottom: 16,
   },
-  errorInput: {
+  field: {
+    marginBottom: 16,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 8,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#28a745',
+    borderRadius: 4,
+    padding: 12,
+    fontSize: 15,
+    color: '#2d5c3e',
+    backgroundColor: '#fff',
+  },
+  inputError: {
     borderColor: '#dc3545',
     backgroundColor: '#fff5f5',
   },
-  inputHint: {
-    fontSize: 12,
-    color: '#6c757d',
-    marginTop: 6,
+  hint: {
+    fontSize: 11,
+    color: '#666',
+    marginTop: 4,
     fontStyle: 'italic',
   },
   errorText: {
-    fontSize: 12,
+    fontSize: 11,
     color: '#dc3545',
-    marginTop: 6,
+    marginTop: 4,
+  },
+  pickerBox: {
+    borderWidth: 1,
+    borderColor: '#28a745',
+    borderRadius: 4,
+    backgroundColor: '#fff',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    justifyContent: 'center',
+  },
+  disabledPicker: {
+    backgroundColor: '#e9ecef',
+    opacity: 0.6,
+  },
+  modalSelector: {
+    borderWidth: 0,
+  },
+  modalSelectorText: {
+    fontSize: 15,
+    color: '#2d5c3e',
     fontWeight: '500',
   },
-  statusBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 8,
-    paddingVertical: 6,
+  placeholderText: {
+    color: '#666',
+    fontWeight: '400',
+  },
+  modalCancelButton: {
+    backgroundColor: '#dc3545',
     borderRadius: 8,
-    gap: 4,
   },
-  statusIcon: {
-    fontSize: 14,
-  },
-  statusText: {
-    fontSize: 12,
+  modalCancelText: {
+    color: '#ffffff',
     fontWeight: '600',
   },
-  
-  // Validation Summary
-  validationSummary: {
+  errorBox: {
     backgroundColor: '#fff5f5',
-    borderRadius: 12,
-    padding: 16,
-    borderLeftWidth: 4,
+    padding: 12,
+    borderRadius: 4,
+    borderLeftWidth: 3,
     borderLeftColor: '#dc3545',
-    marginTop: 8,
-  },
-  validationTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#dc3545',
     marginBottom: 8,
   },
-  validationError: {
+  errorTitle: {
     fontSize: 13,
+    fontWeight: '600',
     color: '#dc3545',
     marginBottom: 4,
+  },
+  errorItem: {
+    fontSize: 12,
+    color: '#dc3545',
+    marginBottom: 2,
+  },
+  btn: {
+    backgroundColor: '#6f42c1',
+    padding: 14,
+    borderRadius: 4,
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  btnDisabled: {
+    backgroundColor: '#ccc',
+  },
+  btnText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  infoSection: {
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#2d5c3e',
+    marginBottom: 8,
+  },
+  infoCard: {
+    backgroundColor: '#fff',
+    padding: 12,
+    borderRadius: 4,
+    marginBottom: 8,
+    borderLeftWidth: 3,
+    borderLeftColor: '#6f42c1',
+  },
+  infoCardTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#2d5c3e',
+    marginBottom: 4,
+  },
+  infoCardText: {
+    fontSize: 13,
+    color: '#666',
     lineHeight: 18,
   },
-  
-  // Picker
-  pickerContainer: {
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    borderWidth: 1.5,
-    borderColor: '#28a745',
-    overflow: 'hidden',
-    shadowColor: '#2d5c3e',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  picker: {
-    height: 50,
-    backgroundColor: '#ffffff',
-  },
-  pickerItem: {
-    fontSize: 16,
-    color: '#2d5c3e',
-  },
-  
-  // Predict Button
-  predictButton: {
-    backgroundColor: '#6f42c1',
-    borderRadius: 12,
-    padding: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#6f42c1',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 6,
-    marginTop: 8,
-  },
-  disabledButton: {
-    backgroundColor: '#6c757d',
-    shadowOpacity: 0.1,
-  },
-  predictButtonText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#ffffff',
-    marginRight: 8,
-  },
-  buttonIcon: {
-    fontSize: 18,
-  },
-  buttonHint: {
-    fontSize: 12,
-    color: '#6c757d',
-    textAlign: 'center',
-    marginTop: 8,
-    fontStyle: 'italic',
-  },
-  
-  // Requirements Section
-  requirementsSection: {
-    paddingHorizontal: 20,
-    paddingTop: 24,
-    gap: 12,
-  },
-  requirementCard: {
+  requirementBox: {
     backgroundColor: '#e3f2fd',
-    borderRadius: 12,
-    padding: 16,
+    padding: 12,
+    borderRadius: 4,
+    marginBottom: 12,
     borderLeftWidth: 3,
     borderLeftColor: '#2196f3',
   },
   requirementTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1976d2',
-    marginBottom: 12,
-  },
-  requirementsList: {
-    gap: 6,
-  },
-  requirementItem: {
-    fontSize: 13,
-    color: '#1976d2',
-    lineHeight: 18,
-  },
-  
-  // Factor Section
-  factorSection: {
-    paddingHorizontal: 20,
-    paddingTop: 24,
-    gap: 12,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#2d5c3e',
-    marginBottom: 8,
-  },
-  factorCard: {
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    padding: 16,
-    borderLeftWidth: 3,
-    borderLeftColor: '#6f42c1',
-    shadowColor: '#2d5c3e',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  factorHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  factorIcon: {
-    fontSize: 20,
-    marginRight: 8,
-  },
-  factorTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#2d5c3e',
-  },
-  factorDescription: {
     fontSize: 14,
-    color: '#6c757d',
-    lineHeight: 20,
+    fontWeight: '600',
+    color: '#1976d2',
+    marginBottom: 6,
   },
-  
-  // Additional Info
-  additionalInfo: {
-    paddingHorizontal: 20,
-    paddingTop: 24,
-    paddingBottom: 32,
-    gap: 16,
+  requirementText: {
+    fontSize: 12,
+    color: '#1976d2',
+    marginBottom: 2,
   },
-  disclaimerCard: {
+  disclaimer: {
     backgroundColor: '#fff3cd',
-    borderRadius: 12,
-    padding: 16,
+    padding: 12,
+    borderRadius: 4,
     borderLeftWidth: 3,
     borderLeftColor: '#ffc107',
+    marginBottom: 20,
   },
   disclaimerTitle: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '600',
     color: '#856404',
-    marginBottom: 8,
+    marginBottom: 4,
   },
   disclaimerText: {
-    fontSize: 13,
+    fontSize: 12,
     color: '#856404',
-    lineHeight: 18,
+    lineHeight: 16,
   },
 });

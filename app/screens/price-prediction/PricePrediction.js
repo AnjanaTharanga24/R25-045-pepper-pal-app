@@ -6,111 +6,76 @@ export default function PricePredictionScreen({ navigation }) {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity 
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={styles.backIcon}>←</Text>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={styles.backText}>← Back</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Price Prediction</Text>
-        <View style={styles.placeholder} />
       </View>
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Title Section */}
-        <View style={styles.titleSection}>
-          <Text style={styles.title}>Black Pepper Price Prediction</Text>
-          <Text style={styles.subtitle}>
-            Choose your prediction type to get accurate market forecasts
-          </Text>
-        </View>
+      <ScrollView style={styles.content}>
+        <Text style={styles.title}>Black Pepper Price Prediction</Text>
+        <Text style={styles.subtitle}>Choose your prediction type</Text>
 
         {/* Prediction Options */}
         <View style={styles.optionsContainer}>
-          {/* District Level Prediction */}
+          {/* District Level */}
           <TouchableOpacity
-            style={[styles.optionCard, styles.districtCard]}
+            style={styles.optionCard}
             onPress={() => navigation.navigate('District Price')}
-            activeOpacity={0.7}
           >
-            <View style={styles.cardIcon}>
-              <Text style={styles.iconText}>🏘️</Text>
-            </View>
-            <View style={styles.cardContent}>
+            <View style={styles.cardHeader}>
+              <Text style={styles.cardIcon}>🏘️</Text>
               <Text style={styles.cardTitle}>District Level</Text>
-              <Text style={styles.cardDescription}>
-                Get price predictions for specific districts across Sri Lanka
-              </Text>
-              <View style={styles.cardFeatures}>
-                <Text style={styles.featureText}>• Regional market analysis</Text>
-                <Text style={styles.featureText}>• Location-based pricing</Text>
-                <Text style={styles.featureText}>• 14 districts available</Text>
-              </View>
             </View>
-            <View style={styles.cardArrow}>
-              <Text style={styles.arrowText}>→</Text>
+            <Text style={styles.cardDescription}>
+              Get price predictions for specific districts
+            </Text>
+            <View style={styles.cardFooter}>
+              <Text style={styles.footerText}>14 districts • Regional analysis</Text>
             </View>
           </TouchableOpacity>
 
-          {/* National Level Prediction */}
+          {/* National Level */}
           <TouchableOpacity
-            style={[styles.optionCard, styles.nationalCard]}
+            style={styles.optionCard}
             onPress={() => navigation.navigate('National Price')}
-            activeOpacity={0.7}
           >
-            <View style={styles.cardIcon}>
-              <Text style={styles.iconText}>🇱🇰</Text>
-            </View>
-            <View style={styles.cardContent}>
+            <View style={styles.cardHeader}>
+              <Text style={styles.cardIcon}>🇱🇰</Text>
               <Text style={styles.cardTitle}>National Level</Text>
-              <Text style={styles.cardDescription}>
-                Get national average price predictions by quality grade
-              </Text>
-              <View style={styles.cardFeatures}>
-                <Text style={styles.featureText}>• Quality-based pricing</Text>
-                <Text style={styles.featureText}>• National market trends</Text>
-                <Text style={styles.featureText}>• GR-1, GR-2, White grades</Text>
-              </View>
             </View>
-            <View style={styles.cardArrow}>
-              <Text style={styles.arrowText}>→</Text>
+            <Text style={styles.cardDescription}>
+              National average price by quality grade
+            </Text>
+            <View style={styles.cardFooter}>
+              <Text style={styles.footerText}>GR-1, GR-2, White grades</Text>
             </View>
           </TouchableOpacity>
 
-          {/* Advanced Prediction */}
+          {/* Advanced Analysis */}
           <TouchableOpacity
-            style={[styles.optionCard, styles.advancedCard]}
+            style={styles.optionCard}
             onPress={() => navigation.navigate('Advanced Price')}
-            activeOpacity={0.7}
           >
-            <View style={styles.cardIcon}>
-              <Text style={styles.iconText}>🔬</Text>
-            </View>
-            <View style={styles.cardContent}>
+            <View style={styles.cardHeader}>
+              <Text style={styles.cardIcon}>🔬</Text>
               <Text style={styles.cardTitle}>Advanced Analysis</Text>
-              <Text style={styles.cardDescription}>
-                Multi-factor analysis considering rainfall, inflation & seasonality
-              </Text>
-              <View style={styles.cardFeatures}>
-                <Text style={styles.featureText}>• Weather impact analysis</Text>
-                <Text style={styles.featureText}>• Economic factor integration</Text>
-                <Text style={styles.featureText}>• Seasonal trend analysis</Text>
-              </View>
             </View>
-            <View style={styles.cardArrow}>
-              <Text style={styles.arrowText}>→</Text>
+            <Text style={styles.cardDescription}>
+              Multi-factor analysis with weather and economic data
+            </Text>
+            <View style={styles.cardFooter}>
+              <Text style={styles.footerText}>Weather • Inflation • Seasonality</Text>
             </View>
           </TouchableOpacity>
         </View>
 
-        {/* Info Section */}
-        <View style={styles.infoSection}>
-          <View style={styles.infoCard}>
-            <Text style={styles.infoTitle}>💡 Prediction Accuracy</Text>
-            <Text style={styles.infoText}>
-              Our prediction models use historical data, weather patterns, and market trends to provide accurate price forecasts. Advanced analysis incorporates multiple economic and environmental factors for enhanced precision.
-            </Text>
-          </View>
+        {/* Info */}
+        <View style={styles.infoBox}>
+          <Text style={styles.infoTitle}>💡 About Predictions</Text>
+          <Text style={styles.infoText}>
+            Our models use historical data, weather patterns, and market trends for accurate forecasts.
+          </Text>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -120,174 +85,96 @@ export default function PricePredictionScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f9f0',
+    backgroundColor: '#f5f5f5',
   },
-  
-  // Header
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     backgroundColor: '#2d5c3e',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    padding: 16,
   },
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  backIcon: {
-    fontSize: 20,
-    color: '#ffffff',
-    fontWeight: '600',
+  backText: {
+    color: '#fff',
+    fontSize: 16,
   },
   headerTitle: {
+    color: '#fff',
     fontSize: 18,
     fontWeight: '600',
-    color: '#ffffff',
+    marginLeft: 16,
   },
-  placeholder: {
-    width: 40,
-  },
-  
-  // Content
   content: {
     flex: 1,
-  },
-  
-  // Title Section
-  titleSection: {
-    paddingHorizontal: 20,
-    paddingVertical: 24,
-    alignItems: 'center',
+    padding: 16,
   },
   title: {
-    fontSize: 24,
-    fontWeight: '700',
+    fontSize: 20,
+    fontWeight: 'bold',
     color: '#2d5c3e',
-    textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: 4,
   },
   subtitle: {
-    fontSize: 16,
-    color: '#6c757d',
-    textAlign: 'center',
-    lineHeight: 24,
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 20,
   },
-  
-  // Options Container
   optionsContainer: {
-    paddingHorizontal: 20,
-    gap: 16,
-    marginBottom: 24,
+    gap: 12,
+    marginBottom: 16,
   },
-  
-  // Option Cards
   optionCard: {
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    shadowColor: '#2d5c3e',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 5,
-  },
-  districtCard: {
-    borderLeftWidth: 4,
+    backgroundColor: '#fff',
+    padding: 16,
+    borderRadius: 8,
+    borderLeftWidth: 3,
     borderLeftColor: '#28a745',
   },
-  nationalCard: {
-    borderLeftWidth: 4,
-    borderLeftColor: '#ffa500',
-  },
-  advancedCard: {
-    borderLeftWidth: 4,
-    borderLeftColor: '#6f42c1',
+  cardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
   },
   cardIcon: {
-    width: 60,
-    height: 60,
-    borderRadius: 15,
-    backgroundColor: '#f0f9f0',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 16,
-  },
-  iconText: {
-    fontSize: 28,
-  },
-  cardContent: {
-    flex: 1,
-    paddingRight: 12,
+    fontSize: 24,
+    marginRight: 12,
   },
   cardTitle: {
-    fontSize: 18,
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#2d5c3e',
+  },
+  cardDescription: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 8,
+    lineHeight: 20,
+  },
+  cardFooter: {
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#f0f0f0',
+  },
+  footerText: {
+    fontSize: 12,
+    color: '#28a745',
+    fontWeight: '500',
+  },
+  infoBox: {
+    backgroundColor: '#fff',
+    padding: 12,
+    borderRadius: 4,
+    borderLeftWidth: 3,
+    borderLeftColor: '#17a2b8',
+  },
+  infoTitle: {
+    fontSize: 14,
     fontWeight: '600',
     color: '#2d5c3e',
     marginBottom: 6,
   },
-  cardDescription: {
-    fontSize: 14,
-    color: '#6c757d',
-    lineHeight: 20,
-    marginBottom: 12,
-  },
-  cardFeatures: {
-    gap: 4,
-  },
-  featureText: {
-    fontSize: 12,
-    color: '#4a7c59',
-    fontWeight: '500',
-  },
-  cardArrow: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    backgroundColor: '#f0f9f0',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  arrowText: {
-    fontSize: 18,
-    color: '#4a7c59',
-    fontWeight: '600',
-  },
-  
-  // Info Section
-  infoSection: {
-    paddingHorizontal: 20,
-    marginTop: 16,
-    paddingBottom: 32,
-  },
-  infoCard: {
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    padding: 16,
-    borderLeftWidth: 3,
-    borderLeftColor: '#17a2b8',
-    shadowColor: '#2d5c3e',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  infoTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#2d5c3e',
-    marginBottom: 8,
-  },
   infoText: {
-    fontSize: 14,
-    color: '#6c757d',
-    lineHeight: 20,
+    fontSize: 13,
+    color: '#666',
+    lineHeight: 18,
   },
 });

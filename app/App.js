@@ -8,7 +8,7 @@ import NationalPredictionScreen from './screens/price-prediction/NationalLevelPr
 import AdvancedPredictionScreen from './screens/price-prediction/AdvancedPredictionScreen';
 import DiseaseDetectionScreen from './screens/disease-detection/DiseaseDetection';
 import FertilizerGuideScreen from './screens/fertilizer-guide/FertilizerGuide';
-import PepperVarietiesScreen from './screens/pepper-varieties/PepperVarieties'; // Add this import
+import PepperVarietiesScreen from './screens/pepper-varieties/PepperVarieties';
 
 const Stack = createNativeStackNavigator();
 

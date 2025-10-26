@@ -1,5 +1,7 @@
+# routes.py
 from flask import Blueprint, request, jsonify
 from .services import DeficiencyPredictionService
+from .leaf_identification import LeafIdentificationService
 
 deficiency_bp = Blueprint('deficiency', __name__, url_prefix='/api/deficiency')
 
@@ -31,7 +33,19 @@ def predict_deficiency():
         # Read image bytes
         image_bytes = image_file.read()
         
-        # Get prediction
+        # First, verify it's a pepper leaf
+        leaf_service = LeafIdentificationService()
+        leaf_type = leaf_service.predict_leaf_type(image_bytes)
+        
+        if leaf_type["predicted_class"] != "Pepper" or leaf_type["confidence"] < 0.8:
+            return jsonify({
+                'status': 'error',
+                'message': 'Please upload a Pepper leaf image',
+                'detected_leaf': leaf_type["predicted_class"],
+                'confidence': float(leaf_type["confidence"])
+            }), 400
+        
+        # Get deficiency prediction
         service = DeficiencyPredictionService()
         result = service.predict_deficiency(image_bytes, age)
         

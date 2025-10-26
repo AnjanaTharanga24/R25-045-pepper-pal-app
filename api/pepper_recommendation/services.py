@@ -1,3 +1,4 @@
+# api/pepper_recommendation/services.py
 import os
 import pandas as pd
 import joblib
@@ -12,11 +13,11 @@ class ClimateDataFetcher:
     def _load_data(cls):
         if cls._df is None:
             possible_paths = [
-                'data/With_climate_data.csv',
-                'With_climate_data.csv',
-                'api/pepper_recommendation/data/With_climate_data.csv',
-                'api/data/With_climate_data.csv',
+                'data/dataset_corrected.csv',  # Updated dataset
+                'data/With_climate_data.csv',  # Fallback to original dataset
+                os.path.join(os.path.dirname(__file__), 'data', 'dataset_corrected.csv'),
                 os.path.join(os.path.dirname(__file__), 'data', 'With_climate_data.csv'),
+                os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'dataset_corrected.csv'),
                 os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'With_climate_data.csv')
             ]
             
@@ -27,7 +28,7 @@ class ClimateDataFetcher:
                     break
             
             if file_path is None:
-                raise FileNotFoundError(f"CSV file 'With_climate_data.csv' not found in any of these locations: {possible_paths}")
+                raise FileNotFoundError(f"CSV file not found in any of these locations: {possible_paths}")
             
             try:
                 cls._df = pd.read_csv(file_path)
@@ -45,10 +46,18 @@ class ClimateDataFetcher:
         if result.empty:
             return None
 
-        elevation = int(result['Elevation (m)'].values[0])
-        rainfall = int(result['Annual Rainfall (mm)'].values[0])
-        temperature = float(result['Avg Temperature (?C)'].values[0])
-        humidity = int(result['Humidity (%)'].values[0])
+        try:
+            # Use updated column names from dataset_corrected.csv
+            elevation = int(result['Elevation'].values[0])
+            rainfall = int(result['Rainfall'].values[0])
+            temperature = float(result['Temp'].values[0])
+            humidity = int(result['Humidity'].values[0])
+        except KeyError:
+            # Fallback to original column names if using With_climate_data.csv
+            elevation = int(result['Elevation (m)'].values[0])
+            rainfall = int(result['Annual Rainfall (mm)'].values[0])
+            temperature = float(result['Avg Temperature (?C)'].values[0])
+            humidity = int(result['Humidity (%)'].values[0])
 
         return {
             'Elevation (m)': elevation,
@@ -61,18 +70,44 @@ class ClimateDataFetcher:
     def get_soil_data(cls, soil_type):
         cls._load_data()
         result = cls._df[
-            (cls._df['Soil Texture Type'].str.strip().str.lower() == soil_type.strip().lower())
+            (cls._df['Soil Texture'].str.strip().str.lower() == soil_type.strip().lower())
         ]
 
         if result.empty:
             return None
 
-        soil_quality = result['Soil Quality'].values[0]
-        drainage = result['Drainage'].values[0]
+        try:
+            # Use updated column names
+            soil_quality = result['Soil Quality'].values[0]
+            drainage = result['Soil Drainage'].values[0]
+        except KeyError:
+            # Fallback to original column names
+            soil_quality = result['Soil Quality'].values[0]
+            drainage = result['Drainage'].values[0]
 
         return {
             'Soil Quality': soil_quality,
-            'Drainage': drainage,
+            'Drainage': drainage
+        }
+
+    @classmethod
+    def get_soil_and_pepper_data(cls, soil_type, ds_division):
+        cls._load_data()
+        result = cls._df[
+            (cls._df['DS Division'].str.strip().str.lower() == ds_division.strip().lower()) &
+            (cls._df['Soil Texture'].str.strip().str.lower() == soil_type.strip().lower())
+        ]
+
+        if result.empty:
+            return None
+
+        try:
+            soil_type = result['Best Variety'].values[0]
+        except KeyError:
+            return None
+
+        return {
+            'Recommended pepper type': soil_type
         }
 
 class PepperRecommendationService:
@@ -85,18 +120,12 @@ class PepperRecommendationService:
         if cls._model is None or cls._label_encoders is None:
             possible_model_paths = [
                 'models/recommendation_model.joblib',
-                'recommendation_model.joblib',
-                'api/pepper_recommendation/models/recommendation_model.joblib',
-                'api/models/recommendation_model.joblib',
                 os.path.join(os.path.dirname(__file__), 'models', 'recommendation_model.joblib'),
                 os.path.join(os.path.dirname(__file__), '..', '..', 'models', 'recommendation_model.joblib')
             ]
             
             possible_encoder_paths = [
                 'models/label_encoders.joblib',
-                'label_encoders.joblib',
-                'api/pepper_recommendation/models/label_encoders.joblib',
-                'api/models/label_encoders.joblib',
                 os.path.join(os.path.dirname(__file__), 'models', 'label_encoders.joblib'),
                 os.path.join(os.path.dirname(__file__), '..', '..', 'models', 'label_encoders.joblib')
             ]
@@ -163,3 +192,6 @@ def get_climate_data(district, ds_division):
 
 def get_soil_data(soil_type):
     return ClimateDataFetcher.get_soil_data(soil_type)
+
+def get_soil_and_pepper_data(soil_type, ds_division):
+    return ClimateDataFetcher.get_soil_and_pepper_data(soil_type, ds_division)

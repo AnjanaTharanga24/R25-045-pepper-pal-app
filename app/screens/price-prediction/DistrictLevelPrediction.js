@@ -54,8 +54,8 @@ export default function DistrictPredictionScreen({ navigation }) {
       
       // Calculate confidence range (±5% of predicted price)
       const predictedPrice = prediction.predicted_price;
-      const lowerPrice = Math.round(predictedPrice * 0.95);
-      const upperPrice = Math.round(predictedPrice * 1.05);
+      const lowerPrice = Math.round(predictedPrice - 50);
+      const upperPrice = Math.round(predictedPrice + 50);
       
       Alert.alert(
         'District Price Prediction',
@@ -148,12 +148,25 @@ export default function DistrictPredictionScreen({ navigation }) {
             </TouchableOpacity>
           </View>
 
-          {showPicker && (
+          {/* {showPicker && (
             <DateTimePicker
               value={date}
               mode="date"
               display="default"
               minimumDate={new Date()}
+              onChange={(_, selectedDate) => {
+                setShowPicker(false);
+                if (selectedDate) setDate(selectedDate);
+              }}
+            />
+          )} */}
+
+            {showPicker && (
+            <DateTimePicker
+              value={date}
+              mode="date"
+              display="default"
+              // No date restrictions at all
               onChange={(_, selectedDate) => {
                 setShowPicker(false);
                 if (selectedDate) setDate(selectedDate);

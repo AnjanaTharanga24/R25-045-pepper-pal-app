@@ -7,7 +7,6 @@ import {
   SafeAreaView, 
   ScrollView, 
   Alert, 
-  TextInput,
   ActivityIndicator
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
@@ -25,12 +24,15 @@ export default function PepperVarietiesScreen({ navigation }) {
   const [soilQuality, setSoilQuality] = useState('');
   const [drainage, setDrainage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isFetchingSoil, setIsFetchingSoil] = useState(false);
   const [dsDivisions, setDsDivisions] = useState([]);
   const [districts, setDistricts] = useState([]);
+  const [climateDataFetched, setClimateDataFetched] = useState(false);
+  const [soilDataFetched, setSoilDataFetched] = useState(false);
 
   const districtData = {
-    Ampara: ["Addalachchenai", "Akkarajpattu", "Alayadiyembu", "Ampara", "Damana", "Dehiattakandiya", "Irakkamam", "Kalmunai", "Karaitivu", "Lahugala", "Mahaoya", "Navithanveli", "Nintavur", "Padiyathalawa", "Sainthamaruthu", "Sammanthurai", "Samanthurai", "Thirukkovli", "Uhana"],
-    Anuradhapura: ["Galenbindunuwewa", "Gainewa", "Horovprothana", "Ipalogama", "Kahatagasdigiliya", "Kebithigollewa", "Kekirawa", "Mahavilachchiya", "Medawachchiya", "Mihintale", "Nachchaduwa", "Nuwaragam Palatha C", "Nuwaragam Palatha Ei", "Palagala", "Rambewa", "Rathmalgahawewa", "Thalawa", "Thambuttegama", "Yaya Palatha"],
+    Ampara: ["Addalachchenai", "Akkaraipattu", "Alayadiyembu", "Ampara", "Damana", "Dehiattakandiya", "Irakkamam", "Kalmunai", "Karaitivu", "Lahugala", "Mahaoya", "Navithanveli", "Nintavur", "Padiyathalawa", "Sainthamaruthu", "Sammanthurai", "Samanthurai", "Thirukkovli", "Uhana"],
+    Anuradhapura: ["Galenbindunuwewa", "Gainewa", "Horowpothana", "Ipalogama", "Kahatagasdigiliya", "Kebithigollewa", "Kekirawa", "Mahavilachchiya", "Medawachchiya", "Mihintale", "Nachchaduwa", "Nuwaragam Palatha C", "Nuwaragam Palatha Ei", "Palagala", "Rambewa", "Rathmalgahawewa", "Thalawa", "Thambuttegama", "Yaya Palatha"],
     Badulla: ["Badulla", "Bandarawela", "Ella", "Hali-Ela", "Haputale", "Kandaketiya", "Lunugala", "Mahiyanganaya", "Meegahakivula", "Passara", "Rideemaliyadda", "Soranatota", "Uva Paranagama", "Weilmada"],
     Batticaloa: ["Batticaloa", "Eravur Pattu", "Kattankudy", "Koralai Pattu", "Koralai Pattu Central", "Koralai Pattu North", "Koralai Pattu South", "Koralai Pattu West", "Mammuai North", "Mammuai Pattu", "Mammuai South", "Mammuai South West", "Mammuai West", "Poratiwu Pattu"],
     Colombo: ["Colombo", "Dehiwala", "Homagama", "Kaduwela", "Kesbewa", "Kolonnawa", "Maharagama", "Moratuwa", "Padukka", "Ratmalana", "Seethawaka", "Sri Jayawardenepura K", "Thimbirigasyaya"],
@@ -74,28 +76,41 @@ export default function PepperVarietiesScreen({ navigation }) {
       const divisions = districtData[district] || [];
       setDsDivisions(divisions);
       setDsDivision('');
+      setClimateDataFetched(false);
+      // Reset soil data when district changes
+      setSoilTexture('');
+      setSoilQuality('');
+      setDrainage('');
+      setSoilDataFetched(false);
     } else {
       setDsDivisions([]);
       setDsDivision('');
     }
   }, [district]);
 
+  // Reset data when DS division changes
   useEffect(() => {
-    if (soilTexture === 'Sandy clay loam') {
-      setSoilQuality('Organic-rich');
-      setDrainage('Moderate drainage');
-    } else if (soilTexture === 'Lateritic soils') {
-      setSoilQuality('Sandy loam');
-      setDrainage('Moist');
-    } else if (soilTexture === 'Red loam') {
-      setSoilQuality('Slightly acidic');
-      setDrainage('Good drainage');
-    } else if (soilTexture === 'Loamy') {
-      setSoilQuality('Well-drained');
-      setDrainage('Rich in organic matter');
+    if (dsDivision) {
+      setClimateDataFetched(false);
+      setElevation('');
+      setAnnualRainfall('');
+      setAvgTemperature('');
+      setHumidity('');
+      setSoilTexture('');
+      setSoilQuality('');
+      setDrainage('');
+      setSoilDataFetched(false);
+    }
+  }, [dsDivision]);
+
+  // Fetch soil data when soil texture is selected
+  useEffect(() => {
+    if (soilTexture && soilTexture !== '') {
+      fetchSoilData(soilTexture);
     } else {
       setSoilQuality('');
       setDrainage('');
+      setSoilDataFetched(false);
     }
   }, [soilTexture]);
 
@@ -123,8 +138,9 @@ export default function PepperVarietiesScreen({ navigation }) {
         setAnnualRainfall(climateData['Annual Rainfall (mm)']?.toString() || '');
         setAvgTemperature(climateData['Avg Temperature (°C)']?.toString() || '');
         setHumidity(climateData['Humidity (%)']?.toString() || '');
+        setClimateDataFetched(true);
         
-        Alert.alert('Success', 'Climate data loaded successfully!');
+        Alert.alert('Success', 'Climate data loaded successfully! Now select your soil texture.');
       } else {
         Alert.alert('Error', response.data.error || 'Failed to fetch climate data');
       }
@@ -136,89 +152,121 @@ export default function PepperVarietiesScreen({ navigation }) {
     }
   };
 
-  const validateInputs = () => {
-    const elevationNum = parseFloat(elevation);
-    const rainfallNum = parseFloat(annualRainfall);
-    const temperatureNum = parseFloat(avgTemperature);
-    const humidityNum = parseFloat(humidity);
+  const fetchSoilData = async (soilType) => {
+    setIsFetchingSoil(true);
+    setSoilQuality('');
+    setDrainage('');
+    setSoilDataFetched(false);
 
-    if (!elevation || isNaN(elevationNum) || elevationNum < 0 || elevationNum > 3000) {
-      Alert.alert('Invalid Input', 'Elevation must be between 0-3000 meters');
-      return false;
-    }
-
-    if (!annualRainfall || isNaN(rainfallNum) || rainfallNum < 0 || rainfallNum > 5000) {
-      Alert.alert('Invalid Input', 'Annual rainfall must be between 0-5000 mm');
-      return false;
-    }
-    
-    if (!humidity || isNaN(humidityNum) || humidityNum < 0 || humidityNum > 100) {
-      Alert.alert('Invalid Input', 'Humidity must be between 0-100%');
-      return false;
-    }
-    
-    if (!avgTemperature || isNaN(temperatureNum) || temperatureNum < 0 || temperatureNum > 50) {
-      Alert.alert('Invalid Input', 'Average temperature must be between 0-50°C');
-      return false;
-    }
-
-    if (!soilTexture) {
-      Alert.alert('Missing Information', 'Please select soil texture');
-      return false;
-    }
-
-    return true;
-  };
-
-  const getPepperRecommendation = async (requestData) => {
     try {
-      const response = await axios.post(`${BASE_URL}/api/pepper/suggest-pepper`, requestData, {
+      const response = await axios.post(`${BASE_URL}/api/pepper/get-soil-data`, {
+        soil_type: soilType
+      }, {
         headers: {
           'Content-Type': 'application/json',
         },
         timeout: 10000,
       });
-      return response.data;
-    } catch (error) {
-      console.error('API Error:', error);
-      if (error.response) {
-        throw new Error(error.response.data.error || 'Server error occurred');
-      } else if (error.request) {
-        throw new Error('Network error. Please check your connection.');
+
+      if (response.data.success && response.data.soil_data) {
+        const soilData = response.data.soil_data;
+        setSoilQuality(soilData['Soil Quality'] || '');
+        setDrainage(soilData['Drainage'] || '');
+        setSoilDataFetched(true);
       } else {
-        throw new Error('An unexpected error occurred');
+        Alert.alert('Notice', 'Could not fetch soil data for this soil type. Please try another option.');
+        setSoilTexture('');
       }
+    } catch (error) {
+      console.error('Soil data fetch error:', error);
+      Alert.alert('Error', 'Failed to fetch soil data. Please try again.');
+      setSoilTexture('');
+    } finally {
+      setIsFetchingSoil(false);
     }
   };
 
   const onGetRecommendation = async () => {
-    if (!validateInputs()) return;
+    if (!climateDataFetched) {
+      Alert.alert('Missing Step', 'Please fetch climate data first by clicking "Fetch Climate Data" button');
+      return;
+    }
+
+    if (!soilTexture) {
+      Alert.alert('Missing Information', 'Please select soil texture');
+      return;
+    }
+
+    if (!soilDataFetched) {
+      Alert.alert('Loading', 'Please wait for soil data to load');
+      return;
+    }
     
     setIsLoading(true);
     try {
-      const payload = {
-        elevation: parseFloat(elevation),
-        annual_rainfall: parseFloat(annualRainfall),
-        avg_temperature: parseFloat(avgTemperature),
-        humidity: parseFloat(humidity),
-        soil_texture: soilTexture,
-        soil_quality: soilQuality,
-        drainage: drainage
-      };
-      
-      const result = await getPepperRecommendation(payload);
-      
-      if (result.success) {
+      // Call get-soil-and-pepper-data API
+      const soilPepperResponse = await axios.post(
+        `${BASE_URL}/api/pepper/get-soil-and-pepper-data`,
+        {
+          soil_type: soilTexture,
+          ds_division: dsDivision
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          timeout: 10000,
+        }
+      );
+
+      if (soilPepperResponse.data.success && soilPepperResponse.data.soil_pepper_data) {
+        const recommendedPepper = soilPepperResponse.data.soil_pepper_data['Recommended pepper type'];
+        
         Alert.alert(
-          'Pepper Variety Recommendation',
-          `Recommended Variety: ${result.predicted_variety}\n\nBased on your conditions:\n• Elevation: ${payload.elevation}m\n• Rainfall: ${payload.annual_rainfall}mm\n• Temperature: ${payload.avg_temperature}°C\n• Humidity: ${payload.humidity}%\n• Soil: ${payload.soil_texture}\n• Quality: ${payload.soil_quality}\n• Drainage: ${payload.drainage}`,
-          [{ text: 'OK' }]
+          '🌶️ Pepper Variety Recommendation',
+          `Recommended Variety: ${recommendedPepper}\n\n` +
+          `📍 Location:\n` +
+          `• District: ${district}\n` +
+          `• DS Division: ${dsDivision}\n\n` +
+          `🌡️ Environmental Conditions:\n` +
+          `• Elevation: ${elevation}m\n` +
+          `• Annual Rainfall: ${annualRainfall}mm\n` +
+          `• Avg Temperature: ${avgTemperature}°C\n` +
+          `• Humidity: ${humidity}%\n\n` +
+          `🌱 Soil Properties:\n` +
+          `• Soil Texture: ${soilTexture}\n` +
+          `• Soil Quality: ${soilQuality}\n` +
+          `• Drainage: ${drainage}\n\n` +
+          `This recommendation is based on your specific location and soil conditions for optimal pepper cultivation.`,
+          [
+            { 
+              text: 'OK',
+              onPress: () => {
+                // Reset form for new search
+                setDistrict('');
+                setDsDivision('');
+                setElevation('');
+                setAnnualRainfall('');
+                setAvgTemperature('');
+                setHumidity('');
+                setSoilTexture('');
+                setSoilQuality('');
+                setDrainage('');
+                setClimateDataFetched(false);
+                setSoilDataFetched(false);
+              }
+            }
+          ]
         );
       } else {
-        Alert.alert('Error', result.error || 'Failed to get recommendation');
+        Alert.alert('Error', soilPepperResponse.data.error || 'No recommendation found for this combination. Please try different parameters.');
       }
     } catch (error) {
-      Alert.alert('Error', error.message || 'Failed to get recommendations. Please try again.');
+      console.error('Recommendation error:', error);
+      Alert.alert(
+        'Error', 
+        error.response?.data?.error || 'Failed to get recommendations. Please try again.'
+      );
     } finally {
       setIsLoading(false);
     }
@@ -270,31 +318,60 @@ export default function PepperVarietiesScreen({ navigation }) {
         <View style={styles.titleSection}>
           <Text style={styles.title}>Pepper Variety Recommendations</Text>
           <Text style={styles.subtitle}>
-            Get AI-powered pepper variety suggestions based on your environmental conditions
+            Get location-based pepper variety suggestions using our intelligent system
           </Text>
         </View>
 
+        {/* Progress Indicator */}
+        <View style={styles.progressContainer}>
+          <View style={styles.progressStep}>
+            <View style={[styles.progressCircle, climateDataFetched && styles.progressCircleActive]}>
+              <Text style={[styles.progressNumber, climateDataFetched && styles.progressNumberActive]}>1</Text>
+            </View>
+            <Text style={styles.progressLabel}>Location &{'\n'}Climate</Text>
+          </View>
+          <View style={[styles.progressLine, climateDataFetched && styles.progressLineActive]} />
+          <View style={styles.progressStep}>
+            <View style={[styles.progressCircle, soilDataFetched && styles.progressCircleActive]}>
+              <Text style={[styles.progressNumber, soilDataFetched && styles.progressNumberActive]}>2</Text>
+            </View>
+            <Text style={styles.progressLabel}>Soil{'\n'}Data</Text>
+          </View>
+          <View style={[styles.progressLine, soilDataFetched && styles.progressLineActive]} />
+          <View style={styles.progressStep}>
+            <View style={styles.progressCircle}>
+              <Text style={styles.progressNumber}>3</Text>
+            </View>
+            <Text style={styles.progressLabel}>Get{'\n'}Results</Text>
+          </View>
+        </View>
+
         <View style={styles.formContainer}>
-          <View style={styles.environmentalSection}>
-            <Text style={styles.sectionTitle}>Location Information</Text>
+          {/* Step 1: Location Selection */}
+          <View style={styles.stepSection}>
+            <View style={styles.stepHeader}>
+              <View style={styles.stepBadge}>
+                <Text style={styles.stepBadgeText}>STEP 1</Text>
+              </View>
+              <Text style={styles.stepTitle}>Select Your Location</Text>
+            </View>
             
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>District</Text>
+              <Text style={styles.label}>District *</Text>
               <View style={styles.pickerContainer}>
                 <Picker
                   selectedValue={district}
                   onValueChange={setDistrict}
                   style={styles.picker}
-                  enabled={!isLoading}
+                  enabled={!isLoading && !isFetchingSoil}
                   dropdownIconColor="#2d5c3e"
                 >
-                  <Picker.Item label="Select District" value="" style={styles.placeholderItem} />
+                  <Picker.Item label="Select District" value="" />
                   {districts.map((districtName) => (
                     <Picker.Item 
                       key={districtName} 
                       label={districtName} 
                       value={districtName}
-                      style={styles.pickerItem}
                     />
                   ))}
                 </Picker>
@@ -302,22 +379,21 @@ export default function PepperVarietiesScreen({ navigation }) {
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>DS Division</Text>
+              <Text style={styles.label}>DS Division *</Text>
               <View style={styles.pickerContainer}>
                 <Picker
                   selectedValue={dsDivision}
                   onValueChange={setDsDivision}
                   style={styles.picker}
-                  enabled={!isLoading && district !== ''}
+                  enabled={!isLoading && !isFetchingSoil && district !== ''}
                   dropdownIconColor="#2d5c3e"
                 >
-                  <Picker.Item label="Select DS Division" value="" style={styles.placeholderItem} />
+                  <Picker.Item label="Select DS Division" value="" />
                   {dsDivisions.map((division) => (
                     <Picker.Item 
                       key={division} 
                       label={division} 
                       value={division}
-                      style={styles.pickerItem}
                     />
                   ))}
                 </Picker>
@@ -325,128 +401,61 @@ export default function PepperVarietiesScreen({ navigation }) {
             </View>
 
             <TouchableOpacity
-              style={[styles.fetchButton, (!district || !dsDivision || isLoading) && styles.disabledButton]}
+              style={[
+                styles.fetchButton, 
+                (!district || !dsDivision || isLoading) && styles.disabledButton
+              ]}
               onPress={fetchClimateData}
               disabled={!district || !dsDivision || isLoading}
               activeOpacity={0.8}
             >
-              <Text style={styles.fetchButtonText}>Fetch Climate Data</Text>
+              {isLoading ? (
+                <>
+                  <ActivityIndicator size="small" color="#ffffff" />
+                  <Text style={[styles.fetchButtonText, { marginLeft: 8 }]}>Loading Climate Data...</Text>
+                </>
+              ) : climateDataFetched ? (
+                <>
+                  <Text style={styles.fetchButtonIcon}>✓</Text>
+                  <Text style={styles.fetchButtonText}>Climate Data Loaded</Text>
+                </>
+              ) : (
+                <>
+                  <Text style={styles.fetchButtonIcon}>📍</Text>
+                  <Text style={styles.fetchButtonText}>Fetch Climate Data</Text>
+                </>
+              )}
             </TouchableOpacity>
-
-            <Text style={styles.sectionTitle}>Environmental Conditions</Text>
-            
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Elevation (meters)</Text>
-              <TextInput
-                style={styles.textInput}
-                value={elevation}
-                onChangeText={setElevation}
-                placeholder="Enter elevation in meters"
-                keyboardType="numeric"
-                maxLength={4}
-                editable={!isLoading}
-              />
-              <Text style={styles.inputHint}>Typical range: 0-2500m for pepper cultivation</Text>
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Annual Rainfall (mm)</Text>
-              <TextInput
-                style={styles.textInput}
-                value={annualRainfall}
-                onChangeText={setAnnualRainfall}
-                placeholder="Enter annual rainfall"
-                keyboardType="numeric"
-                maxLength={4}
-                editable={!isLoading}
-              />
-              <Text style={styles.inputHint}>Typical range: 1200-3000mm for pepper cultivation</Text>
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Average Temperature (°C)</Text>
-              <TextInput
-                style={styles.textInput}
-                value={avgTemperature}
-                onChangeText={setAvgTemperature}
-                placeholder="Enter average temperature"
-                keyboardType="numeric"
-                maxLength={4}
-                editable={!isLoading}
-              />
-              <Text style={styles.inputHint}>Optimal range: 20-30°C for pepper cultivation</Text>
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Humidity (%)</Text>
-              <TextInput
-                style={styles.textInput}
-                value={humidity}
-                onChangeText={setHumidity}
-                placeholder="Enter humidity percentage"
-                keyboardType="numeric"
-                maxLength={3}
-                editable={!isLoading}
-              />
-              <Text style={styles.inputHint}>Optimal range: 70-85% for pepper growth</Text>
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Soil Texture</Text>
-              <View style={styles.pickerContainer}>
-                <Picker
-                  selectedValue={soilTexture}
-                  onValueChange={setSoilTexture}
-                  style={styles.picker}
-                  enabled={!isLoading}
-                  dropdownIconColor="#2d5c3e"
-                >
-                  {soilTextureOptions.map((option) => (
-                    <Picker.Item 
-                      key={option.value} 
-                      label={option.label} 
-                      value={option.value}
-                      style={option.value === '' ? styles.placeholderItem : styles.pickerItem}
-                    />
-                  ))}
-                </Picker>
-              </View>
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Soil Quality</Text>
-              <View style={styles.pickerContainer}>
-                <Picker
-                  selectedValue={soilQuality}
-                  onValueChange={setSoilQuality}
-                  style={styles.picker}
-                  enabled={false}
-                  dropdownIconColor="#2d5c3e"
-                >
-                  <Picker.Item label={soilQuality || "Auto-selected based on soil texture"} value={soilQuality} style={styles.pickerItem} />
-                </Picker>
-              </View>
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Drainage</Text>
-              <View style={styles.pickerContainer}>
-                <Picker
-                  selectedValue={drainage}
-                  onValueChange={setDrainage}
-                  style={styles.picker}
-                  enabled={false}
-                  dropdownIconColor="#2d5c3e"
-                >
-                  <Picker.Item label={drainage || "Auto-selected based on soil texture"} value={drainage} style={styles.pickerItem} />
-                </Picker>
-              </View>
-            </View>
           </View>
 
-          {(elevation || annualRainfall || avgTemperature || humidity) && (
-            <View style={styles.statusSection}>
-              <Text style={styles.sectionTitle}>Current Conditions</Text>
+          {/* Climate Data Display */}
+          {climateDataFetched && (
+            <View style={styles.dataDisplaySection}>
+              <Text style={styles.sectionTitle}>📊 Environmental Conditions Loaded</Text>
+              
+              <View style={styles.dataGrid}>
+                <View style={styles.dataCard}>
+                  <Text style={styles.dataIcon}>⛰️</Text>
+                  <Text style={styles.dataLabel}>Elevation</Text>
+                  <Text style={styles.dataValue}>{elevation}m</Text>
+                </View>
+                <View style={styles.dataCard}>
+                  <Text style={styles.dataIcon}>🌧️</Text>
+                  <Text style={styles.dataLabel}>Rainfall</Text>
+                  <Text style={styles.dataValue}>{annualRainfall}mm</Text>
+                </View>
+                <View style={styles.dataCard}>
+                  <Text style={styles.dataIcon}>🌡️</Text>
+                  <Text style={styles.dataLabel}>Temperature</Text>
+                  <Text style={styles.dataValue}>{avgTemperature}°C</Text>
+                </View>
+                <View style={styles.dataCard}>
+                  <Text style={styles.dataIcon}>💧</Text>
+                  <Text style={styles.dataLabel}>Humidity</Text>
+                  <Text style={styles.dataValue}>{humidity}%</Text>
+                </View>
+              </View>
+
               <View style={styles.statusGrid}>
                 {environmentalStatus.map((status, index) => (
                   <View key={index} style={[styles.statusCard, { borderLeftColor: status.color }]}>
@@ -458,55 +467,175 @@ export default function PepperVarietiesScreen({ navigation }) {
             </View>
           )}
 
-          <TouchableOpacity
-            style={[styles.recommendButton, isLoading && styles.disabledButton]}
-            onPress={onGetRecommendation}
-            disabled={isLoading}
-            activeOpacity={0.8}
-          >
-            {isLoading ? (
-              <>
-                <ActivityIndicator size="small" color="#ffffff" />
-                <Text style={[styles.recommendButtonText, { marginLeft: 8 }]}>
-                  Analyzing Conditions...
-                </Text>
-              </>
-            ) : (
-              <>
-                <Text style={styles.recommendButtonText}>
-                  Get AI Variety Recommendations
-                </Text>
-                <Text style={styles.buttonIcon}>🤖</Text>
-              </>
-            )}
-          </TouchableOpacity>
+          {/* Step 2: Soil Selection */}
+          {climateDataFetched && (
+            <View style={styles.stepSection}>
+              <View style={styles.stepHeader}>
+                <View style={styles.stepBadge}>
+                  <Text style={styles.stepBadgeText}>STEP 2</Text>
+                </View>
+                <Text style={styles.stepTitle}>Select Soil Texture</Text>
+              </View>
+              
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Soil Texture Type *</Text>
+                <View style={styles.pickerContainer}>
+                  <Picker
+                    selectedValue={soilTexture}
+                    onValueChange={setSoilTexture}
+                    style={styles.picker}
+                    enabled={!isFetchingSoil && !isLoading}
+                    dropdownIconColor="#2d5c3e"
+                  >
+                    {soilTextureOptions.map((option) => (
+                      <Picker.Item 
+                        key={option.value} 
+                        label={option.label} 
+                        value={option.value}
+                      />
+                    ))}
+                  </Picker>
+                </View>
+              </View>
+
+              {isFetchingSoil && (
+                <View style={styles.loadingContainer}>
+                  <ActivityIndicator size="small" color="#28a745" />
+                  <Text style={styles.loadingText}>Fetching soil properties...</Text>
+                </View>
+              )}
+
+              {soilDataFetched && soilQuality && drainage && (
+                <View style={styles.autoFilledSection}>
+                  <View style={styles.autoFilledHeader}>
+                    <Text style={styles.autoFilledIcon}>✓</Text>
+                    <Text style={styles.autoFilledTitle}>Auto-filled Soil Properties</Text>
+                  </View>
+                  
+                  <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Soil Quality</Text>
+                    <View style={styles.disabledInputContainer}>
+                      <Text style={styles.disabledInputText}>{soilQuality}</Text>
+                      <Text style={styles.lockIcon}>🔒</Text>
+                    </View>
+                  </View>
+
+                  <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Drainage</Text>
+                    <View style={styles.disabledInputContainer}>
+                      <Text style={styles.disabledInputText}>{drainage}</Text>
+                      <Text style={styles.lockIcon}>🔒</Text>
+                    </View>
+                  </View>
+                </View>
+              )}
+            </View>
+          )}
+
+          {/* Step 3: Get Recommendation */}
+          {climateDataFetched && soilDataFetched && (
+            <View style={styles.stepSection}>
+              <View style={styles.stepHeader}>
+                <View style={styles.stepBadge}>
+                  <Text style={styles.stepBadgeText}>STEP 3</Text>
+                </View>
+                <Text style={styles.stepTitle}>Get Your Recommendation</Text>
+              </View>
+              
+              <Text style={styles.readyText}>
+                ✅ All data collected! Click below to get your personalized pepper variety recommendation.
+              </Text>
+              
+              <TouchableOpacity
+                style={[styles.recommendButton, isLoading && styles.disabledButton]}
+                onPress={onGetRecommendation}
+                disabled={isLoading}
+                activeOpacity={0.8}
+              >
+                {isLoading ? (
+                  <>
+                    <ActivityIndicator size="small" color="#ffffff" />
+                    <Text style={[styles.recommendButtonText, { marginLeft: 8 }]}>
+                      Analyzing Your Conditions...
+                    </Text>
+                  </>
+                ) : (
+                  <>
+                    <Text style={styles.recommendButtonIcon}>🌶️</Text>
+                    <Text style={styles.recommendButtonText}>
+                      Get Pepper Variety Recommendation
+                    </Text>
+                  </>
+                )}
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
 
+        {/* Information Cards */}
         <View style={styles.infoSection}>
           <View style={styles.infoCard}>
             <View style={styles.infoHeader}>
-              <Text style={styles.infoIcon}>🤖</Text>
-              <Text style={styles.infoTitle}>AI-Powered Recommendations</Text>
+              <Text style={styles.infoIcon}>📍</Text>
+              <Text style={styles.infoTitle}>Location-Based Intelligence</Text>
             </View>
             <Text style={styles.infoDescription}>
-              Our system analyzes your specific environmental conditions including 
-              elevation, rainfall, temperature, humidity, and soil properties to 
-              recommend the most suitable pepper varieties for your location.
+              Our system retrieves accurate climate data for your specific district and 
+              DS division, including elevation, rainfall patterns, temperature ranges, 
+              and humidity levels to ensure precise variety recommendations.
+            </Text>
+          </View>
+
+          <View style={styles.infoCard}>
+            <View style={styles.infoHeader}>
+              <Text style={styles.infoIcon}>🌱</Text>
+              <Text style={styles.infoTitle}>Soil-Specific Matching</Text>
+            </View>
+            <Text style={styles.infoDescription}>
+              When you select your soil texture, we automatically determine the soil 
+              quality and drainage characteristics. Our database then matches these 
+              properties with pepper varieties proven to thrive in similar conditions.
+            </Text>
+          </View>
+
+          <View style={styles.infoCard}>
+            <View style={styles.infoHeader}>
+              <Text style={styles.infoIcon}>🎯</Text>
+              <Text style={styles.infoTitle}>Precision Agriculture</Text>
+            </View>
+            <Text style={styles.infoDescription}>
+              Our recommendation engine combines location data, environmental factors, 
+              and soil properties to provide scientifically-backed variety suggestions 
+              tailored specifically for your cultivation area.
             </Text>
           </View>
 
           <View style={styles.infoCard}>
             <View style={styles.infoHeader}>
               <Text style={styles.infoIcon}>💰</Text>
-              <Text style={styles.infoTitle}>Economic Benefits</Text>
+              <Text style={styles.infoTitle}>Maximize Your Yield</Text>
             </View>
             <Text style={styles.infoDescription}>
-              Choosing the right variety can significantly improve yield, 
-              quality, and market value. Consider local market demand and 
-              processing requirements when selecting varieties.
+              Growing the right pepper variety for your conditions can increase yield 
+              by 30-50% and significantly improve market value. Make data-driven 
+              decisions for better profitability and sustainable farming.
+            </Text>
+          </View>
+
+          <View style={styles.infoCard}>
+            <View style={styles.infoHeader}>
+              <Text style={styles.infoIcon}>🔄</Text>
+              <Text style={styles.infoTitle}>Easy to Use</Text>
+            </View>
+            <Text style={styles.infoDescription}>
+              Simply follow the three steps: select your location to fetch climate data, 
+              choose your soil texture to auto-fill soil properties, and get your 
+              personalized recommendation instantly.
             </Text>
           </View>
         </View>
+
+        <View style={styles.footerSpace} />
       </ScrollView>
     </SafeAreaView>
   );
@@ -524,6 +653,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#2d5c3e',
     paddingHorizontal: 20,
     paddingVertical: 16,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
   backButton: {
     width: 40,
@@ -553,105 +687,213 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 24,
     alignItems: 'center',
+    backgroundColor: '#ffffff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e9ecef',
   },
   title: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: '700',
     color: '#2d5c3e',
     textAlign: 'center',
     marginBottom: 8,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 15,
     color: '#6c757d',
     textAlign: 'center',
-    lineHeight: 24,
+    lineHeight: 22,
+    paddingHorizontal: 10,
+  },
+  progressContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 30,
+    paddingVertical: 24,
+    backgroundColor: '#ffffff',
+    marginBottom: 8,
+  },
+  progressStep: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  progressCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#e9ecef',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 8,
+    borderWidth: 2,
+    borderColor: '#e9ecef',
+  },
+  progressCircleActive: {
+    backgroundColor: '#28a745',
+    borderColor: '#28a745',
+  },
+  progressNumber: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#6c757d',
+  },
+  progressNumberActive: {
+    color: '#ffffff',
+  },
+  progressLabel: {
+    fontSize: 11,
+    color: '#6c757d',
+    textAlign: 'center',
+    fontWeight: '500',
+    lineHeight: 14,
+  },
+  progressLine: {
+    width: 40,
+    height: 2,
+    backgroundColor: '#e9ecef',
+    marginHorizontal: 4,
+    marginBottom: 32,
+  },
+  progressLineActive: {
+    backgroundColor: '#28a745',
   },
   formContainer: {
     paddingHorizontal: 20,
-    gap: 20,
+    paddingTop: 8,
   },
-  inputGroup: {
-    marginBottom: 4,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#2d5c3e',
-    marginBottom: 12,
-  },
-  textInput: {
+  stepSection: {
     backgroundColor: '#ffffff',
-    borderRadius: 12,
-    borderWidth: 1.5,
-    borderColor: '#28a745',
-    padding: 16,
-    fontSize: 16,
-    color: '#2d5c3e',
-    shadowColor: '#2d5c3e',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.08,
     shadowRadius: 8,
     elevation: 3,
+    borderWidth: 1,
+    borderColor: '#e9ecef',
   },
-  inputHint: {
-    fontSize: 12,
-    color: '#6c757d',
-    marginTop: 6,
-    fontStyle: 'italic',
+  stepHeader: {
+    marginBottom: 16,
+  },
+  stepBadge: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#28a745',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 12,
+    marginBottom: 8,
+  },
+  stepBadgeText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#ffffff',
+    letterSpacing: 0.5,
+  },
+  stepTitle: {
+    fontSize: 19,
+    fontWeight: '700',
+    color: '#2d5c3e',
+  },
+  inputGroup: {
+    marginBottom: 16,
+  },
+  label: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#2d5c3e',
+    marginBottom: 8,
   },
   pickerContainer: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#f8f9fa',
     borderRadius: 12,
     borderWidth: 1.5,
     borderColor: '#28a745',
     overflow: 'hidden',
-    shadowColor: '#2d5c3e',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
   },
   picker: {
     height: 50,
-    backgroundColor: '#ffffff',
-  },
-  pickerItem: {
-    fontSize: 16,
+    backgroundColor: 'transparent',
     color: '#2d5c3e',
-  },
-  placeholderItem: {
-    fontSize: 16,
-    color: '#6c757d',
-  },
-  environmentalSection: {
-    marginTop: 16,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#2d5c3e',
-    marginBottom: 16,
   },
   fetchButton: {
     backgroundColor: '#17a2b8',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
-    marginBottom: 20,
+    marginTop: 8,
+    flexDirection: 'row',
+    justifyContent: 'center',
     shadowColor: '#17a2b8',
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 6,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  disabledButton: {
+    backgroundColor: '#adb5bd',
+    shadowOpacity: 0.1,
+  },
+  fetchButtonIcon: {
+    fontSize: 18,
+    marginRight: 8,
   },
   fetchButtonText: {
     fontSize: 16,
     fontWeight: '600',
     color: '#ffffff',
   },
-  statusSection: {
-    marginTop: 16,
+  dataDisplaySection: {
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: '#e9ecef',
+  },
+  sectionTitle: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: '#2d5c3e',
+    marginBottom: 16,
+  },
+  dataGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+    marginBottom: 16,
+  },
+  dataCard: {
+    flex: 1,
+    minWidth: '47%',
+    backgroundColor: '#f8f9fa',
+    borderRadius: 12,
+    padding: 14,
+    borderLeftWidth: 4,
+    borderLeftColor: '#28a745',
+    alignItems: 'center',
+  },
+  dataIcon: {
+    fontSize: 24,
+    marginBottom: 4,
+  },
+  dataLabel: {
+    fontSize: 12,
+    color: '#6c757d',
+    marginBottom: 4,
+    fontWeight: '500',
+  },
+  dataValue: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#2d5c3e',
   },
   statusGrid: {
     flexDirection: 'row',
@@ -660,31 +902,99 @@ const styles = StyleSheet.create({
   },
   statusCard: {
     flex: 1,
-    minWidth: '30%',
-    backgroundColor: '#ffffff',
-    borderRadius: 8,
+    minWidth: '47%',
+    backgroundColor: '#f8f9fa',
+    borderRadius: 10,
     padding: 12,
     borderLeftWidth: 3,
     alignItems: 'center',
-    shadowColor: '#2d5c3e',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   statusIcon: {
     fontSize: 16,
-    marginBottom: 4,
+    marginRight: 6,
   },
   statusText: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '600',
     textAlign: 'center',
+  },
+  loadingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 16,
+    backgroundColor: '#e7f5ff',
+    borderRadius: 12,
+    marginTop: 8,
+    borderWidth: 1,
+    borderColor: '#339af0',
+  },
+  loadingText: {
+    fontSize: 14,
+    color: '#1971c2',
+    marginLeft: 10,
+    fontWeight: '500',
+  },
+  autoFilledSection: {
+    backgroundColor: '#d3f9d8',
+    borderRadius: 12,
+    padding: 16,
+    marginTop: 16,
+    borderWidth: 1.5,
+    borderColor: '#51cf66',
+  },
+  autoFilledHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  autoFilledIcon: {
+    fontSize: 20,
+    color: '#2b8a3e',
+    marginRight: 8,
+  },
+  autoFilledTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#2b8a3e',
+  },
+  disabledInputContainer: {
+    backgroundColor: '#f1f3f5',
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: '#ced4da',
+    padding: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  disabledInputText: {
+    fontSize: 15,
+    color: '#495057',
+    fontWeight: '600',
+    flex: 1,
+  },
+  lockIcon: {
+    fontSize: 16,
+    opacity: 0.5,
+  },
+  readyText: {
+    fontSize: 14,
+    color: '#2b8a3e',
+    textAlign: 'center',
+    marginBottom: 16,
+    lineHeight: 20,
+    fontWeight: '500',
+    backgroundColor: '#d3f9d8',
+    padding: 12,
+    borderRadius: 8,
   },
   recommendButton: {
     backgroundColor: '#28a745',
     borderRadius: 12,
-    padding: 16,
+    padding: 18,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -693,55 +1003,54 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 12,
     elevation: 6,
-    marginTop: 8,
   },
-  disabledButton: {
-    backgroundColor: '#6c757d',
-    shadowOpacity: 0.1,
-  },
-  recommendButtonText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#ffffff',
+  recommendButtonIcon: {
+    fontSize: 20,
     marginRight: 8,
   },
-  buttonIcon: {
-    fontSize: 18,
+  recommendButtonText: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: '#ffffff',
   },
   infoSection: {
     paddingHorizontal: 20,
-    paddingTop: 24,
+    paddingTop: 16,
     gap: 12,
   },
   infoCard: {
     backgroundColor: '#ffffff',
-    borderRadius: 12,
-    padding: 16,
-    borderLeftWidth: 3,
+    borderRadius: 14,
+    padding: 18,
+    borderLeftWidth: 4,
     borderLeftColor: '#28a745',
-    shadowColor: '#2d5c3e',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
     elevation: 2,
   },
   infoHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 10,
   },
   infoIcon: {
-    fontSize: 20,
-    marginRight: 8,
+    fontSize: 22,
+    marginRight: 10,
   },
   infoTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '700',
     color: '#2d5c3e',
+    flex: 1,
   },
   infoDescription: {
     fontSize: 14,
     color: '#6c757d',
-    lineHeight: 20,
+    lineHeight: 21,
+  },
+  footerSpace: {
+    height: 40,
   },
 });

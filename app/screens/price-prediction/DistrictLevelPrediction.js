@@ -1,32 +1,48 @@
-import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TouchableOpacity, 
-  SafeAreaView, 
-  ScrollView, 
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  SafeAreaView,
+  ScrollView,
   Alert,
   ActivityIndicator
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { Picker } from '@react-native-picker/picker';
+import ModalSelector from 'react-native-modal-selector';
 import axios from 'axios';
 import { BASE_URL } from '../../config/config';
-
-// const BASE_URL = 'http://192.168.8.131:8000'; 
 
 export default function DistrictPredictionScreen({ navigation }) {
   const [date, setDate] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
   const [selectedDistrict, setSelectedDistrict] = useState('Kandy');
+  const [selectedDistrictLabel, setSelectedDistrictLabel] = useState('Kandy');
   const [isLoading, setIsLoading] = useState(false);
 
   const districts = [
-    'Kandy', 'Matale', 'Nuwara Eliya', 'Kegalle', 'Ratnapura',
-    'Badulla', 'Kurunagala', 'Colombo', 'Gampaha', 'Kalutara',
-    'Galle', 'Matara', 'Hambantota', 'Monaragala'
+    { key: 'Kandy', label: 'Kandy' },
+    { key: 'Matale', label: 'Matale' },
+    { key: 'Nuwara Eliya', label: 'Nuwara Eliya' },
+    { key: 'Kegalle', label: 'Kegalle' },
+    { key: 'Ratnapura', label: 'Ratnapura' },
+    { key: 'Badulla', label: 'Badulla' },
+    { key: 'Kurunagala', label: 'Kurunagala' },
+    { key: 'Colombo', label: 'Colombo' },
+    { key: 'Gampaha', label: 'Gampaha' },
+    { key: 'Kalutara', label: 'Kalutara' },
+    { key: 'Galle', label: 'Galle' },
+    { key: 'Matara', label: 'Matara' },
+    { key: 'Hambantota', label: 'Hambantota' },
+    { key: 'Monaragala', label: 'Monaragala' }
   ];
+
+  // Set initial label for selectedDistrict
+  useEffect(() => {
+    const initialDistrict = districts.find(d => d.key === selectedDistrict);
+    setSelectedDistrictLabel(initialDistrict ? initialDistrict.label : 'Select District');
+  }, [selectedDistrict]);
 
   const predictDistrictPrice = async (district, targetDate) => {
     try {
@@ -43,23 +59,22 @@ export default function DistrictPredictionScreen({ navigation }) {
 
   const onPredict = async () => {
     if (isLoading) return;
-    
+
     setIsLoading(true);
     try {
-      // Format the date as YYYY-MM-DD
       const formattedDate = date.toISOString().split('T')[0];
-      
-      // Call the API
       const prediction = await predictDistrictPrice(selectedDistrict, formattedDate);
-      
-      // Calculate confidence range (±5% of predicted price)
+
       const predictedPrice = prediction.predicted_price;
       const lowerPrice = Math.round(predictedPrice - 50);
       const upperPrice = Math.round(predictedPrice + 50);
-      
+
       Alert.alert(
         'District Price Prediction',
-        `Predicted price range for ${prediction.district} district on ${date.toLocaleDateString('en-GB')}:\n\nRs. ${lowerPrice} - Rs. ${upperPrice} per kg\n\nPredicted Price: Rs. ${predictedPrice.toFixed(2)}\nDistrict: ${prediction.district}`,
+        `Predicted price range for ${prediction.district} on ${date.toLocaleDateString('en-GB')}:\n\n` +
+        `Rs. ${lowerPrice} - Rs. ${upperPrice} per kg\n\n` +
+        `Predicted Price: Rs. ${predictedPrice.toFixed(2)}\n` +
+        `District: ${prediction.district}`,
         [{ text: 'OK' }]
       );
     } catch (error) {
@@ -69,12 +84,8 @@ export default function DistrictPredictionScreen({ navigation }) {
       } else if (error.request) {
         errorMessage = 'Network error. Please check your connection.';
       }
-      
-      Alert.alert(
-        'Error', 
-        errorMessage,
-        [{ text: 'OK' }]
-      );
+
+      Alert.alert('Error', errorMessage, [{ text: 'OK' }]);
     } finally {
       setIsLoading(false);
     }
@@ -82,69 +93,56 @@ export default function DistrictPredictionScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity 
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={styles.backIcon}>←</Text>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={styles.backText}>← Back</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>District Prediction</Text>
-        <View style={styles.placeholder} />
       </View>
 
-      <ScrollView 
-        style={styles.content} 
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
-        {/* Title Section */}
-        <View style={styles.titleSection}>
-          <Text style={styles.title}>District Level Price Prediction</Text>
-          <Text style={styles.subtitle}>
-            Get accurate price forecasts for your specific district
-          </Text>
-        </View>
+      <ScrollView style={styles.content}>
+        <Text style={styles.title}>District Price Prediction</Text>
+        <Text style={styles.subtitle}>Get price forecasts for your district</Text>
 
-        {/* Input Form */}
-        <View style={styles.formContainer}>
+        <View style={styles.form}>
           {/* District Selection */}
-          <View style={styles.inputGroup}>
+          <View style={styles.field}>
             <Text style={styles.label}>Select District</Text>
-            <View style={styles.pickerContainer}>
-              <Picker
-                selectedValue={selectedDistrict}
-                onValueChange={(itemValue) => setSelectedDistrict(itemValue)}
-                style={styles.picker}
-                dropdownIconColor="#2d5c3e"
-              >
-                {districts.map((district) => (
-                  <Picker.Item 
-                    key={district} 
-                    label={district} 
-                    value={district}
-                    style={styles.pickerItem}
-                  />
-                ))}
-              </Picker>
-            </View>
+            <ModalSelector
+              data={districts}
+              initValue="Select District"
+              onChange={(option) => {
+                setSelectedDistrict(option.key);
+                setSelectedDistrictLabel(option.label);
+              }}
+              style={[styles.pickerBox, isLoading && styles.disabledPicker]}
+              disabled={isLoading}
+              selectStyle={styles.modalSelector}
+              selectTextStyle={styles.modalSelectorText}
+              initValueTextStyle={styles.modalSelectorText}
+              cancelText="Cancel"
+              cancelStyle={styles.modalCancelButton}
+              cancelTextStyle={styles.modalCancelText}
+            >
+              <View style={[styles.pickerBox, isLoading && styles.disabledPicker]}>
+                <Text style={[styles.modalSelectorText, !selectedDistrictLabel && styles.placeholderText]}>
+                  {selectedDistrictLabel || 'Select District'}
+                </Text>
+              </View>
+            </ModalSelector>
           </View>
 
           {/* Date Selection */}
-          <View style={styles.inputGroup}>
+          <View style={styles.field}>
             <Text style={styles.label}>Select Date</Text>
             <TouchableOpacity
-              style={styles.dateInput}
+              style={[styles.dateBox, isLoading && styles.disabledPicker]}
               onPress={() => setShowPicker(true)}
               disabled={isLoading}
             >
-              <View style={styles.dateContent}>
-                <Text style={styles.dateIcon}>📅</Text>
-                <Text style={styles.dateText}>
-                  {date.toLocaleDateString('en-GB')}
-                </Text>
-              </View>
+              <Text style={styles.dateText}>
+                📅 {date.toLocaleDateString('en-GB')}
+              </Text>
             </TouchableOpacity>
           </View>
 
@@ -161,21 +159,8 @@ export default function DistrictPredictionScreen({ navigation }) {
             />
           )}
 
-            {/* {showPicker && (
-            <DateTimePicker
-              value={date}
-              mode="date"
-              display="default"
-              // No date restrictions at all
-              onChange={(_, selectedDate) => {
-                setShowPicker(false);
-                if (selectedDate) setDate(selectedDate);
-              }}
-            />
-          )} */}
-
-          {/* Selected Info Card */}
-          <View style={styles.infoCard}>
+          {/* Info Display */}
+          <View style={styles.infoBox}>
             <Text style={styles.infoTitle}>Prediction Details</Text>
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>District:</Text>
@@ -193,37 +178,32 @@ export default function DistrictPredictionScreen({ navigation }) {
 
           {/* Predict Button */}
           <TouchableOpacity
-            style={[styles.predictButton, isLoading && styles.disabledButton]}
+            style={[styles.btn, isLoading && styles.btnDisabled]}
             onPress={onPredict}
             disabled={isLoading}
-            activeOpacity={0.8}
           >
             {isLoading ? (
-              <ActivityIndicator size="small" color="#ffffff" />
+              <ActivityIndicator size="small" color="#fff" />
             ) : (
-              <>
-                <Text style={styles.predictButtonText}>Get Price Prediction</Text>
-                <Text style={styles.buttonIcon}>🚀</Text>
-              </>
+              <Text style={styles.btnText}>Get Price Prediction</Text>
             )}
           </TouchableOpacity>
         </View>
 
-        {/* Additional Info */}
-        <View style={styles.additionalInfo}>
-          <View style={styles.tipCard}>
-            <Text style={styles.tipTitle}>💡 Prediction Tips</Text>
+        {/* Tips */}
+        <View style={styles.tips}>
+          <View style={styles.tipBox}>
+            <Text style={styles.tipTitle}>💡 Tips</Text>
             <Text style={styles.tipText}>
-              • District predictions are based on local market conditions{'\n'}
-              • Best accuracy for predictions up to 7 days ahead
+              • Based on local market conditions{'\n'}
+              • Best accuracy for 7 days ahead
             </Text>
           </View>
 
-          <View style={styles.disclaimerCard}>
+          <View style={styles.disclaimerBox}>
             <Text style={styles.disclaimerTitle}>⚠️ Disclaimer</Text>
             <Text style={styles.disclaimerText}>
-              Predictions are estimates based on historical data and market trends. 
-              Actual prices may vary due to market volatility and external factors.
+              Predictions are estimates. Actual prices may vary due to market conditions.
             </Text>
           </View>
         </View>
@@ -235,243 +215,178 @@ export default function DistrictPredictionScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f9f0',
+    backgroundColor: '#f5f5f5',
   },
-  
-  // Header
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     backgroundColor: '#2d5c3e',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    padding: 16,
   },
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  backIcon: {
-    fontSize: 20,
-    color: '#ffffff',
-    fontWeight: '600',
+  backText: {
+    color: '#fff',
+    fontSize: 16,
   },
   headerTitle: {
+    color: '#fff',
     fontSize: 18,
     fontWeight: '600',
-    color: '#ffffff',
+    marginLeft: 16,
   },
-  placeholder: {
-    width: 40,
-  },
-  
-  // Content
   content: {
     flex: 1,
-  },
-  scrollContent: {
-    paddingBottom: 20,
-  },
-  
-  // Title Section
-  titleSection: {
-    paddingHorizontal: 20,
-    paddingVertical: 24,
-    alignItems: 'center',
+    padding: 16,
   },
   title: {
-    fontSize: 22,
-    fontWeight: '700',
+    fontSize: 20,
+    fontWeight: 'bold',
     color: '#2d5c3e',
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#6c757d',
-    textAlign: 'center',
-    lineHeight: 24,
-  },
-  
-  // Form Container
-  formContainer: {
-    paddingHorizontal: 20,
-    gap: 20,
-  },
-  
-  // Input Groups
-  inputGroup: {
     marginBottom: 4,
   },
-  label: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#2d5c3e',
-    marginBottom: 12,
+  subtitle: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 20,
   },
-  pickerContainer: {
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    borderWidth: 1.5,
-    borderColor: '#28a745',
-    overflow: 'hidden',
-    shadowColor: '#2d5c3e',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  picker: {
-    height: 50,
-    backgroundColor: '#ffffff',
-  },
-  pickerItem: {
-    fontSize: 16,
-    color: '#2d5c3e',
-  },
-  
-  // Date Input
-  dateInput: {
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    borderWidth: 1.5,
-    borderColor: '#28a745',
+  form: {
+    backgroundColor: '#fff',
     padding: 16,
-    shadowColor: '#2d5c3e',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
+    borderRadius: 8,
+    marginBottom: 16,
   },
-  dateContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  field: {
+    marginBottom: 16,
   },
-  dateIcon: {
-    fontSize: 20,
-    marginRight: 12,
+  label: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 8,
   },
-  dateText: {
-    fontSize: 16,
+  pickerBox: {
+    borderWidth: 1,
+    borderColor: '#28a745',
+    borderRadius: 4,
+    backgroundColor: '#fff',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    justifyContent: 'center',
+  },
+  disabledPicker: {
+    backgroundColor: '#e9ecef',
+    opacity: 0.6,
+  },
+  modalSelector: {
+    borderWidth: 0,
+  },
+  modalSelectorText: {
+    fontSize: 15,
     color: '#2d5c3e',
     fontWeight: '500',
   },
-  
-  // Info Card
-  infoCard: {
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    padding: 16,
-    borderLeftWidth: 4,
+  placeholderText: {
+    color: '#666',
+    fontWeight: '400',
+  },
+  modalCancelButton: {
+    backgroundColor: '#dc3545',
+    borderRadius: 8,
+  },
+  modalCancelText: {
+    color: '#ffffff',
+    fontWeight: '600',
+  },
+  dateBox: {
+    borderWidth: 1,
+    borderColor: '#28a745',
+    borderRadius: 4,
+    padding: 14,
+    backgroundColor: '#fff',
+  },
+  dateText: {
+    fontSize: 15,
+    color: '#2d5c3e',
+    fontWeight: '500',
+  },
+  infoBox: {
+    backgroundColor: '#f8f9fa',
+    padding: 12,
+    borderRadius: 4,
+    marginBottom: 16,
+    borderLeftWidth: 3,
     borderLeftColor: '#17a2b8',
-    shadowColor: '#2d5c3e',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
   },
   infoTitle: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
     color: '#2d5c3e',
-    marginBottom: 12,
+    marginBottom: 8,
   },
   infoRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 4,
   },
   infoLabel: {
-    fontSize: 14,
-    color: '#6c757d',
-    fontWeight: '500',
+    fontSize: 13,
+    color: '#666',
   },
   infoValue: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#2d5c3e',
     fontWeight: '600',
   },
-  
-  // Predict Button
-  predictButton: {
+  btn: {
     backgroundColor: '#28a745',
-    borderRadius: 12,
-    padding: 16,
-    flexDirection: 'row',
+    padding: 14,
+    borderRadius: 4,
     alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#28a745',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 6,
-    marginTop: 8,
   },
-  disabledButton: {
-    backgroundColor: '#6c757d',
-    shadowOpacity: 0.1,
+  btnDisabled: {
+    backgroundColor: '#ccc',
   },
-  predictButtonText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#ffffff',
-    marginRight: 8,
-  },
-  buttonIcon: {
-    fontSize: 18,
-  },
-  
-  // Additional Info
-  additionalInfo: {
-    paddingHorizontal: 20,
-    paddingTop: 24,
-    paddingBottom: 32,
-    gap: 16,
-  },
-  tipCard: {
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    padding: 16,
-    borderLeftWidth: 3,
-    borderLeftColor: '#ffa500',
-    shadowColor: '#2d5c3e',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  tipTitle: {
+  btnText: {
+    color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  tips: {
+    gap: 12,
+  },
+  tipBox: {
+    backgroundColor: '#fff',
+    padding: 12,
+    borderRadius: 4,
+    borderLeftWidth: 3,
+    borderLeftColor: '#ffa500',
+  },
+  tipTitle: {
+    fontSize: 14,
+    fontWeight: '600',
     color: '#2d5c3e',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   tipText: {
-    fontSize: 14,
-    color: '#6c757d',
-    lineHeight: 20,
+    fontSize: 13,
+    color: '#666',
+    lineHeight: 18,
   },
-  disclaimerCard: {
+  disclaimerBox: {
     backgroundColor: '#fff3cd',
-    borderRadius: 12,
-    padding: 16,
+    padding: 12,
+    borderRadius: 4,
     borderLeftWidth: 3,
     borderLeftColor: '#ffc107',
   },
   disclaimerTitle: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '600',
     color: '#856404',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   disclaimerText: {
-    fontSize: 13,
+    fontSize: 12,
     color: '#856404',
-    lineHeight: 18,
+    lineHeight: 16,
   },
 });

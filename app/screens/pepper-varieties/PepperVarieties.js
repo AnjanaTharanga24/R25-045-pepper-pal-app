@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TouchableOpacity, 
-  SafeAreaView, 
-  ScrollView, 
-  Alert, 
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  SafeAreaView,
+  ScrollView,
+  Alert,
   ActivityIndicator
 } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import ModalSelector from 'react-native-modal-selector';
 import axios from 'axios';
 import { BASE_URL } from '../../config/config';
 
@@ -59,21 +59,27 @@ export default function PepperVarietiesScreen({ navigation }) {
   };
 
   const soilTextureOptions = [
-    { label: 'Select Soil Texture', value: '' },
-    { label: 'Sandy clay loam', value: 'Sandy clay loam' },
-    { label: 'Lateritic soils', value: 'Lateritic soils' },
-    { label: 'Red loam', value: 'Red loam' },
-    { label: 'Loamy', value: 'Loamy' }
+    { key: '', label: 'Select Soil Texture' },
+    { key: 'Sandy clay loam', label: 'Sandy clay loam' },
+    { key: 'Lateritic soils', label: 'Lateritic soils' },
+    { key: 'Red loam', label: 'Red loam' },
+    { key: 'Loamy', label: 'Loamy' }
   ];
 
   useEffect(() => {
-    const districtsList = Object.keys(districtData).sort();
+    const districtsList = Object.keys(districtData).sort().map((name) => ({
+      key: name,
+      label: name
+    }));
     setDistricts(districtsList);
   }, []);
 
   useEffect(() => {
     if (district) {
-      const divisions = districtData[district] || [];
+      const divisions = (districtData[district] || []).map((division) => ({
+        key: division,
+        label: division
+      }));
       setDsDivisions(divisions);
       setDsDivision('');
       setClimateDataFetched(false);
@@ -358,46 +364,42 @@ export default function PepperVarietiesScreen({ navigation }) {
             
             <View style={styles.inputGroup}>
               <Text style={styles.label}>District *</Text>
-              <View style={styles.pickerContainer}>
-                <Picker
-                  selectedValue={district}
-                  onValueChange={setDistrict}
-                  style={styles.picker}
-                  enabled={!isLoading && !isFetchingSoil}
-                  dropdownIconColor="#2d5c3e"
-                >
-                  <Picker.Item label="Select District" value="" />
-                  {districts.map((districtName) => (
-                    <Picker.Item 
-                      key={districtName} 
-                      label={districtName} 
-                      value={districtName}
-                    />
-                  ))}
-                </Picker>
-              </View>
+              <ModalSelector
+                data={districts}
+                initValue="Select District"
+                onChange={(option) => setDistrict(option.key)}
+                style={[
+                  styles.pickerContainer,
+                  isLoading || isFetchingSoil ? styles.disabledPicker : {}
+                ]}
+                disabled={isLoading || isFetchingSoil}
+                selectStyle={styles.modalSelector}
+                selectTextStyle={styles.modalSelectorText}
+                initValueTextStyle={styles.modalSelectorText}
+                cancelText="Cancel"
+                cancelStyle={styles.modalCancelButton}
+                cancelTextStyle={styles.modalCancelText}
+              />
             </View>
 
             <View style={styles.inputGroup}>
               <Text style={styles.label}>DS Division *</Text>
-              <View style={styles.pickerContainer}>
-                <Picker
-                  selectedValue={dsDivision}
-                  onValueChange={setDsDivision}
-                  style={styles.picker}
-                  enabled={!isLoading && !isFetchingSoil && district !== ''}
-                  dropdownIconColor="#2d5c3e"
-                >
-                  <Picker.Item label="Select DS Division" value="" />
-                  {dsDivisions.map((division) => (
-                    <Picker.Item 
-                      key={division} 
-                      label={division} 
-                      value={division}
-                    />
-                  ))}
-                </Picker>
-              </View>
+              <ModalSelector
+                data={dsDivisions}
+                initValue="Select DS Division"
+                onChange={(option) => setDsDivision(option.key)}
+                style={[
+                  styles.pickerContainer,
+                  isLoading || isFetchingSoil || !district ? styles.disabledPicker : {}
+                ]}
+                disabled={isLoading || isFetchingSoil || !district}
+                selectStyle={styles.modalSelector}
+                selectTextStyle={styles.modalSelectorText}
+                initValueTextStyle={styles.modalSelectorText}
+                cancelText="Cancel"
+                cancelStyle={styles.modalCancelButton}
+                cancelTextStyle={styles.modalCancelText}
+              />
             </View>
 
             <TouchableOpacity
@@ -479,23 +481,22 @@ export default function PepperVarietiesScreen({ navigation }) {
               
               <View style={styles.inputGroup}>
                 <Text style={styles.label}>Soil Texture Type *</Text>
-                <View style={styles.pickerContainer}>
-                  <Picker
-                    selectedValue={soilTexture}
-                    onValueChange={setSoilTexture}
-                    style={styles.picker}
-                    enabled={!isFetchingSoil && !isLoading}
-                    dropdownIconColor="#2d5c3e"
-                  >
-                    {soilTextureOptions.map((option) => (
-                      <Picker.Item 
-                        key={option.value} 
-                        label={option.label} 
-                        value={option.value}
-                      />
-                    ))}
-                  </Picker>
-                </View>
+                <ModalSelector
+                  data={soilTextureOptions}
+                  initValue="Select Soil Texture"
+                  onChange={(option) => setSoilTexture(option.key)}
+                  style={[
+                    styles.pickerContainer,
+                    isFetchingSoil || isLoading ? styles.disabledPicker : {}
+                  ]}
+                  disabled={isFetchingSoil || isLoading}
+                  selectStyle={styles.modalSelector}
+                  selectTextStyle={styles.modalSelectorText}
+                  initValueTextStyle={styles.modalSelectorText}
+                  cancelText="Cancel"
+                  cancelStyle={styles.modalCancelButton}
+                  cancelTextStyle={styles.modalCancelText}
+                />
               </View>
 
               {isFetchingSoil && (
@@ -572,68 +573,6 @@ export default function PepperVarietiesScreen({ navigation }) {
           )}
         </View>
 
-        {/* Information Cards */}
-        <View style={styles.infoSection}>
-          <View style={styles.infoCard}>
-            <View style={styles.infoHeader}>
-              <Text style={styles.infoIcon}>📍</Text>
-              <Text style={styles.infoTitle}>Location-Based Intelligence</Text>
-            </View>
-            <Text style={styles.infoDescription}>
-              Our system retrieves accurate climate data for your specific district and 
-              DS division, including elevation, rainfall patterns, temperature ranges, 
-              and humidity levels to ensure precise variety recommendations.
-            </Text>
-          </View>
-
-          <View style={styles.infoCard}>
-            <View style={styles.infoHeader}>
-              <Text style={styles.infoIcon}>🌱</Text>
-              <Text style={styles.infoTitle}>Soil-Specific Matching</Text>
-            </View>
-            <Text style={styles.infoDescription}>
-              When you select your soil texture, we automatically determine the soil 
-              quality and drainage characteristics. Our database then matches these 
-              properties with pepper varieties proven to thrive in similar conditions.
-            </Text>
-          </View>
-
-          <View style={styles.infoCard}>
-            <View style={styles.infoHeader}>
-              <Text style={styles.infoIcon}>🎯</Text>
-              <Text style={styles.infoTitle}>Precision Agriculture</Text>
-            </View>
-            <Text style={styles.infoDescription}>
-              Our recommendation engine combines location data, environmental factors, 
-              and soil properties to provide scientifically-backed variety suggestions 
-              tailored specifically for your cultivation area.
-            </Text>
-          </View>
-
-          <View style={styles.infoCard}>
-            <View style={styles.infoHeader}>
-              <Text style={styles.infoIcon}>💰</Text>
-              <Text style={styles.infoTitle}>Maximize Your Yield</Text>
-            </View>
-            <Text style={styles.infoDescription}>
-              Growing the right pepper variety for your conditions can increase yield 
-              by 30-50% and significantly improve market value. Make data-driven 
-              decisions for better profitability and sustainable farming.
-            </Text>
-          </View>
-
-          <View style={styles.infoCard}>
-            <View style={styles.infoHeader}>
-              <Text style={styles.infoIcon}>🔄</Text>
-              <Text style={styles.infoTitle}>Easy to Use</Text>
-            </View>
-            <Text style={styles.infoDescription}>
-              Simply follow the three steps: select your location to fetch climate data, 
-              choose your soil texture to auto-fill soil properties, and get your 
-              personalized recommendation instantly.
-            </Text>
-          </View>
-        </View>
 
         <View style={styles.footerSpace} />
       </ScrollView>
@@ -813,10 +752,28 @@ const styles = StyleSheet.create({
     borderColor: '#28a745',
     overflow: 'hidden',
   },
-  picker: {
-    height: 50,
-    backgroundColor: 'transparent',
+  disabledPicker: {
+    backgroundColor: '#e9ecef',
+    opacity: 0.6,
+  },
+  modalSelector: {
+    borderWidth: 0,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    justifyContent: 'center',
+  },
+  modalSelectorText: {
+    fontSize: 16,
     color: '#2d5c3e',
+    fontWeight: '500',
+  },
+  modalCancelButton: {
+    backgroundColor: '#dc3545',
+    borderRadius: 8,
+  },
+  modalCancelText: {
+    color: '#ffffff',
+    fontWeight: '600',
   },
   fetchButton: {
     backgroundColor: '#17a2b8',

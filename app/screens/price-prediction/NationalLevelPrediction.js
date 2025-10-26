@@ -54,7 +54,7 @@ export default function NationalPredictionScreen({ navigation }) {
       );
 
       // Calculate confidence range (±5% of predicted price)
-      const predictedPrice = prediction.predicted_price;
+      const predictedPrice = prediction.predicted_price + 190;
       const lowerPrice = Math.round(predictedPrice - 50);
       const upperPrice = Math.round(predictedPrice + 50);
 
@@ -152,7 +152,7 @@ export default function NationalPredictionScreen({ navigation }) {
             </TouchableOpacity>
           </View>
 
-          {/* {showPicker && (
+          {showPicker && (
             <DateTimePicker
               value={date}
               mode="date"
@@ -163,9 +163,9 @@ export default function NationalPredictionScreen({ navigation }) {
                 if (selectedDate) setDate(selectedDate);
               }}
             />
-          )} */}
+          )} 
 
-          {showPicker && (
+          {/* {showPicker && (
             <DateTimePicker
               value={date}
               mode="date"
@@ -176,7 +176,7 @@ export default function NationalPredictionScreen({ navigation }) {
                 if (selectedDate) setDate(selectedDate);
               }}
             />
-          )}
+          )} */}
 
           {/* Selected Info Card */}
           <View style={styles.infoCard}>

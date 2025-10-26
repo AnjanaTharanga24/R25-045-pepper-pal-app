@@ -1,0 +1,934 @@
+District,DS Division,Elevation,Rainfall,Temp,Humidity,Soil Texture,Soil Quality,Soil Drainage,Best Variety
+Ampara,Addalachchenai,766,1820,25.5,92,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Ampara,Addalachchenai,766,1820,25.5,92,Red loam,Slightly acidic,Good drainage,Narayakodi
+Ampara,Addalachchenai,766,1820,25.5,92,Loamy,Organic-rich,Well-drained,Panniyur-1
+Ampara,Akkaraipattu,284,3735,26.3,75,Sandy loam,Moist,Good drainage,Karimunda
+Ampara,Akkaraipattu,284,3735,26.3,75,Red loam,Slightly acidic,Good drainage,Karimunda
+Ampara,Akkaraipattu,284,3735,26.3,75,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Ampara,Alayadiwembu,1279,4255,25.3,75,Red loam,Slightly acidic,Good drainage,Karimunda
+Ampara,Alayadiwembu,1279,4255,25.3,75,Loamy,Organic-rich,Well-drained,Karimunda
+Ampara,Alayadiwembu,1279,4255,25.3,75,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Ampara,Ampara,745,3625,28.1,88,Loamy,Organic-rich,Well-drained,Karimunda
+Ampara,Ampara,745,3625,28.1,88,Red loam,Slightly acidic,Good drainage,Karimunda
+Ampara,Ampara,745,3625,28.1,88,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Ampara,Damana,758,4590,30.0,93,Sandy loam,Moist,Good drainage,Karimunda
+Ampara,Damana,758,4590,30.0,93,Red loam,Slightly acidic,Good drainage,Karimunda
+Ampara,Damana,758,4590,30.0,93,Loamy,Organic-rich,Well-drained,Karimunda
+Ampara,Dehiattakandiya,1257,3132,28.8,83,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Ampara,Dehiattakandiya,1257,3132,28.8,83,Red loam,Slightly acidic,Good drainage,Karimunda
+Ampara,Dehiattakandiya,1257,3132,28.8,83,Sandy loam,Moist,Good drainage,Karimunda
+Ampara,Irakkamam,153,3109,27.2,78,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Ampara,Irakkamam,153,3109,27.2,78,Red loam,Slightly acidic,Good drainage,Karimunda
+Ampara,Irakkamam,153,3109,27.2,78,Loamy,Organic-rich,Well-drained,Karimunda
+Ampara,Kalmunai,1245,4460,27.7,79,Loamy,Organic-rich,Well-drained,Karimunda
+Ampara,Kalmunai,1245,4460,27.7,79,Sandy loam,Moist,Good drainage,Karimunda
+Ampara,Kalmunai,1245,4460,27.7,79,Red loam,Slightly acidic,Good drainage,Karimunda
+Ampara,Karaitivu,773,4073,27.4,65,Red loam,Slightly acidic,Good drainage,Karimunda
+Ampara,Karaitivu,773,4073,27.4,65,Loamy,Organic-rich,Well-drained,Karimunda
+Ampara,Karaitivu,773,4073,27.4,65,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Ampara,Lahugala,444,4546,23.8,79,Sandy loam,Moist,Good drainage,Karimunda
+Ampara,Lahugala,444,4546,23.8,79,Loamy,Organic-rich,Well-drained,Karimunda
+Ampara,Lahugala,444,4546,23.8,79,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Ampara,Mahaoya,417,1313,27.3,70,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Ampara,Mahaoya,417,1313,27.3,70,Red loam,Slightly acidic,Good drainage,Narayakodi
+Ampara,Mahaoya,417,1313,27.3,70,Sandy loam,Moist,Good drainage,Narayakodi
+Ampara,Navithanveli,45,4495,22.7,60,Loamy,Organic-rich,Well-drained,Karimunda
+Ampara,Navithanveli,45,4495,22.7,60,Sandy loam,Moist,Good drainage,Karimunda
+Ampara,Navithanveli,45,4495,22.7,60,Red loam,Slightly acidic,Good drainage,Karimunda
+Ampara,Nintavur,1019,3240,26.3,84,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Ampara,Nintavur,1019,3240,26.3,84,Red loam,Slightly acidic,Good drainage,Karimunda
+Ampara,Nintavur,1019,3240,26.3,84,Loamy,Organic-rich,Well-drained,Karimunda
+Ampara,Padiyathalawa,80,2565,27.2,69,Sandy loam,Moist,Good drainage,Karimunda
+Ampara,Padiyathalawa,80,2565,27.2,69,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Ampara,Padiyathalawa,80,2565,27.2,69,Loamy,Organic-rich,Well-drained,Karimunda
+Ampara,Sainthamaruthu,972,2420,28.5,90,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Ampara,Sainthamaruthu,972,2420,28.5,90,Red loam,Slightly acidic,Good drainage,Karimunda
+Ampara,Sainthamaruthu,972,2420,28.5,90,Sandy loam,Moist,Good drainage,Karimunda
+Ampara,Sammanthurai,1013,2301,22.1,73,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Ampara,Sammanthurai,1013,2301,22.1,73,Sandy loam,Moist,Good drainage,Karimunda
+Ampara,Sammanthurai,1013,2301,22.1,73,Loamy,Organic-rich,Well-drained,Sreekara
+Ampara,Samanthurai,951,2179,29.5,87,Red loam,Slightly acidic,Good drainage,Karimunda
+Ampara,Samanthurai,951,2179,29.5,87,Sandy loam,Moist,Good drainage,Karimunda
+Ampara,Samanthurai,951,2179,29.5,87,Loamy,Organic-rich,Well-drained,Karimunda
+Ampara,Thirukkovil,994,2499,24.6,71,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Ampara,Thirukkovil,994,2499,24.6,71,Red loam,Slightly acidic,Good drainage,Karimunda
+Ampara,Thirukkovil,994,2499,24.6,71,Sandy loam,Moist,Good drainage,Karimunda
+Ampara,Uhana,576,2903,24.0,80,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Ampara,Uhana,576,2903,24.0,80,Loamy,Organic-rich,Well-drained,Karimunda
+Ampara,Uhana,576,2903,24.0,80,Sandy loam,Moist,Good drainage,Karimunda
+Anuradhapura,Galenbindunuwewa,659,1628,28.7,60,Red loam,Slightly acidic,Good drainage,Narayakodi
+Anuradhapura,Galenbindunuwewa,659,1628,28.7,60,Loamy,Organic-rich,Well-drained,Karimunda
+Anuradhapura,Galenbindunuwewa,659,1628,28.7,60,Sandy loam,Moist,Good drainage,Narayakodi
+Anuradhapura,Galnewa,805,3296,26.1,95,Loamy,Organic-rich,Well-drained,Panniyur-1
+Anuradhapura,Galnewa,805,3296,26.1,95,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Anuradhapura,Galnewa,805,3296,26.1,95,Sandy loam,Moist,Good drainage,Karimunda
+Anuradhapura,Horowpothana,1401,1320,26.3,69,Loamy,Organic-rich,Well-drained,Karimunda
+Anuradhapura,Horowpothana,1401,1320,26.3,69,Sandy loam,Moist,Good drainage,Narayakodi
+Anuradhapura,Horowpothana,1401,1320,26.3,69,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Anuradhapura,Ipalogama,913,3929,30.0,84,Sandy loam,Moist,Good drainage,Karimunda
+Anuradhapura,Ipalogama,913,3929,30.0,84,Loamy,Organic-rich,Well-drained,Karimunda
+Anuradhapura,Ipalogama,913,3929,30.0,84,Red loam,Slightly acidic,Good drainage,Karimunda
+Anuradhapura,Kahatagasdigiliya,1201,4579,28.0,94,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Anuradhapura,Kahatagasdigiliya,1201,4579,28.0,94,Sandy loam,Moist,Good drainage,Karimunda
+Anuradhapura,Kahatagasdigiliya,1201,4579,28.0,94,Red loam,Slightly acidic,Good drainage,Karimunda
+Anuradhapura,Kebithigollewa,619,1231,28.4,61,Loamy,Organic-rich,Well-drained,Karimunda
+Anuradhapura,Kebithigollewa,619,1231,28.4,61,Red loam,Slightly acidic,Good drainage,Narayakodi
+Anuradhapura,Kebithigollewa,619,1231,28.4,61,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Anuradhapura,Kekirawa,851,1460,27.5,93,Loamy,Organic-rich,Well-drained,Karimunda
+Anuradhapura,Kekirawa,851,1460,27.5,93,Red loam,Slightly acidic,Good drainage,Narayakodi
+Anuradhapura,Kekirawa,851,1460,27.5,93,Sandy loam,Moist,Good drainage,Narayakodi
+Anuradhapura,Mahavilachchiya,1099,1627,27.4,64,Sandy loam,Moist,Good drainage,Narayakodi
+Anuradhapura,Mahavilachchiya,1099,1627,27.4,64,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Anuradhapura,Mahavilachchiya,1099,1627,27.4,64,Red loam,Slightly acidic,Good drainage,Narayakodi
+Anuradhapura,Medawachchiya,1042,3391,25.5,78,Red loam,Slightly acidic,Good drainage,Karimunda
+Anuradhapura,Medawachchiya,1042,3391,25.5,78,Loamy,Organic-rich,Well-drained,Karimunda
+Anuradhapura,Medawachchiya,1042,3391,25.5,78,Sandy loam,Moist,Good drainage,Karimunda
+Anuradhapura,Mihintale,586,1217,27.5,67,Sandy loam,Moist,Good drainage,Narayakodi
+Anuradhapura,Mihintale,586,1217,27.5,67,Red loam,Slightly acidic,Good drainage,Narayakodi
+Anuradhapura,Mihintale,586,1217,27.5,67,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Anuradhapura,Nachchaduwa,744,3952,25.0,75,Sandy loam,Moist,Good drainage,Karimunda
+Anuradhapura,Nachchaduwa,744,3952,25.0,75,Red loam,Slightly acidic,Good drainage,Karimunda
+Anuradhapura,Nachchaduwa,744,3952,25.0,75,Loamy,Organic-rich,Well-drained,Karimunda
+Anuradhapura,Nuwaragam Palatha Central,1115,2365,29.8,93,Sandy loam,Moist,Good drainage,Karimunda
+Anuradhapura,Nuwaragam Palatha Central,1115,2365,29.8,93,Red loam,Slightly acidic,Good drainage,Karimunda
+Anuradhapura,Nuwaragam Palatha Central,1115,2365,29.8,93,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Anuradhapura,Nuwaragam Palatha East,1076,3865,27.2,93,Loamy,Organic-rich,Well-drained,Karimunda
+Anuradhapura,Nuwaragam Palatha East,1076,3865,27.2,93,Sandy loam,Moist,Good drainage,Karimunda
+Anuradhapura,Nuwaragam Palatha East,1076,3865,27.2,93,Red loam,Slightly acidic,Good drainage,Karimunda
+Anuradhapura,Palagala,367,2899,23.0,60,Sandy loam,Moist,Good drainage,Karimunda
+Anuradhapura,Palagala,367,2899,23.0,60,Loamy,Organic-rich,Well-drained,Karimunda
+Anuradhapura,Palagala,367,2899,23.0,60,Red loam,Slightly acidic,Good drainage,Karimunda
+Anuradhapura,Rambewa,767,4670,25.9,75,Sandy loam,Moist,Good drainage,Karimunda
+Anuradhapura,Rambewa,767,4670,25.9,75,Red loam,Slightly acidic,Good drainage,Karimunda
+Anuradhapura,Rambewa,767,4670,25.9,75,Loamy,Organic-rich,Well-drained,Karimunda
+Anuradhapura,Rathmalgahawewa,686,2549,25.6,63,Red loam,Slightly acidic,Good drainage,Karimunda
+Anuradhapura,Rathmalgahawewa,686,2549,25.6,63,Sandy loam,Moist,Good drainage,Karimunda
+Anuradhapura,Rathmalgahawewa,686,2549,25.6,63,Loamy,Organic-rich,Well-drained,Karimunda
+Anuradhapura,Thalawa,310,1660,26.4,81,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Anuradhapura,Thalawa,310,1660,26.4,81,Loamy,Organic-rich,Well-drained,Karimunda
+Anuradhapura,Thalawa,310,1660,26.4,81,Red loam,Slightly acidic,Good drainage,Narayakodi
+Anuradhapura,Thambuttegama,988,4934,29.3,87,Red loam,Slightly acidic,Good drainage,Karimunda
+Anuradhapura,Thambuttegama,988,4934,29.3,87,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Anuradhapura,Thambuttegama,988,4934,29.3,87,Loamy,Organic-rich,Well-drained,Karimunda
+Anuradhapura,Yaya Palatha,1127,1657,27.9,74,Red loam,Slightly acidic,Good drainage,Narayakodi
+Anuradhapura,Yaya Palatha,1127,1657,27.9,74,Loamy,Organic-rich,Well-drained,Karimunda
+Anuradhapura,Yaya Palatha,1127,1657,27.9,74,Sandy loam,Moist,Good drainage,Narayakodi
+Badulla,Badulla,1378,2089,24.6,89,Sandy loam,Moist,Good drainage,Karimunda
+Badulla,Badulla,1378,2089,24.6,89,Loamy,Organic-rich,Well-drained,Sreekara
+Badulla,Badulla,1378,2089,24.6,89,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Badulla,Bandarawela,304,3902,22.5,93,Sandy loam,Moist,Good drainage,Karimunda
+Badulla,Bandarawela,304,3902,22.5,93,Loamy,Organic-rich,Well-drained,Karimunda
+Badulla,Bandarawela,304,3902,22.5,93,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Badulla,Ella,505,1292,26.1,62,Loamy,Organic-rich,Well-drained,Karimunda
+Badulla,Ella,505,1292,26.1,62,Red loam,Slightly acidic,Good drainage,Narayakodi
+Badulla,Ella,505,1292,26.1,62,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Badulla,Hali-Ela,122,3818,25.9,81,Red loam,Slightly acidic,Good drainage,Karimunda
+Badulla,Hali-Ela,122,3818,25.9,81,Loamy,Organic-rich,Well-drained,Karimunda
+Badulla,Hali-Ela,122,3818,25.9,81,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Badulla,Haputale,546,4739,27.8,74,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Badulla,Haputale,546,4739,27.8,74,Red loam,Slightly acidic,Good drainage,Karimunda
+Badulla,Haputale,546,4739,27.8,74,Sandy loam,Moist,Good drainage,Karimunda
+Badulla,Kandaketiya,672,3096,23.0,95,Sandy loam,Moist,Good drainage,Karimunda
+Badulla,Kandaketiya,672,3096,23.0,95,Loamy,Organic-rich,Well-drained,Karimunda
+Badulla,Kandaketiya,672,3096,23.0,95,Red loam,Slightly acidic,Good drainage,Panniyur-1
+Badulla,Lunugala,917,2691,28.9,81,Red loam,Slightly acidic,Good drainage,Karimunda
+Badulla,Lunugala,917,2691,28.9,81,Sandy loam,Moist,Good drainage,Karimunda
+Badulla,Lunugala,917,2691,28.9,81,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Badulla,Mahiyanganaya,1211,1845,28.8,71,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Badulla,Mahiyanganaya,1211,1845,28.8,71,Sandy loam,Moist,Good drainage,Narayakodi
+Badulla,Mahiyanganaya,1211,1845,28.8,71,Red loam,Slightly acidic,Good drainage,Narayakodi
+Badulla,Meegahakivula,137,4978,28.6,72,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Badulla,Meegahakivula,137,4978,28.6,72,Red loam,Slightly acidic,Good drainage,Karimunda
+Badulla,Meegahakivula,137,4978,28.6,72,Sandy loam,Moist,Good drainage,Karimunda
+Badulla,Passara,1192,1535,25.6,94,Sandy loam,Moist,Good drainage,Narayakodi
+Badulla,Passara,1192,1535,25.6,94,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Badulla,Passara,1192,1535,25.6,94,Loamy,Organic-rich,Well-drained,Sreekara
+Badulla,Rideemaliyadda,502,2469,22.5,62,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Badulla,Rideemaliyadda,502,2469,22.5,62,Loamy,Organic-rich,Well-drained,Karimunda
+Badulla,Rideemaliyadda,502,2469,22.5,62,Red loam,Slightly acidic,Good drainage,Karimunda
+Badulla,Soranathota,692,3597,25.9,70,Red loam,Slightly acidic,Good drainage,Karimunda
+Badulla,Soranathota,692,3597,25.9,70,Loamy,Organic-rich,Well-drained,Karimunda
+Badulla,Soranathota,692,3597,25.9,70,Sandy loam,Moist,Good drainage,Karimunda
+Badulla,Uva-Paranagama,482,3512,25.5,89,Loamy,Organic-rich,Well-drained,Panniyur-1
+Badulla,Uva-Paranagama,482,3512,25.5,89,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Badulla,Uva-Paranagama,482,3512,25.5,89,Red loam,Slightly acidic,Good drainage,Panniyur-1
+Badulla,Welimada,1234,1537,25.4,65,Sandy loam,Moist,Good drainage,Narayakodi
+Badulla,Welimada,1234,1537,25.4,65,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Badulla,Welimada,1234,1537,25.4,65,Loamy,Organic-rich,Well-drained,Karimunda
+Batticaloa,Batticaloa,1141,4442,24.2,94,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Batticaloa,Batticaloa,1141,4442,24.2,94,Red loam,Slightly acidic,Good drainage,Karimunda
+Batticaloa,Batticaloa,1141,4442,24.2,94,Loamy,Organic-rich,Well-drained,Karimunda
+Batticaloa,Eravur Pattu,108,3127,22.2,85,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Batticaloa,Eravur Pattu,108,3127,22.2,85,Red loam,Slightly acidic,Good drainage,Karimunda
+Batticaloa,Eravur Pattu,108,3127,22.2,85,Loamy,Organic-rich,Well-drained,Karimunda
+Batticaloa,Kattankudy,1112,4530,27.2,91,Loamy,Organic-rich,Well-drained,Karimunda
+Batticaloa,Kattankudy,1112,4530,27.2,91,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Batticaloa,Kattankudy,1112,4530,27.2,91,Sandy loam,Moist,Good drainage,Karimunda
+Batticaloa,Koralai Pattu,660,1248,23.0,64,Sandy loam,Moist,Good drainage,Narayakodi
+Batticaloa,Koralai Pattu,660,1248,23.0,64,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Batticaloa,Koralai Pattu,660,1248,23.0,64,Red loam,Slightly acidic,Good drainage,Narayakodi
+Batticaloa,Koralai Pattu Central,463,3677,25.1,83,Loamy,Organic-rich,Well-drained,Karimunda
+Batticaloa,Koralai Pattu Central,463,3677,25.1,83,Red loam,Slightly acidic,Good drainage,Karimunda
+Batticaloa,Koralai Pattu Central,463,3677,25.1,83,Sandy loam,Moist,Good drainage,Karimunda
+Batticaloa,Koralai Pattu North,851,1711,25.0,73,Loamy,Organic-rich,Well-drained,Karimunda
+Batticaloa,Koralai Pattu North,851,1711,25.0,73,Sandy loam,Moist,Good drainage,Narayakodi
+Batticaloa,Koralai Pattu North,851,1711,25.0,73,Red loam,Slightly acidic,Good drainage,Narayakodi
+Batticaloa,Koralai Pattu South,1415,2634,22.0,74,Sandy loam,Moist,Good drainage,Karimunda
+Batticaloa,Koralai Pattu South,1415,2634,22.0,74,Loamy,Organic-rich,Well-drained,Karimunda
+Batticaloa,Koralai Pattu South,1415,2634,22.0,74,Red loam,Slightly acidic,Good drainage,Karimunda
+Batticaloa,Koralai Pattu West,72,4877,26.8,69,Loamy,Organic-rich,Well-drained,Karimunda
+Batticaloa,Koralai Pattu West,72,4877,26.8,69,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Batticaloa,Koralai Pattu West,72,4877,26.8,69,Red loam,Slightly acidic,Good drainage,Karimunda
+Batticaloa,Manmunai North,858,1902,25.7,76,Loamy,Organic-rich,Well-drained,Karimunda
+Batticaloa,Manmunai North,858,1902,25.7,76,Red loam,Slightly acidic,Good drainage,Karimunda
+Batticaloa,Manmunai North,858,1902,25.7,76,Sandy loam,Moist,Good drainage,Karimunda
+Batticaloa,Manmunai Pattu,621,3542,25.2,69,Sandy loam,Moist,Good drainage,Karimunda
+Batticaloa,Manmunai Pattu,621,3542,25.2,69,Red loam,Slightly acidic,Good drainage,Karimunda
+Batticaloa,Manmunai Pattu,621,3542,25.2,69,Loamy,Organic-rich,Well-drained,Karimunda
+Batticaloa,Manmunai South,5,4867,29.2,85,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Batticaloa,Manmunai South,5,4867,29.2,85,Red loam,Slightly acidic,Good drainage,Karimunda
+Batticaloa,Manmunai South,5,4867,29.2,85,Loamy,Organic-rich,Well-drained,Karimunda
+Batticaloa,Manmunai South West,1315,4744,22.2,88,Red loam,Slightly acidic,Good drainage,Karimunda
+Batticaloa,Manmunai South West,1315,4744,22.2,88,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Batticaloa,Manmunai South West,1315,4744,22.2,88,Loamy,Organic-rich,Well-drained,Karimunda
+Batticaloa,Manmunai West,52,2818,28.9,73,Loamy,Organic-rich,Well-drained,Karimunda
+Batticaloa,Manmunai West,52,2818,28.9,73,Sandy loam,Moist,Good drainage,Karimunda
+Batticaloa,Manmunai West,52,2818,28.9,73,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Batticaloa,Porativu Pattu,608,4453,24.2,80,Loamy,Organic-rich,Well-drained,Karimunda
+Batticaloa,Porativu Pattu,608,4453,24.2,80,Sandy loam,Moist,Good drainage,Karimunda
+Batticaloa,Porativu Pattu,608,4453,24.2,80,Red loam,Slightly acidic,Good drainage,Karimunda
+Colombo,Colombo,1307,4702,29.6,73,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Colombo,Colombo,1307,4702,29.6,73,Loamy,Organic-rich,Well-drained,Karimunda
+Colombo,Colombo,1307,4702,29.6,73,Red loam,Slightly acidic,Good drainage,Karimunda
+Colombo,Dehiwala,1143,1499,25.1,92,Loamy,Organic-rich,Well-drained,Sreekara
+Colombo,Dehiwala,1143,1499,25.1,92,Red loam,Slightly acidic,Good drainage,Narayakodi
+Colombo,Dehiwala,1143,1499,25.1,92,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Colombo,Homagama,1493,2324,28.7,76,Red loam,Slightly acidic,Good drainage,Karimunda
+Colombo,Homagama,1493,2324,28.7,76,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Colombo,Homagama,1493,2324,28.7,76,Loamy,Organic-rich,Well-drained,Karimunda
+Colombo,Kaduwela,804,3046,29.7,82,Sandy loam,Moist,Good drainage,Karimunda
+Colombo,Kaduwela,804,3046,29.7,82,Loamy,Organic-rich,Well-drained,Karimunda
+Colombo,Kaduwela,804,3046,29.7,82,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Colombo,Kesbewa,1275,2590,29.0,70,Loamy,Organic-rich,Well-drained,Karimunda
+Colombo,Kesbewa,1275,2590,29.0,70,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Colombo,Kesbewa,1275,2590,29.0,70,Red loam,Slightly acidic,Good drainage,Karimunda
+Colombo,Kolonnawa,281,3444,23.5,87,Sandy loam,Moist,Good drainage,Karimunda
+Colombo,Kolonnawa,281,3444,23.5,87,Red loam,Slightly acidic,Good drainage,Panniyur-1
+Colombo,Kolonnawa,281,3444,23.5,87,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Colombo,Maharagama,593,3585,28.0,88,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Colombo,Maharagama,593,3585,28.0,88,Sandy loam,Moist,Good drainage,Karimunda
+Colombo,Maharagama,593,3585,28.0,88,Red loam,Slightly acidic,Good drainage,Karimunda
+Colombo,Moratuwa,13,3241,24.4,81,Loamy,Organic-rich,Well-drained,Karimunda
+Colombo,Moratuwa,13,3241,24.4,81,Red loam,Slightly acidic,Good drainage,Karimunda
+Colombo,Moratuwa,13,3241,24.4,81,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Colombo,Padukka,751,1640,26.6,74,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Colombo,Padukka,751,1640,26.6,74,Loamy,Organic-rich,Well-drained,Karimunda
+Colombo,Padukka,751,1640,26.6,74,Sandy loam,Moist,Good drainage,Narayakodi
+Colombo,Ratmalana,324,2244,26.7,65,Loamy,Organic-rich,Well-drained,Karimunda
+Colombo,Ratmalana,324,2244,26.7,65,Sandy loam,Moist,Good drainage,Karimunda
+Colombo,Ratmalana,324,2244,26.7,65,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Colombo,Seethawaka,15,3810,25.3,77,Red loam,Slightly acidic,Good drainage,Karimunda
+Colombo,Seethawaka,15,3810,25.3,77,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Colombo,Seethawaka,15,3810,25.3,77,Sandy loam,Moist,Good drainage,Karimunda
+Colombo,Sri Jayawardenepura Kotte,992,3162,29.1,92,Sandy loam,Moist,Good drainage,Karimunda
+Colombo,Sri Jayawardenepura Kotte,992,3162,29.1,92,Red loam,Slightly acidic,Good drainage,Panniyur-1
+Colombo,Sri Jayawardenepura Kotte,992,3162,29.1,92,Loamy,Organic-rich,Well-drained,Karimunda
+Colombo,Thimbirigasyaya,909,3749,28.7,93,Red loam,Slightly acidic,Good drainage,Karimunda
+Colombo,Thimbirigasyaya,909,3749,28.7,93,Sandy loam,Moist,Good drainage,Karimunda
+Colombo,Thimbirigasyaya,909,3749,28.7,93,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Galle,Ambalangoda,411,1841,24.8,61,Loamy,Organic-rich,Well-drained,Karimunda
+Galle,Ambalangoda,411,1841,24.8,61,Red loam,Slightly acidic,Good drainage,Narayakodi
+Galle,Ambalangoda,411,1841,24.8,61,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Galle,Baddegama,901,1616,22.6,63,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Galle,Baddegama,901,1616,22.6,63,Loamy,Organic-rich,Well-drained,Karimunda
+Galle,Baddegama,901,1616,22.6,63,Red loam,Slightly acidic,Good drainage,Narayakodi
+Galle,Balapitiya,1003,3356,25.3,70,Red loam,Slightly acidic,Good drainage,Karimunda
+Galle,Balapitiya,1003,3356,25.3,70,Loamy,Organic-rich,Well-drained,Karimunda
+Galle,Balapitiya,1003,3356,25.3,70,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Galle,Benthota,924,2284,28.1,85,Sandy loam,Moist,Good drainage,Karimunda
+Galle,Benthota,924,2284,28.1,85,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Galle,Benthota,924,2284,28.1,85,Red loam,Slightly acidic,Good drainage,Karimunda
+Galle,Bope-Poddala,1166,4208,29.4,91,Red loam,Slightly acidic,Good drainage,Karimunda
+Galle,Bope-Poddala,1166,4208,29.4,91,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Galle,Bope-Poddala,1166,4208,29.4,91,Sandy loam,Moist,Good drainage,Karimunda
+Galle,Elpitiya,545,1489,23.3,84,Sandy loam,Moist,Good drainage,Narayakodi
+Galle,Elpitiya,545,1489,23.3,84,Loamy,Organic-rich,Well-drained,Karimunda
+Galle,Elpitiya,545,1489,23.3,84,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Galle,Galle,1276,4168,23.2,69,Loamy,Organic-rich,Well-drained,Karimunda
+Galle,Galle,1276,4168,23.2,69,Sandy loam,Moist,Good drainage,Karimunda
+Galle,Galle,1276,4168,23.2,69,Red loam,Slightly acidic,Good drainage,Karimunda
+Galle,Gonapinuwala,434,4697,28.2,88,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Galle,Gonapinuwala,434,4697,28.2,88,Red loam,Slightly acidic,Good drainage,Karimunda
+Galle,Gonapinuwala,434,4697,28.2,88,Loamy,Organic-rich,Well-drained,Karimunda
+Galle,Habaraduwa,1280,3514,28.0,94,Loamy,Organic-rich,Well-drained,Karimunda
+Galle,Habaraduwa,1280,3514,28.0,94,Sandy loam,Moist,Good drainage,Karimunda
+Galle,Habaraduwa,1280,3514,28.0,94,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Galle,Hikkaduwa,916,2532,29.4,80,Loamy,Organic-rich,Well-drained,Karimunda
+Galle,Hikkaduwa,916,2532,29.4,80,Sandy loam,Moist,Good drainage,Karimunda
+Galle,Hikkaduwa,916,2532,29.4,80,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Galle,Imaduwa,534,4697,22.9,95,Loamy,Organic-rich,Well-drained,Karimunda
+Galle,Imaduwa,534,4697,22.9,95,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Galle,Imaduwa,534,4697,22.9,95,Sandy loam,Moist,Good drainage,Karimunda
+Galle,Karandeniya,517,2086,27.9,65,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Galle,Karandeniya,517,2086,27.9,65,Loamy,Organic-rich,Well-drained,Karimunda
+Galle,Karandeniya,517,2086,27.9,65,Sandy loam,Moist,Good drainage,Karimunda
+Galle,Nagoda,175,4421,25.1,67,Sandy loam,Moist,Good drainage,Karimunda
+Galle,Nagoda,175,4421,25.1,67,Red loam,Slightly acidic,Good drainage,Karimunda
+Galle,Nagoda,175,4421,25.1,67,Loamy,Organic-rich,Well-drained,Karimunda
+Galle,Neluwa,220,1654,23.1,75,Red loam,Slightly acidic,Good drainage,Narayakodi
+Galle,Neluwa,220,1654,23.1,75,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Galle,Neluwa,220,1654,23.1,75,Loamy,Organic-rich,Well-drained,Karimunda
+Galle,Thawalama,266,2727,28.2,72,Sandy loam,Moist,Good drainage,Karimunda
+Galle,Thawalama,266,2727,28.2,72,Loamy,Organic-rich,Well-drained,Karimunda
+Galle,Thawalama,266,2727,28.2,72,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Galle,Welivitiya-Divithura,171,4228,28.2,78,Red loam,Slightly acidic,Good drainage,Karimunda
+Galle,Welivitiya-Divithura,171,4228,28.2,78,Sandy loam,Moist,Good drainage,Karimunda
+Galle,Welivitiya-Divithura,171,4228,28.2,78,Loamy,Organic-rich,Well-drained,Karimunda
+Galle,Yakkalamulla,273,3915,24.8,82,Loamy,Organic-rich,Well-drained,Karimunda
+Galle,Yakkalamulla,273,3915,24.8,82,Sandy loam,Moist,Good drainage,Karimunda
+Galle,Yakkalamulla,273,3915,24.8,82,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Gampaha,Attanagalla,777,1290,26.1,82,Red loam,Slightly acidic,Good drainage,Narayakodi
+Gampaha,Attanagalla,777,1290,26.1,82,Loamy,Organic-rich,Well-drained,Karimunda
+Gampaha,Attanagalla,777,1290,26.1,82,Sandy loam,Moist,Good drainage,Narayakodi
+Gampaha,Biyagama,1022,2969,28.4,91,Sandy loam,Moist,Good drainage,Karimunda
+Gampaha,Biyagama,1022,2969,28.4,91,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Gampaha,Biyagama,1022,2969,28.4,91,Loamy,Organic-rich,Well-drained,Karimunda
+Gampaha,Divulapitiya,1088,2544,25.7,78,Sandy loam,Moist,Good drainage,Karimunda
+Gampaha,Divulapitiya,1088,2544,25.7,78,Loamy,Organic-rich,Well-drained,Karimunda
+Gampaha,Divulapitiya,1088,2544,25.7,78,Red loam,Slightly acidic,Good drainage,Karimunda
+Gampaha,Dompe,1357,3109,29.8,69,Sandy loam,Moist,Good drainage,Karimunda
+Gampaha,Dompe,1357,3109,29.8,69,Red loam,Slightly acidic,Good drainage,Karimunda
+Gampaha,Dompe,1357,3109,29.8,69,Loamy,Organic-rich,Well-drained,Karimunda
+Gampaha,Gampaha,228,4908,24.8,72,Sandy loam,Moist,Good drainage,Karimunda
+Gampaha,Gampaha,228,4908,24.8,72,Loamy,Organic-rich,Well-drained,Karimunda
+Gampaha,Gampaha,228,4908,24.8,72,Red loam,Slightly acidic,Good drainage,Karimunda
+Gampaha,Ja-Ela,497,1675,27.2,83,Sandy loam,Moist,Good drainage,Narayakodi
+Gampaha,Ja-Ela,497,1675,27.2,83,Loamy,Organic-rich,Well-drained,Karimunda
+Gampaha,Ja-Ela,497,1675,27.2,83,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Gampaha,Katana,588,1402,27.4,72,Sandy loam,Moist,Good drainage,Narayakodi
+Gampaha,Katana,588,1402,27.4,72,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Gampaha,Katana,588,1402,27.4,72,Loamy,Organic-rich,Well-drained,Karimunda
+Gampaha,Kelaniya,500,4009,27.5,81,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Gampaha,Kelaniya,500,4009,27.5,81,Red loam,Slightly acidic,Good drainage,Karimunda
+Gampaha,Kelaniya,500,4009,27.5,81,Loamy,Organic-rich,Well-drained,Karimunda
+Gampaha,Mahara,588,2177,26.8,75,Red loam,Slightly acidic,Good drainage,Karimunda
+Gampaha,Mahara,588,2177,26.8,75,Loamy,Organic-rich,Well-drained,Karimunda
+Gampaha,Mahara,588,2177,26.8,75,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Gampaha,Minuwangoda,119,1660,23.4,95,Loamy,Organic-rich,Well-drained,Karimunda
+Gampaha,Minuwangoda,119,1660,23.4,95,Sandy loam,Moist,Good drainage,Narayakodi
+Gampaha,Minuwangoda,119,1660,23.4,95,Red loam,Slightly acidic,Good drainage,Narayakodi
+Gampaha,Mirigama,100,2744,24.1,93,Loamy,Organic-rich,Well-drained,Karimunda
+Gampaha,Mirigama,100,2744,24.1,93,Sandy loam,Moist,Good drainage,Karimunda
+Gampaha,Mirigama,100,2744,24.1,93,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Gampaha,Negombo,786,2426,22.4,85,Red loam,Slightly acidic,Good drainage,Karimunda
+Gampaha,Negombo,786,2426,22.4,85,Loamy,Organic-rich,Well-drained,Karimunda
+Gampaha,Negombo,786,2426,22.4,85,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Gampaha,Wattala,296,4017,26.2,91,Red loam,Slightly acidic,Good drainage,Karimunda
+Gampaha,Wattala,296,4017,26.2,91,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Gampaha,Wattala,296,4017,26.2,91,Sandy loam,Moist,Good drainage,Karimunda
+Hambantota,Ambalantota,1084,3845,23.0,88,Sandy loam,Moist,Good drainage,Karimunda
+Hambantota,Ambalantota,1084,3845,23.0,88,Loamy,Organic-rich,Well-drained,Karimunda
+Hambantota,Ambalantota,1084,3845,23.0,88,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Hambantota,Angunukolapelessa,182,4273,23.9,82,Red loam,Slightly acidic,Good drainage,Karimunda
+Hambantota,Angunukolapelessa,182,4273,23.9,82,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Hambantota,Angunukolapelessa,182,4273,23.9,82,Loamy,Organic-rich,Well-drained,Karimunda
+Hambantota,Beliatta,760,1358,24.9,66,Loamy,Organic-rich,Well-drained,Karimunda
+Hambantota,Beliatta,760,1358,24.9,66,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Hambantota,Beliatta,760,1358,24.9,66,Sandy loam,Moist,Good drainage,Narayakodi
+Hambantota,Hambantota,273,4584,24.8,91,Red loam,Slightly acidic,Good drainage,Karimunda
+Hambantota,Hambantota,273,4584,24.8,91,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Hambantota,Hambantota,273,4584,24.8,91,Loamy,Organic-rich,Well-drained,Karimunda
+Hambantota,Katuwana,128,5000,23.4,83,Loamy,Organic-rich,Well-drained,Karimunda
+Hambantota,Katuwana,128,5000,23.4,83,Sandy loam,Moist,Good drainage,Karimunda
+Hambantota,Katuwana,128,5000,23.4,83,Red loam,Slightly acidic,Good drainage,Karimunda
+Hambantota,Lunugamvehera,1014,4290,22.7,88,Loamy,Organic-rich,Well-drained,Karimunda
+Hambantota,Lunugamvehera,1014,4290,22.7,88,Red loam,Slightly acidic,Good drainage,Karimunda
+Hambantota,Lunugamvehera,1014,4290,22.7,88,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Hambantota,Okewela,531,3888,27.3,70,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Hambantota,Okewela,531,3888,27.3,70,Sandy loam,Moist,Good drainage,Karimunda
+Hambantota,Okewela,531,3888,27.3,70,Loamy,Organic-rich,Well-drained,Karimunda
+Hambantota,Sooriyawewa,341,4914,27.2,68,Red loam,Slightly acidic,Good drainage,Karimunda
+Hambantota,Sooriyawewa,341,4914,27.2,68,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Hambantota,Sooriyawewa,341,4914,27.2,68,Loamy,Organic-rich,Well-drained,Karimunda
+Hambantota,Tangalle,273,3186,28.9,75,Red loam,Slightly acidic,Good drainage,Karimunda
+Hambantota,Tangalle,273,3186,28.9,75,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Hambantota,Tangalle,273,3186,28.9,75,Loamy,Organic-rich,Well-drained,Karimunda
+Hambantota,Thissamaharama,1216,4118,28.1,91,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Hambantota,Thissamaharama,1216,4118,28.1,91,Sandy loam,Moist,Good drainage,Karimunda
+Hambantota,Thissamaharama,1216,4118,28.1,91,Red loam,Slightly acidic,Good drainage,Karimunda
+Hambantota,Walasmulla,1270,1956,28.7,87,Sandy loam,Moist,Good drainage,Karimunda
+Hambantota,Walasmulla,1270,1956,28.7,87,Red loam,Slightly acidic,Good drainage,Karimunda
+Hambantota,Walasmulla,1270,1956,28.7,87,Loamy,Organic-rich,Well-drained,Karimunda
+Hambantota,Weeraketiya,736,1394,22.9,88,Loamy,Organic-rich,Well-drained,Sreekara
+Hambantota,Weeraketiya,736,1394,22.9,88,Sandy loam,Moist,Good drainage,Narayakodi
+Hambantota,Weeraketiya,736,1394,22.9,88,Red loam,Slightly acidic,Good drainage,Narayakodi
+Jaffna,Chavakachcheri,348,3570,25.9,64,Loamy,Organic-rich,Well-drained,Karimunda
+Jaffna,Chavakachcheri,348,3570,25.9,64,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Jaffna,Chavakachcheri,348,3570,25.9,64,Sandy loam,Moist,Good drainage,Karimunda
+Jaffna,Delft,169,3250,29.2,78,Sandy loam,Moist,Good drainage,Karimunda
+Jaffna,Delft,169,3250,29.2,78,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Jaffna,Delft,169,3250,29.2,78,Red loam,Slightly acidic,Good drainage,Karimunda
+Jaffna,Islands North,789,3627,22.7,67,Sandy loam,Moist,Good drainage,Karimunda
+Jaffna,Islands North,789,3627,22.7,67,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Jaffna,Islands North,789,3627,22.7,67,Loamy,Organic-rich,Well-drained,Karimunda
+Jaffna,Islands South,18,4558,24.5,70,Loamy,Organic-rich,Well-drained,Karimunda
+Jaffna,Islands South,18,4558,24.5,70,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Jaffna,Islands South,18,4558,24.5,70,Sandy loam,Moist,Good drainage,Karimunda
+Jaffna,Jaffna,386,2710,25.3,74,Sandy loam,Moist,Good drainage,Karimunda
+Jaffna,Jaffna,386,2710,25.3,74,Loamy,Organic-rich,Well-drained,Karimunda
+Jaffna,Jaffna,386,2710,25.3,74,Red loam,Slightly acidic,Good drainage,Karimunda
+Jaffna,Karainagar,33,4740,24.4,76,Red loam,Slightly acidic,Good drainage,Karimunda
+Jaffna,Karainagar,33,4740,24.4,76,Sandy loam,Moist,Good drainage,Karimunda
+Jaffna,Karainagar,33,4740,24.4,76,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Jaffna,Karaveddy,756,2265,28.6,89,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Jaffna,Karaveddy,756,2265,28.6,89,Sandy loam,Moist,Good drainage,Karimunda
+Jaffna,Karaveddy,756,2265,28.6,89,Red loam,Slightly acidic,Good drainage,Karimunda
+Jaffna,Kayts,768,1771,29.9,60,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Jaffna,Kayts,768,1771,29.9,60,Loamy,Organic-rich,Well-drained,Karimunda
+Jaffna,Kayts,768,1771,29.9,60,Sandy loam,Moist,Good drainage,Narayakodi
+Jaffna,Kopay,1210,2285,29.0,92,Loamy,Organic-rich,Well-drained,Sreekara
+Jaffna,Kopay,1210,2285,29.0,92,Red loam,Slightly acidic,Good drainage,Karimunda
+Jaffna,Kopay,1210,2285,29.0,92,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Jaffna,Nallur,1170,3113,24.8,79,Red loam,Slightly acidic,Good drainage,Karimunda
+Jaffna,Nallur,1170,3113,24.8,79,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Jaffna,Nallur,1170,3113,24.8,79,Sandy loam,Moist,Good drainage,Karimunda
+Jaffna,Point Pedro,1085,2599,22.5,82,Sandy loam,Moist,Good drainage,Karimunda
+Jaffna,Point Pedro,1085,2599,22.5,82,Red loam,Slightly acidic,Good drainage,Karimunda
+Jaffna,Point Pedro,1085,2599,22.5,82,Loamy,Organic-rich,Well-drained,Karimunda
+Jaffna,Sandilipay,538,4557,23.0,84,Loamy,Organic-rich,Well-drained,Karimunda
+Jaffna,Sandilipay,538,4557,23.0,84,Red loam,Slightly acidic,Good drainage,Karimunda
+Jaffna,Sandilipay,538,4557,23.0,84,Sandy loam,Moist,Good drainage,Karimunda
+Jaffna,Tellippalai,1316,4159,28.3,76,Loamy,Organic-rich,Well-drained,Karimunda
+Jaffna,Tellippalai,1316,4159,28.3,76,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Jaffna,Tellippalai,1316,4159,28.3,76,Sandy loam,Moist,Good drainage,Karimunda
+Jaffna,Uduvil,427,3257,25.6,74,Loamy,Organic-rich,Well-drained,Karimunda
+Jaffna,Uduvil,427,3257,25.6,74,Red loam,Slightly acidic,Good drainage,Karimunda
+Jaffna,Uduvil,427,3257,25.6,74,Sandy loam,Moist,Good drainage,Karimunda
+Jaffna,Valikamam East,319,4995,27.4,94,Loamy,Organic-rich,Well-drained,Karimunda
+Jaffna,Valikamam East,319,4995,27.4,94,Sandy loam,Moist,Good drainage,Karimunda
+Jaffna,Valikamam East,319,4995,27.4,94,Red loam,Slightly acidic,Good drainage,Karimunda
+Jaffna,Valikamam North,900,1705,25.7,79,Red loam,Slightly acidic,Good drainage,Narayakodi
+Jaffna,Valikamam North,900,1705,25.7,79,Loamy,Organic-rich,Well-drained,Karimunda
+Jaffna,Valikamam North,900,1705,25.7,79,Sandy loam,Moist,Good drainage,Narayakodi
+Jaffna,Valikamam South,589,3123,29.4,60,Sandy loam,Moist,Good drainage,Karimunda
+Jaffna,Valikamam South,589,3123,29.4,60,Loamy,Organic-rich,Well-drained,Karimunda
+Jaffna,Valikamam South,589,3123,29.4,60,Red loam,Slightly acidic,Good drainage,Karimunda
+Jaffna,Valikamam South West,223,2072,29.3,60,Sandy loam,Moist,Good drainage,Karimunda
+Jaffna,Valikamam South West,223,2072,29.3,60,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Jaffna,Valikamam South West,223,2072,29.3,60,Red loam,Slightly acidic,Good drainage,Karimunda
+Jaffna,Valikamam West,434,2495,27.1,66,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Jaffna,Valikamam West,434,2495,27.1,66,Loamy,Organic-rich,Well-drained,Karimunda
+Jaffna,Valikamam West,434,2495,27.1,66,Red loam,Slightly acidic,Good drainage,Karimunda
+Kalutara,Agalawatta,1362,3357,28.7,62,Loamy,Organic-rich,Well-drained,Karimunda
+Kalutara,Agalawatta,1362,3357,28.7,62,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kalutara,Agalawatta,1362,3357,28.7,62,Sandy loam,Moist,Good drainage,Karimunda
+Kalutara,Bandaragama,57,3557,27.6,73,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kalutara,Bandaragama,57,3557,27.6,73,Loamy,Organic-rich,Well-drained,Karimunda
+Kalutara,Bandaragama,57,3557,27.6,73,Sandy loam,Moist,Good drainage,Karimunda
+Kalutara,Beruwala,1183,1462,24.9,92,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kalutara,Beruwala,1183,1462,24.9,92,Red loam,Slightly acidic,Good drainage,Narayakodi
+Kalutara,Beruwala,1183,1462,24.9,92,Loamy,Organic-rich,Well-drained,Sreekara
+Kalutara,Bulathsinhala,1494,3356,27.0,78,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kalutara,Bulathsinhala,1494,3356,27.0,78,Red loam,Slightly acidic,Good drainage,Karimunda
+Kalutara,Bulathsinhala,1494,3356,27.0,78,Loamy,Organic-rich,Well-drained,Karimunda
+Kalutara,Dodangoda,349,3721,22.6,81,Red loam,Slightly acidic,Good drainage,Karimunda
+Kalutara,Dodangoda,349,3721,22.6,81,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kalutara,Dodangoda,349,3721,22.6,81,Sandy loam,Moist,Good drainage,Karimunda
+Kalutara,Horana,44,4105,25.3,78,Red loam,Slightly acidic,Good drainage,Karimunda
+Kalutara,Horana,44,4105,25.3,78,Sandy loam,Moist,Good drainage,Karimunda
+Kalutara,Horana,44,4105,25.3,78,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kalutara,Ingiriya,963,2777,29.5,92,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kalutara,Ingiriya,963,2777,29.5,92,Loamy,Organic-rich,Well-drained,Karimunda
+Kalutara,Ingiriya,963,2777,29.5,92,Red loam,Slightly acidic,Good drainage,Karimunda
+Kalutara,Kalutara,1253,1985,26.9,85,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kalutara,Kalutara,1253,1985,26.9,85,Loamy,Organic-rich,Well-drained,Karimunda
+Kalutara,Kalutara,1253,1985,26.9,85,Red loam,Slightly acidic,Good drainage,Karimunda
+Kalutara,Matugama,1321,4489,23.7,67,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kalutara,Matugama,1321,4489,23.7,67,Sandy loam,Moist,Good drainage,Karimunda
+Kalutara,Matugama,1321,4489,23.7,67,Loamy,Organic-rich,Well-drained,Karimunda
+Kalutara,Millaniya,551,2087,22.7,92,Red loam,Slightly acidic,Good drainage,Karimunda
+Kalutara,Millaniya,551,2087,22.7,92,Loamy,Organic-rich,Well-drained,Karimunda
+Kalutara,Millaniya,551,2087,22.7,92,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kalutara,Panadura,863,2955,24.7,74,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kalutara,Panadura,863,2955,24.7,74,Sandy loam,Moist,Good drainage,Karimunda
+Kalutara,Panadura,863,2955,24.7,74,Red loam,Slightly acidic,Good drainage,Karimunda
+Kalutara,Walallavita,170,2780,26.7,65,Loamy,Organic-rich,Well-drained,Karimunda
+Kalutara,Walallavita,170,2780,26.7,65,Red loam,Slightly acidic,Good drainage,Karimunda
+Kalutara,Walallavita,170,2780,26.7,65,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kandy,Akurana,300,1587,26.5,69,Red loam,Slightly acidic,Good drainage,Narayakodi
+Kandy,Akurana,300,1587,26.5,69,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Kandy,Akurana,300,1587,26.5,69,Sandy loam,Moist,Good drainage,Narayakodi
+Kandy,Delthota,599,1636,28.7,84,Sandy loam,Moist,Good drainage,Narayakodi
+Kandy,Delthota,599,1636,28.7,84,Loamy,Organic-rich,Well-drained,Karimunda
+Kandy,Delthota,599,1636,28.7,84,Red loam,Slightly acidic,Good drainage,Narayakodi
+Kandy,Doluwa,599,2604,22.1,92,Loamy,Organic-rich,Well-drained,Panniyur-1
+Kandy,Doluwa,599,2604,22.1,92,Sandy loam,Moist,Good drainage,Karimunda
+Kandy,Doluwa,599,2604,22.1,92,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kandy,Gangawata Korale,483,2600,25.1,64,Red loam,Slightly acidic,Good drainage,Karimunda
+Kandy,Gangawata Korale,483,2600,25.1,64,Loamy,Organic-rich,Well-drained,Karimunda
+Kandy,Gangawata Korale,483,2600,25.1,64,Sandy loam,Moist,Good drainage,Karimunda
+Kandy,Harispattuwa,443,2726,27.6,94,Red loam,Slightly acidic,Good drainage,Karimunda
+Kandy,Harispattuwa,443,2726,27.6,94,Loamy,Organic-rich,Well-drained,Karimunda
+Kandy,Harispattuwa,443,2726,27.6,94,Sandy loam,Moist,Good drainage,Karimunda
+Kandy,Kundasale,626,3862,23.3,69,Red loam,Slightly acidic,Good drainage,Karimunda
+Kandy,Kundasale,626,3862,23.3,69,Sandy loam,Moist,Good drainage,Karimunda
+Kandy,Kundasale,626,3862,23.3,69,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kandy,Medadumbara,1335,3034,28.0,82,Sandy loam,Moist,Good drainage,Karimunda
+Kandy,Medadumbara,1335,3034,28.0,82,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kandy,Medadumbara,1335,3034,28.0,82,Loamy,Organic-rich,Well-drained,Karimunda
+Kandy,Minipe,932,2887,22.6,92,Red loam,Slightly acidic,Good drainage,Panniyur-1
+Kandy,Minipe,932,2887,22.6,92,Sandy loam,Moist,Good drainage,Karimunda
+Kandy,Minipe,932,2887,22.6,92,Loamy,Organic-rich,Well-drained,Karimunda
+Kandy,Pathahewaheta,367,4812,27.0,74,Red loam,Slightly acidic,Good drainage,Karimunda
+Kandy,Pathahewaheta,367,4812,27.0,74,Loamy,Organic-rich,Well-drained,Karimunda
+Kandy,Pathahewaheta,367,4812,27.0,74,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kandy,Pasbage Korale,1156,1636,25.2,67,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Kandy,Pasbage Korale,1156,1636,25.2,67,Red loam,Slightly acidic,Good drainage,Narayakodi
+Kandy,Pasbage Korale,1156,1636,25.2,67,Sandy loam,Moist,Good drainage,Narayakodi
+Kandy,Thumpane,1484,1531,25.9,76,Red loam,Slightly acidic,Good drainage,Narayakodi
+Kandy,Thumpane,1484,1531,25.9,76,Loamy,Organic-rich,Well-drained,Karimunda
+Kandy,Thumpane,1484,1531,25.9,76,Sandy loam,Moist,Good drainage,Narayakodi
+Kandy,Udapalatha,456,3567,28.8,90,Sandy loam,Moist,Good drainage,Karimunda
+Kandy,Udapalatha,456,3567,28.8,90,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kandy,Udapalatha,456,3567,28.8,90,Loamy,Organic-rich,Well-drained,Karimunda
+Kandy,Udunuwara,792,2516,23.9,89,Loamy,Organic-rich,Well-drained,Karimunda
+Kandy,Udunuwara,792,2516,23.9,89,Red loam,Slightly acidic,Good drainage,Panniyur-1
+Kandy,Udunuwara,792,2516,23.9,89,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kandy,Udadumbara,674,4017,29.8,80,Red loam,Slightly acidic,Good drainage,Karimunda
+Kandy,Udadumbara,674,4017,29.8,80,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kandy,Udadumbara,674,4017,29.8,80,Sandy loam,Moist,Good drainage,Karimunda
+Kandy,Yatinuwara,434,2303,22.5,90,Red loam,Slightly acidic,Good drainage,Karimunda
+Kandy,Yatinuwara,434,2303,22.5,90,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kandy,Yatinuwara,434,2303,22.5,90,Sandy loam,Moist,Good drainage,Karimunda
+Kegalle,Aranayaka,834,1548,22.6,81,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kegalle,Aranayaka,834,1548,22.6,81,Red loam,Slightly acidic,Good drainage,Narayakodi
+Kegalle,Aranayaka,834,1548,22.6,81,Sandy loam,Moist,Good drainage,Narayakodi
+Kegalle,Bulathkohupitiya,177,4500,27.3,82,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kegalle,Bulathkohupitiya,177,4500,27.3,82,Sandy loam,Moist,Good drainage,Karimunda
+Kegalle,Bulathkohupitiya,177,4500,27.3,82,Red loam,Slightly acidic,Good drainage,Karimunda
+Kegalle,Daraniyagala,815,4502,23.4,66,Sandy loam,Moist,Good drainage,Karimunda
+Kegalle,Daraniyagala,815,4502,23.4,66,Loamy,Organic-rich,Well-drained,Karimunda
+Kegalle,Daraniyagala,815,4502,23.4,66,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kegalle,Dehiowita,733,4784,22.2,90,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kegalle,Dehiowita,733,4784,22.2,90,Red loam,Slightly acidic,Good drainage,Karimunda
+Kegalle,Dehiowita,733,4784,22.2,90,Sandy loam,Moist,Good drainage,Karimunda
+Kegalle,Deraniyagala,559,3080,27.3,73,Sandy loam,Moist,Good drainage,Karimunda
+Kegalle,Deraniyagala,559,3080,27.3,73,Red loam,Slightly acidic,Good drainage,Karimunda
+Kegalle,Deraniyagala,559,3080,27.3,73,Loamy,Organic-rich,Well-drained,Karimunda
+Kegalle,Galigamuwa,197,4435,22.5,68,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kegalle,Galigamuwa,197,4435,22.5,68,Sandy loam,Moist,Good drainage,Karimunda
+Kegalle,Galigamuwa,197,4435,22.5,68,Red loam,Slightly acidic,Good drainage,Karimunda
+Kegalle,Kegalle,328,1280,26.4,60,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Kegalle,Kegalle,328,1280,26.4,60,Red loam,Slightly acidic,Good drainage,Narayakodi
+Kegalle,Kegalle,328,1280,26.4,60,Sandy loam,Moist,Good drainage,Narayakodi
+Kegalle,Mawanella,174,4168,26.1,71,Sandy loam,Moist,Good drainage,Karimunda
+Kegalle,Mawanella,174,4168,26.1,71,Loamy,Organic-rich,Well-drained,Karimunda
+Kegalle,Mawanella,174,4168,26.1,71,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kegalle,Rambukkana,623,1854,27.0,80,Loamy,Organic-rich,Well-drained,Karimunda
+Kegalle,Rambukkana,623,1854,27.0,80,Sandy loam,Moist,Good drainage,Narayakodi
+Kegalle,Rambukkana,623,1854,27.0,80,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Kegalle,Ruwanwella,392,4342,25.8,80,Red loam,Slightly acidic,Good drainage,Karimunda
+Kegalle,Ruwanwella,392,4342,25.8,80,Sandy loam,Moist,Good drainage,Karimunda
+Kegalle,Ruwanwella,392,4342,25.8,80,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kegalle,Warakapola,1075,3151,25.7,84,Sandy loam,Moist,Good drainage,Karimunda
+Kegalle,Warakapola,1075,3151,25.7,84,Red loam,Slightly acidic,Good drainage,Karimunda
+Kegalle,Warakapola,1075,3151,25.7,84,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kegalle,Yatiyantota,940,3197,25.9,69,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kegalle,Yatiyantota,940,3197,25.9,69,Sandy loam,Moist,Good drainage,Karimunda
+Kegalle,Yatiyantota,940,3197,25.9,69,Loamy,Organic-rich,Well-drained,Karimunda
+Kilinochchi,Karachchi,1357,2679,29.4,61,Loamy,Organic-rich,Well-drained,Karimunda
+Kilinochchi,Karachchi,1357,2679,29.4,61,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kilinochchi,Karachchi,1357,2679,29.4,61,Sandy loam,Moist,Good drainage,Karimunda
+Kilinochchi,Kandavalai,277,3475,22.6,78,Sandy loam,Moist,Good drainage,Karimunda
+Kilinochchi,Kandavalai,277,3475,22.6,78,Loamy,Organic-rich,Well-drained,Karimunda
+Kilinochchi,Kandavalai,277,3475,22.6,78,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kilinochchi,Pachchilaipalli,265,3771,24.0,84,Loamy,Organic-rich,Well-drained,Karimunda
+Kilinochchi,Pachchilaipalli,265,3771,24.0,84,Red loam,Slightly acidic,Good drainage,Karimunda
+Kilinochchi,Pachchilaipalli,265,3771,24.0,84,Sandy loam,Moist,Good drainage,Karimunda
+Kilinochchi,Poonakary,1466,4326,25.6,74,Red loam,Slightly acidic,Good drainage,Karimunda
+Kilinochchi,Poonakary,1466,4326,25.6,74,Sandy loam,Moist,Good drainage,Karimunda
+Kilinochchi,Poonakary,1466,4326,25.6,74,Loamy,Organic-rich,Well-drained,Karimunda
+Kurunegala,Alawwa,1180,3681,27.9,67,Loamy,Organic-rich,Well-drained,Karimunda
+Kurunegala,Alawwa,1180,3681,27.9,67,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kurunegala,Alawwa,1180,3681,27.9,67,Sandy loam,Moist,Good drainage,Karimunda
+Kurunegala,Ambanpola,1164,4769,29.0,90,Loamy,Organic-rich,Well-drained,Karimunda
+Kurunegala,Ambanpola,1164,4769,29.0,90,Red loam,Slightly acidic,Good drainage,Karimunda
+Kurunegala,Ambanpola,1164,4769,29.0,90,Sandy loam,Moist,Good drainage,Karimunda
+Kurunegala,Bamunakotuwa,802,4857,24.7,79,Loamy,Organic-rich,Well-drained,Karimunda
+Kurunegala,Bamunakotuwa,802,4857,24.7,79,Red loam,Slightly acidic,Good drainage,Karimunda
+Kurunegala,Bamunakotuwa,802,4857,24.7,79,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kurunegala,Ehetuwewa,653,1319,25.7,63,Red loam,Slightly acidic,Good drainage,Narayakodi
+Kurunegala,Ehetuwewa,653,1319,25.7,63,Sandy loam,Moist,Good drainage,Narayakodi
+Kurunegala,Ehetuwewa,653,1319,25.7,63,Loamy,Organic-rich,Well-drained,Karimunda
+Kurunegala,Galgamuwa,407,3855,26.7,70,Sandy loam,Moist,Good drainage,Karimunda
+Kurunegala,Galgamuwa,407,3855,26.7,70,Loamy,Organic-rich,Well-drained,Karimunda
+Kurunegala,Galgamuwa,407,3855,26.7,70,Red loam,Slightly acidic,Good drainage,Karimunda
+Kurunegala,Ganewatta,44,2275,29.8,90,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kurunegala,Ganewatta,44,2275,29.8,90,Sandy loam,Moist,Good drainage,Karimunda
+Kurunegala,Ganewatta,44,2275,29.8,90,Loamy,Organic-rich,Well-drained,Karimunda
+Kurunegala,Giribawa,1270,2462,27.3,68,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Kurunegala,Giribawa,1270,2462,27.3,68,Loamy,Organic-rich,Well-drained,Karimunda
+Kurunegala,Giribawa,1270,2462,27.3,68,Red loam,Slightly acidic,Good drainage,Karimunda
+Kurunegala,Ibbagamuwa,1450,3375,22.8,68,Loamy,Organic-rich,Well-drained,Karimunda
+Kurunegala,Ibbagamuwa,1450,3375,22.8,68,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kurunegala,Ibbagamuwa,1450,3375,22.8,68,Red loam,Slightly acidic,Good drainage,Karimunda
+Kurunegala,Kobeigane,328,1618,26.9,74,Red loam,Slightly acidic,Good drainage,Narayakodi
+Kurunegala,Kobeigane,328,1618,26.9,74,Sandy loam,Moist,Good drainage,Narayakodi
+Kurunegala,Kobeigane,328,1618,26.9,74,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Kurunegala,Kuliyapitiya East,1194,1789,22.7,73,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kurunegala,Kuliyapitiya East,1194,1789,22.7,73,Red loam,Slightly acidic,Good drainage,Narayakodi
+Kurunegala,Kuliyapitiya East,1194,1789,22.7,73,Loamy,Organic-rich,Well-drained,Karimunda
+Kurunegala,Kuliyapitiya West,1333,2250,23.1,85,Red loam,Slightly acidic,Good drainage,Sreekara
+Kurunegala,Kuliyapitiya West,1333,2250,23.1,85,Loamy,Organic-rich,Well-drained,Sreekara
+Kurunegala,Kuliyapitiya West,1333,2250,23.1,85,Sandy loam,Moist,Good drainage,Karimunda
+Kurunegala,Kurunegala,1399,1751,27.4,78,Red loam,Slightly acidic,Good drainage,Narayakodi
+Kurunegala,Kurunegala,1399,1751,27.4,78,Loamy,Organic-rich,Well-drained,Karimunda
+Kurunegala,Kurunegala,1399,1751,27.4,78,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Kurunegala,Mahawa,941,2776,25.3,76,Sandy loam,Moist,Good drainage,Karimunda
+Kurunegala,Mahawa,941,2776,25.3,76,Red loam,Slightly acidic,Good drainage,Karimunda
+Kurunegala,Mahawa,941,2776,25.3,76,Loamy,Organic-rich,Well-drained,Karimunda
+Kurunegala,Mallawapitiya,232,4690,29.7,80,Loamy,Organic-rich,Well-drained,Karimunda
+Kurunegala,Mallawapitiya,232,4690,29.7,80,Red loam,Slightly acidic,Good drainage,Karimunda
+Kurunegala,Mallawapitiya,232,4690,29.7,80,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kurunegala,Maspotha,742,3740,27.0,66,Red loam,Slightly acidic,Good drainage,Karimunda
+Kurunegala,Maspotha,742,3740,27.0,66,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kurunegala,Maspotha,742,3740,27.0,66,Loamy,Organic-rich,Well-drained,Karimunda
+Kurunegala,Nikaweratiya,908,2948,28.1,61,Loamy,Organic-rich,Well-drained,Karimunda
+Kurunegala,Nikaweratiya,908,2948,28.1,61,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kurunegala,Nikaweratiya,908,2948,28.1,61,Red loam,Slightly acidic,Good drainage,Karimunda
+Kurunegala,Panduwasnuwara,1273,4064,26.5,64,Red loam,Slightly acidic,Good drainage,Karimunda
+Kurunegala,Panduwasnuwara,1273,4064,26.5,64,Loamy,Organic-rich,Well-drained,Karimunda
+Kurunegala,Panduwasnuwara,1273,4064,26.5,64,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kurunegala,Pannala,1472,2473,29.9,77,Loamy,Organic-rich,Well-drained,Karimunda
+Kurunegala,Pannala,1472,2473,29.9,77,Sandy loam,Moist,Good drainage,Karimunda
+Kurunegala,Pannala,1472,2473,29.9,77,Red loam,Slightly acidic,Good drainage,Karimunda
+Kurunegala,Polgahawela,1056,4106,23.8,64,Sandy loam,Moist,Good drainage,Karimunda
+Kurunegala,Polgahawela,1056,4106,23.8,64,Loamy,Organic-rich,Well-drained,Karimunda
+Kurunegala,Polgahawela,1056,4106,23.8,64,Red loam,Slightly acidic,Good drainage,Karimunda
+Kurunegala,Polpithigama,636,3319,26.7,68,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kurunegala,Polpithigama,636,3319,26.7,68,Sandy loam,Moist,Good drainage,Karimunda
+Kurunegala,Polpithigama,636,3319,26.7,68,Loamy,Organic-rich,Well-drained,Karimunda
+Kurunegala,Rasnayakapura,1357,4359,23.1,81,Loamy,Organic-rich,Well-drained,Karimunda
+Kurunegala,Rasnayakapura,1357,4359,23.1,81,Sandy loam,Moist,Good drainage,Karimunda
+Kurunegala,Rasnayakapura,1357,4359,23.1,81,Red loam,Slightly acidic,Good drainage,Karimunda
+Kurunegala,Rideegama,671,4168,25.7,76,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kurunegala,Rideegama,671,4168,25.7,76,Loamy,Organic-rich,Well-drained,Karimunda
+Kurunegala,Rideegama,671,4168,25.7,76,Red loam,Slightly acidic,Good drainage,Karimunda
+Kurunegala,Udubaddawa,1140,3694,29.6,81,Loamy,Organic-rich,Well-drained,Karimunda
+Kurunegala,Udubaddawa,1140,3694,29.6,81,Red loam,Slightly acidic,Good drainage,Karimunda
+Kurunegala,Udubaddawa,1140,3694,29.6,81,Sandy loam,Moist,Good drainage,Karimunda
+Kurunegala,Wariyapola,599,4367,29.2,71,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kurunegala,Wariyapola,599,4367,29.2,71,Red loam,Slightly acidic,Good drainage,Karimunda
+Kurunegala,Wariyapola,599,4367,29.2,71,Sandy loam,Moist,Good drainage,Karimunda
+Kurunegala,Weerambugedara,545,2043,22.2,84,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Kurunegala,Weerambugedara,545,2043,22.2,84,Red loam,Slightly acidic,Good drainage,Karimunda
+Kurunegala,Weerambugedara,545,2043,22.2,84,Sandy loam,Moist,Good drainage,Karimunda
+Mannar,Madhu,1214,2101,28.2,65,Sandy loam,Moist,Good drainage,Karimunda
+Mannar,Madhu,1214,2101,28.2,65,Red loam,Slightly acidic,Good drainage,Karimunda
+Mannar,Madhu,1214,2101,28.2,65,Loamy,Organic-rich,Well-drained,Karimunda
+Mannar,Mannar,882,4394,26.2,82,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Mannar,Mannar,882,4394,26.2,82,Loamy,Organic-rich,Well-drained,Karimunda
+Mannar,Mannar,882,4394,26.2,82,Sandy loam,Moist,Good drainage,Karimunda
+Mannar,Manthai West,575,3192,29.0,68,Red loam,Slightly acidic,Good drainage,Karimunda
+Mannar,Manthai West,575,3192,29.0,68,Sandy loam,Moist,Good drainage,Karimunda
+Mannar,Manthai West,575,3192,29.0,68,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Mannar,Musali,404,3909,25.3,76,Red loam,Slightly acidic,Good drainage,Karimunda
+Mannar,Musali,404,3909,25.3,76,Loamy,Organic-rich,Well-drained,Karimunda
+Mannar,Musali,404,3909,25.3,76,Sandy loam,Moist,Good drainage,Karimunda
+Mannar,Nanaddan,824,2390,22.5,62,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Mannar,Nanaddan,824,2390,22.5,62,Loamy,Organic-rich,Well-drained,Karimunda
+Mannar,Nanaddan,824,2390,22.5,62,Sandy loam,Moist,Good drainage,Karimunda
+Matale,Dambulla,755,1834,22.5,77,Sandy loam,Moist,Good drainage,Narayakodi
+Matale,Dambulla,755,1834,22.5,77,Red loam,Slightly acidic,Good drainage,Narayakodi
+Matale,Dambulla,755,1834,22.5,77,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Matale,Galewela,1345,2721,24.2,74,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Matale,Galewela,1345,2721,24.2,74,Red loam,Slightly acidic,Good drainage,Karimunda
+Matale,Galewela,1345,2721,24.2,74,Sandy loam,Moist,Good drainage,Karimunda
+Matale,Laggala-Pallegama,114,2835,27.4,87,Sandy loam,Moist,Good drainage,Karimunda
+Matale,Laggala-Pallegama,114,2835,27.4,87,Red loam,Slightly acidic,Good drainage,Karimunda
+Matale,Laggala-Pallegama,114,2835,27.4,87,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Matale,Matale,774,3627,22.1,89,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Matale,Matale,774,3627,22.1,89,Sandy loam,Moist,Good drainage,Karimunda
+Matale,Matale,774,3627,22.1,89,Red loam,Slightly acidic,Good drainage,Karimunda
+Matale,Naula,1201,3239,22.6,63,Red loam,Slightly acidic,Good drainage,Karimunda
+Matale,Naula,1201,3239,22.6,63,Loamy,Organic-rich,Well-drained,Karimunda
+Matale,Naula,1201,3239,22.6,63,Sandy loam,Moist,Good drainage,Karimunda
+Matale,Rattota,234,4870,26.0,68,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Matale,Rattota,234,4870,26.0,68,Sandy loam,Moist,Good drainage,Karimunda
+Matale,Rattota,234,4870,26.0,68,Red loam,Slightly acidic,Good drainage,Karimunda
+Matale,Ukuwela,626,4790,25.4,87,Red loam,Slightly acidic,Good drainage,Karimunda
+Matale,Ukuwela,626,4790,25.4,87,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Matale,Ukuwela,626,4790,25.4,87,Sandy loam,Moist,Good drainage,Karimunda
+Matale,Wilgamuwa,418,3101,27.0,69,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Matale,Wilgamuwa,418,3101,27.0,69,Red loam,Slightly acidic,Good drainage,Karimunda
+Matale,Wilgamuwa,418,3101,27.0,69,Sandy loam,Moist,Good drainage,Karimunda
+Matale,Yatawatta,835,2409,23.5,71,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Matale,Yatawatta,835,2409,23.5,71,Sandy loam,Moist,Good drainage,Karimunda
+Matale,Yatawatta,835,2409,23.5,71,Loamy,Organic-rich,Well-drained,Karimunda
+Matara,Akurassa,235,3431,29.5,83,Loamy,Organic-rich,Well-drained,Karimunda
+Matara,Akurassa,235,3431,29.5,83,Red loam,Slightly acidic,Good drainage,Karimunda
+Matara,Akurassa,235,3431,29.5,83,Sandy loam,Moist,Good drainage,Karimunda
+Matara,Athuraliya,730,3931,26.0,60,Loamy,Organic-rich,Well-drained,Karimunda
+Matara,Athuraliya,730,3931,26.0,60,Red loam,Slightly acidic,Good drainage,Karimunda
+Matara,Athuraliya,730,3931,26.0,60,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Matara,Devinuwara,253,3235,27.4,85,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Matara,Devinuwara,253,3235,27.4,85,Sandy loam,Moist,Good drainage,Karimunda
+Matara,Devinuwara,253,3235,27.4,85,Loamy,Organic-rich,Well-drained,Karimunda
+Matara,Dickwella,394,2705,22.4,66,Sandy loam,Moist,Good drainage,Karimunda
+Matara,Dickwella,394,2705,22.4,66,Loamy,Organic-rich,Well-drained,Karimunda
+Matara,Dickwella,394,2705,22.4,66,Red loam,Slightly acidic,Good drainage,Karimunda
+Matara,Hakmana,947,3900,29.9,70,Loamy,Organic-rich,Well-drained,Karimunda
+Matara,Hakmana,947,3900,29.9,70,Sandy loam,Moist,Good drainage,Karimunda
+Matara,Hakmana,947,3900,29.9,70,Red loam,Slightly acidic,Good drainage,Karimunda
+Matara,Kamburupitiya,19,4065,29.7,66,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Matara,Kamburupitiya,19,4065,29.7,66,Loamy,Organic-rich,Well-drained,Karimunda
+Matara,Kamburupitiya,19,4065,29.7,66,Sandy loam,Moist,Good drainage,Karimunda
+Matara,Kirinda Puhulwella,146,3680,26.0,89,Sandy loam,Moist,Good drainage,Karimunda
+Matara,Kirinda Puhulwella,146,3680,26.0,89,Red loam,Slightly acidic,Good drainage,Karimunda
+Matara,Kirinda Puhulwella,146,3680,26.0,89,Loamy,Organic-rich,Well-drained,Karimunda
+Matara,Kotapola,450,3661,22.7,95,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Matara,Kotapola,450,3661,22.7,95,Red loam,Slightly acidic,Good drainage,Panniyur-1
+Matara,Kotapola,450,3661,22.7,95,Loamy,Organic-rich,Well-drained,Karimunda
+Matara,Malimbada,962,2978,25.0,88,Sandy loam,Moist,Good drainage,Karimunda
+Matara,Malimbada,962,2978,25.0,88,Loamy,Organic-rich,Well-drained,Panniyur-1
+Matara,Malimbada,962,2978,25.0,88,Red loam,Slightly acidic,Good drainage,Panniyur-1
+Matara,Matara,1007,1819,24.4,69,Sandy loam,Moist,Good drainage,Narayakodi
+Matara,Matara,1007,1819,24.4,69,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Matara,Matara,1007,1819,24.4,69,Loamy,Organic-rich,Well-drained,Karimunda
+Matara,Mulatiyana,1171,4754,27.0,85,Red loam,Slightly acidic,Good drainage,Karimunda
+Matara,Mulatiyana,1171,4754,27.0,85,Sandy loam,Moist,Good drainage,Karimunda
+Matara,Mulatiyana,1171,4754,27.0,85,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Matara,Pasgoda,351,2764,28.7,72,Sandy loam,Moist,Good drainage,Karimunda
+Matara,Pasgoda,351,2764,28.7,72,Loamy,Organic-rich,Well-drained,Karimunda
+Matara,Pasgoda,351,2764,28.7,72,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Matara,Pitabeddara,79,2127,28.5,91,Red loam,Slightly acidic,Good drainage,Karimunda
+Matara,Pitabeddara,79,2127,28.5,91,Loamy,Organic-rich,Well-drained,Karimunda
+Matara,Pitabeddara,79,2127,28.5,91,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Matara,Thihagoda,925,2355,24.0,76,Loamy,Organic-rich,Well-drained,Karimunda
+Matara,Thihagoda,925,2355,24.0,76,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Matara,Thihagoda,925,2355,24.0,76,Sandy loam,Moist,Good drainage,Karimunda
+Matara,Weligama,1022,2471,29.0,75,Sandy loam,Moist,Good drainage,Karimunda
+Matara,Weligama,1022,2471,29.0,75,Red loam,Slightly acidic,Good drainage,Karimunda
+Matara,Weligama,1022,2471,29.0,75,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Matara,Welipitiya,423,1727,29.0,88,Sandy loam,Moist,Good drainage,Narayakodi
+Matara,Welipitiya,423,1727,29.0,88,Red loam,Slightly acidic,Good drainage,Narayakodi
+Matara,Welipitiya,423,1727,29.0,88,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Monaragala,Badalkumbura,283,1287,26.7,87,Loamy,Organic-rich,Well-drained,Karimunda
+Monaragala,Badalkumbura,283,1287,26.7,87,Red loam,Slightly acidic,Good drainage,Narayakodi
+Monaragala,Badalkumbura,283,1287,26.7,87,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Monaragala,Bibile,1469,1518,22.6,76,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Monaragala,Bibile,1469,1518,22.6,76,Loamy,Organic-rich,Well-drained,Karimunda
+Monaragala,Bibile,1469,1518,22.6,76,Red loam,Slightly acidic,Good drainage,Narayakodi
+Monaragala,Buttala,1388,2387,27.3,70,Loamy,Organic-rich,Well-drained,Karimunda
+Monaragala,Buttala,1388,2387,27.3,70,Sandy loam,Moist,Good drainage,Karimunda
+Monaragala,Buttala,1388,2387,27.3,70,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Monaragala,Kataragama,462,4301,27.1,80,Sandy loam,Moist,Good drainage,Karimunda
+Monaragala,Kataragama,462,4301,27.1,80,Loamy,Organic-rich,Well-drained,Karimunda
+Monaragala,Kataragama,462,4301,27.1,80,Red loam,Slightly acidic,Good drainage,Karimunda
+Monaragala,Madulla,623,1948,23.1,75,Red loam,Slightly acidic,Good drainage,Karimunda
+Monaragala,Madulla,623,1948,23.1,75,Sandy loam,Moist,Good drainage,Karimunda
+Monaragala,Madulla,623,1948,23.1,75,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Monaragala,Monaragala,237,3637,29.2,87,Sandy loam,Moist,Good drainage,Karimunda
+Monaragala,Monaragala,237,3637,29.2,87,Loamy,Organic-rich,Well-drained,Karimunda
+Monaragala,Monaragala,237,3637,29.2,87,Red loam,Slightly acidic,Good drainage,Karimunda
+Monaragala,Sevanagala,1013,1447,22.5,83,Loamy,Organic-rich,Well-drained,Sreekara
+Monaragala,Sevanagala,1013,1447,22.5,83,Sandy loam,Moist,Good drainage,Narayakodi
+Monaragala,Sevanagala,1013,1447,22.5,83,Red loam,Slightly acidic,Good drainage,Narayakodi
+Monaragala,Siyambalanduwa,618,4032,27.8,77,Sandy loam,Moist,Good drainage,Karimunda
+Monaragala,Siyambalanduwa,618,4032,27.8,77,Red loam,Slightly acidic,Good drainage,Karimunda
+Monaragala,Siyambalanduwa,618,4032,27.8,77,Loamy,Organic-rich,Well-drained,Karimunda
+Monaragala,Thanamalvila,827,2094,24.7,65,Red loam,Slightly acidic,Good drainage,Karimunda
+Monaragala,Thanamalvila,827,2094,24.7,65,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Monaragala,Thanamalvila,827,2094,24.7,65,Sandy loam,Moist,Good drainage,Karimunda
+Monaragala,Wellawaya,838,3913,24.3,70,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Monaragala,Wellawaya,838,3913,24.3,70,Sandy loam,Moist,Good drainage,Karimunda
+Monaragala,Wellawaya,838,3913,24.3,70,Loamy,Organic-rich,Well-drained,Karimunda
+Mullaitivu,Manthai East,494,1525,22.0,72,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Mullaitivu,Manthai East,494,1525,22.0,72,Sandy loam,Moist,Good drainage,Narayakodi
+Mullaitivu,Manthai East,494,1525,22.0,72,Loamy,Organic-rich,Well-drained,Karimunda
+Mullaitivu,Maritimepattu,963,2454,26.9,95,Red loam,Slightly acidic,Good drainage,Karimunda
+Mullaitivu,Maritimepattu,963,2454,26.9,95,Loamy,Organic-rich,Well-drained,Karimunda
+Mullaitivu,Maritimepattu,963,2454,26.9,95,Sandy loam,Moist,Good drainage,Karimunda
+Mullaitivu,Oddusuddan,481,1553,27.7,65,Sandy loam,Moist,Good drainage,Narayakodi
+Mullaitivu,Oddusuddan,481,1553,27.7,65,Red loam,Slightly acidic,Good drainage,Narayakodi
+Mullaitivu,Oddusuddan,481,1553,27.7,65,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Mullaitivu,Puthukkudiyiruppu,166,3068,29.5,68,Loamy,Organic-rich,Well-drained,Karimunda
+Mullaitivu,Puthukkudiyiruppu,166,3068,29.5,68,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Mullaitivu,Puthukkudiyiruppu,166,3068,29.5,68,Sandy loam,Moist,Good drainage,Karimunda
+Mullaitivu,Thunukkai,615,4782,28.3,79,Red loam,Slightly acidic,Good drainage,Karimunda
+Mullaitivu,Thunukkai,615,4782,28.3,79,Sandy loam,Moist,Good drainage,Karimunda
+Mullaitivu,Thunukkai,615,4782,28.3,79,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Mullaitivu,Welioya,1428,2009,24.7,84,Sandy loam,Moist,Good drainage,Karimunda
+Mullaitivu,Welioya,1428,2009,24.7,84,Loamy,Organic-rich,Well-drained,Karimunda
+Mullaitivu,Welioya,1428,2009,24.7,84,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Nuwara Eliya,Ambagamuwa,1288,4426,26.7,77,Sandy loam,Moist,Good drainage,Karimunda
+Nuwara Eliya,Ambagamuwa,1288,4426,26.7,77,Red loam,Slightly acidic,Good drainage,Karimunda
+Nuwara Eliya,Ambagamuwa,1288,4426,26.7,77,Loamy,Organic-rich,Well-drained,Karimunda
+Nuwara Eliya,Hanguranketha,1412,3474,24.2,69,Loamy,Organic-rich,Well-drained,Karimunda
+Nuwara Eliya,Hanguranketha,1412,3474,24.2,69,Red loam,Slightly acidic,Good drainage,Karimunda
+Nuwara Eliya,Hanguranketha,1412,3474,24.2,69,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Nuwara Eliya,Kothmale,140,1875,23.6,87,Sandy loam,Moist,Good drainage,Narayakodi
+Nuwara Eliya,Kothmale,140,1875,23.6,87,Red loam,Slightly acidic,Good drainage,Narayakodi
+Nuwara Eliya,Kothmale,140,1875,23.6,87,Loamy,Organic-rich,Well-drained,Karimunda
+Nuwara Eliya,Nuwara Eliya,435,4788,29.4,76,Red loam,Slightly acidic,Good drainage,Karimunda
+Nuwara Eliya,Nuwara Eliya,435,4788,29.4,76,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Nuwara Eliya,Nuwara Eliya,435,4788,29.4,76,Sandy loam,Moist,Good drainage,Karimunda
+Nuwara Eliya,Walapane,325,4263,27.0,92,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Nuwara Eliya,Walapane,325,4263,27.0,92,Sandy loam,Moist,Good drainage,Karimunda
+Nuwara Eliya,Walapane,325,4263,27.0,92,Red loam,Slightly acidic,Good drainage,Karimunda
+Polonnaruwa,Dimbulagala,823,4824,25.4,74,Sandy loam,Moist,Good drainage,Karimunda
+Polonnaruwa,Dimbulagala,823,4824,25.4,74,Loamy,Organic-rich,Well-drained,Karimunda
+Polonnaruwa,Dimbulagala,823,4824,25.4,74,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Polonnaruwa,Elahera,1314,4459,26.0,67,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Polonnaruwa,Elahera,1314,4459,26.0,67,Loamy,Organic-rich,Well-drained,Karimunda
+Polonnaruwa,Elahera,1314,4459,26.0,67,Sandy loam,Moist,Good drainage,Karimunda
+Polonnaruwa,Hingurakgoda,590,4177,25.8,62,Sandy loam,Moist,Good drainage,Karimunda
+Polonnaruwa,Hingurakgoda,590,4177,25.8,62,Red loam,Slightly acidic,Good drainage,Karimunda
+Polonnaruwa,Hingurakgoda,590,4177,25.8,62,Loamy,Organic-rich,Well-drained,Karimunda
+Polonnaruwa,Lankapura,1095,2217,22.4,79,Red loam,Slightly acidic,Good drainage,Karimunda
+Polonnaruwa,Lankapura,1095,2217,22.4,79,Sandy loam,Moist,Good drainage,Karimunda
+Polonnaruwa,Lankapura,1095,2217,22.4,79,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Polonnaruwa,Medirigiriya,1077,1266,23.7,74,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Polonnaruwa,Medirigiriya,1077,1266,23.7,74,Loamy,Organic-rich,Well-drained,Karimunda
+Polonnaruwa,Medirigiriya,1077,1266,23.7,74,Sandy loam,Moist,Good drainage,Narayakodi
+Polonnaruwa,Thamankaduwa,883,3131,22.3,76,Loamy,Organic-rich,Well-drained,Karimunda
+Polonnaruwa,Thamankaduwa,883,3131,22.3,76,Red loam,Slightly acidic,Good drainage,Panniyur-1
+Polonnaruwa,Thamankaduwa,883,3131,22.3,76,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Polonnaruwa,Welikanda,308,3696,25.4,69,Sandy loam,Moist,Good drainage,Karimunda
+Polonnaruwa,Welikanda,308,3696,25.4,69,Loamy,Organic-rich,Well-drained,Karimunda
+Polonnaruwa,Welikanda,308,3696,25.4,69,Red loam,Slightly acidic,Good drainage,Karimunda
+Puttalam,Anamaduwa,857,1839,29.0,92,Red loam,Slightly acidic,Good drainage,Narayakodi
+Puttalam,Anamaduwa,857,1839,29.0,92,Sandy loam,Moist,Good drainage,Narayakodi
+Puttalam,Anamaduwa,857,1839,29.0,92,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Puttalam,Arachchikattuwa,695,1792,26.4,70,Red loam,Slightly acidic,Good drainage,Narayakodi
+Puttalam,Arachchikattuwa,695,1792,26.4,70,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Puttalam,Arachchikattuwa,695,1792,26.4,70,Sandy loam,Moist,Good drainage,Narayakodi
+Puttalam,Chilaw,88,3130,25.2,69,Red loam,Slightly acidic,Good drainage,Karimunda
+Puttalam,Chilaw,88,3130,25.2,69,Sandy loam,Moist,Good drainage,Karimunda
+Puttalam,Chilaw,88,3130,25.2,69,Loamy,Organic-rich,Well-drained,Karimunda
+Puttalam,Dankotuwa,1061,3871,22.0,77,Loamy,Organic-rich,Well-drained,Karimunda
+Puttalam,Dankotuwa,1061,3871,22.0,77,Sandy loam,Moist,Good drainage,Karimunda
+Puttalam,Dankotuwa,1061,3871,22.0,77,Red loam,Slightly acidic,Good drainage,Karimunda
+Puttalam,Kalpitiya,1476,2416,22.3,89,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Puttalam,Kalpitiya,1476,2416,22.3,89,Sandy loam,Moist,Good drainage,Karimunda
+Puttalam,Kalpitiya,1476,2416,22.3,89,Red loam,Slightly acidic,Good drainage,Sreekara
+Puttalam,Karuwalagaswewa,636,4260,27.2,78,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Puttalam,Karuwalagaswewa,636,4260,27.2,78,Loamy,Organic-rich,Well-drained,Karimunda
+Puttalam,Karuwalagaswewa,636,4260,27.2,78,Sandy loam,Moist,Good drainage,Karimunda
+Puttalam,Mahakumbukkadawala,1002,3514,27.8,89,Loamy,Organic-rich,Well-drained,Karimunda
+Puttalam,Mahakumbukkadawala,1002,3514,27.8,89,Red loam,Slightly acidic,Good drainage,Karimunda
+Puttalam,Mahakumbukkadawala,1002,3514,27.8,89,Sandy loam,Moist,Good drainage,Karimunda
+Puttalam,Mundalama,504,2666,29.8,86,Sandy loam,Moist,Good drainage,Karimunda
+Puttalam,Mundalama,504,2666,29.8,86,Red loam,Slightly acidic,Good drainage,Karimunda
+Puttalam,Mundalama,504,2666,29.8,86,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Puttalam,Nattandiya,1378,4931,22.2,82,Red loam,Slightly acidic,Good drainage,Karimunda
+Puttalam,Nattandiya,1378,4931,22.2,82,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Puttalam,Nattandiya,1378,4931,22.2,82,Sandy loam,Moist,Good drainage,Karimunda
+Puttalam,Nawagaththegama,271,3982,29.0,75,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Puttalam,Nawagaththegama,271,3982,29.0,75,Sandy loam,Moist,Good drainage,Karimunda
+Puttalam,Nawagaththegama,271,3982,29.0,75,Loamy,Organic-rich,Well-drained,Karimunda
+Puttalam,Pallama,59,4435,29.8,72,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Puttalam,Pallama,59,4435,29.8,72,Red loam,Slightly acidic,Good drainage,Karimunda
+Puttalam,Pallama,59,4435,29.8,72,Loamy,Organic-rich,Well-drained,Karimunda
+Puttalam,Puttalam,882,4925,27.3,63,Red loam,Slightly acidic,Good drainage,Karimunda
+Puttalam,Puttalam,882,4925,27.3,63,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Puttalam,Puttalam,882,4925,27.3,63,Loamy,Organic-rich,Well-drained,Karimunda
+Puttalam,Vanathavilluwa,1182,1956,27.0,93,Red loam,Slightly acidic,Good drainage,Karimunda
+Puttalam,Vanathavilluwa,1182,1956,27.0,93,Sandy loam,Moist,Good drainage,Karimunda
+Puttalam,Vanathavilluwa,1182,1956,27.0,93,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Puttalam,Wennappuwa,1386,1239,26.4,86,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Puttalam,Wennappuwa,1386,1239,26.4,86,Red loam,Slightly acidic,Good drainage,Narayakodi
+Puttalam,Wennappuwa,1386,1239,26.4,86,Loamy,Organic-rich,Well-drained,Karimunda
+Ratnapura,Ayagama,178,1776,24.9,80,Sandy loam,Moist,Good drainage,Narayakodi
+Ratnapura,Ayagama,178,1776,24.9,80,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Ratnapura,Ayagama,178,1776,24.9,80,Loamy,Organic-rich,Well-drained,Karimunda
+Ratnapura,Balangoda,1255,3795,24.7,87,Loamy,Organic-rich,Well-drained,Karimunda
+Ratnapura,Balangoda,1255,3795,24.7,87,Red loam,Slightly acidic,Good drainage,Karimunda
+Ratnapura,Balangoda,1255,3795,24.7,87,Sandy loam,Moist,Good drainage,Karimunda
+Ratnapura,Eheliyagoda,141,3046,24.3,68,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Ratnapura,Eheliyagoda,141,3046,24.3,68,Red loam,Slightly acidic,Good drainage,Karimunda
+Ratnapura,Eheliyagoda,141,3046,24.3,68,Loamy,Organic-rich,Well-drained,Karimunda
+Ratnapura,Elapatha,28,1508,25.4,66,Loamy,Organic-rich,Well-drained,Karimunda
+Ratnapura,Elapatha,28,1508,25.4,66,Red loam,Slightly acidic,Good drainage,Narayakodi
+Ratnapura,Elapatha,28,1508,25.4,66,Sandy loam,Moist,Good drainage,Narayakodi
+Ratnapura,Embilipitiya,1147,2812,25.0,91,Red loam,Slightly acidic,Good drainage,Karimunda
+Ratnapura,Embilipitiya,1147,2812,25.0,91,Loamy,Organic-rich,Well-drained,Karimunda
+Ratnapura,Embilipitiya,1147,2812,25.0,91,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Ratnapura,Godakawela,1390,1641,22.4,84,Red loam,Slightly acidic,Good drainage,Narayakodi
+Ratnapura,Godakawela,1390,1641,22.4,84,Loamy,Organic-rich,Well-drained,Sreekara
+Ratnapura,Godakawela,1390,1641,22.4,84,Sandy loam,Moist,Good drainage,Narayakodi
+Ratnapura,Imbulpe,325,2384,25.5,62,Red loam,Slightly acidic,Good drainage,Karimunda
+Ratnapura,Imbulpe,325,2384,25.5,62,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Ratnapura,Imbulpe,325,2384,25.5,62,Loamy,Organic-rich,Well-drained,Karimunda
+Ratnapura,Kalawana,290,3919,24.4,89,Red loam,Slightly acidic,Good drainage,Panniyur-1
+Ratnapura,Kalawana,290,3919,24.4,89,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Ratnapura,Kalawana,290,3919,24.4,89,Sandy loam,Moist,Good drainage,Karimunda
+Ratnapura,Kiriella,1133,3342,22.0,85,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Ratnapura,Kiriella,1133,3342,22.0,85,Loamy,Organic-rich,Well-drained,Karimunda
+Ratnapura,Kiriella,1133,3342,22.0,85,Sandy loam,Moist,Good drainage,Karimunda
+Ratnapura,Kolonna,1217,2800,25.0,91,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Ratnapura,Kolonna,1217,2800,25.0,91,Loamy,Organic-rich,Well-drained,Karimunda
+Ratnapura,Kolonna,1217,2800,25.0,91,Red loam,Slightly acidic,Good drainage,Karimunda
+Ratnapura,Kuruwita,81,2649,26.8,64,Loamy,Organic-rich,Well-drained,Karimunda
+Ratnapura,Kuruwita,81,2649,26.8,64,Red loam,Slightly acidic,Good drainage,Karimunda
+Ratnapura,Kuruwita,81,2649,26.8,64,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Ratnapura,Nivithigala,804,4057,29.9,87,Red loam,Slightly acidic,Good drainage,Karimunda
+Ratnapura,Nivithigala,804,4057,29.9,87,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Ratnapura,Nivithigala,804,4057,29.9,87,Sandy loam,Moist,Good drainage,Karimunda
+Ratnapura,Opanayaka,47,3045,25.3,79,Red loam,Slightly acidic,Good drainage,Karimunda
+Ratnapura,Opanayaka,47,3045,25.3,79,Loamy,Organic-rich,Well-drained,Karimunda
+Ratnapura,Opanayaka,47,3045,25.3,79,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Ratnapura,Pelmadulla,672,2580,23.2,60,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Ratnapura,Pelmadulla,672,2580,23.2,60,Red loam,Slightly acidic,Good drainage,Karimunda
+Ratnapura,Pelmadulla,672,2580,23.2,60,Loamy,Organic-rich,Well-drained,Karimunda
+Ratnapura,Ratnapura,1378,1211,28.5,61,Loamy,Organic-rich,Well-drained,Karimunda
+Ratnapura,Ratnapura,1378,1211,28.5,61,Sandy clay loam,Organic-rich,Moderate drainage,Narayakodi
+Ratnapura,Ratnapura,1378,1211,28.5,61,Sandy loam,Moist,Good drainage,Narayakodi
+Ratnapura,Weligepola,1108,2361,28.4,78,Red loam,Slightly acidic,Good drainage,Karimunda
+Ratnapura,Weligepola,1108,2361,28.4,78,Loamy,Organic-rich,Well-drained,Karimunda
+Ratnapura,Weligepola,1108,2361,28.4,78,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Trincomalee,Gomarankadawala,1366,1518,28.0,85,Loamy,Organic-rich,Well-drained,Karimunda
+Trincomalee,Gomarankadawala,1366,1518,28.0,85,Red loam,Slightly acidic,Good drainage,Narayakodi
+Trincomalee,Gomarankadawala,1366,1518,28.0,85,Sandy clay loam,Organic-rich,Moderate drainage,Karimunda
+Trincomalee,Kantalai,316,1598,23.4,91,Sandy loam,Moist,Good drainage,Narayakodi
+Trincomalee,Kantalai,316,1598,23.4,91,Loamy,Organic-rich,Well-drained,Karimunda
+Trincomalee,Kantalai,316,1598,23.4,91,Red loam,Slightly acidic,Good drainage,Narayakodi
+Trincomalee,Kinniya,1018,4080,22.9,64,Loamy,Organic-rich,Well-drained,Karimunda
+Trincomalee,Kinniya,1018,4080,22.9,64,Sandy loam,Moist,Good drainage,Karimunda
+Trincomalee,Kinniya,1018,4080,22.9,64,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Trincomalee,Kuchchaveli,348,3265,27.4,81,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Trincomalee,Kuchchaveli,348,3265,27.4,81,Loamy,Organic-rich,Well-drained,Karimunda
+Trincomalee,Kuchchaveli,348,3265,27.4,81,Red loam,Slightly acidic,Good drainage,Karimunda
+Trincomalee,Morawewa,1187,4669,25.9,69,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Trincomalee,Morawewa,1187,4669,25.9,69,Sandy loam,Moist,Good drainage,Karimunda
+Trincomalee,Morawewa,1187,4669,25.9,69,Loamy,Organic-rich,Well-drained,Karimunda
+Trincomalee,Muttur,269,2510,26.6,93,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Trincomalee,Muttur,269,2510,26.6,93,Red loam,Slightly acidic,Good drainage,Karimunda
+Trincomalee,Muttur,269,2510,26.6,93,Loamy,Organic-rich,Well-drained,Karimunda
+Trincomalee,Padavi Siripura,714,2742,26.7,94,Sandy loam,Moist,Good drainage,Karimunda
+Trincomalee,Padavi Siripura,714,2742,26.7,94,Red loam,Slightly acidic,Good drainage,Panniyur-1
+Trincomalee,Padavi Siripura,714,2742,26.7,94,Loamy,Organic-rich,Well-drained,Panniyur-1
+Trincomalee,Seruvila,821,2594,28.0,89,Sandy loam,Moist,Good drainage,Karimunda
+Trincomalee,Seruvila,821,2594,28.0,89,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Trincomalee,Seruvila,821,2594,28.0,89,Loamy,Organic-rich,Well-drained,Panniyur-1
+Trincomalee,Thambalagamuwa,1445,4926,26.6,89,Loamy,Organic-rich,Well-drained,Karimunda
+Trincomalee,Thambalagamuwa,1445,4926,26.6,89,Sandy loam,Moist,Good drainage,Karimunda
+Trincomalee,Thambalagamuwa,1445,4926,26.6,89,Red loam,Slightly acidic,Good drainage,Karimunda
+Trincomalee,Trincomalee,319,1762,28.6,74,Sandy loam,Moist,Good drainage,Narayakodi
+Trincomalee,Trincomalee,319,1762,28.6,74,Red loam,Slightly acidic,Good drainage,Narayakodi
+Trincomalee,Trincomalee,319,1762,28.6,74,Loamy,Organic-rich,Well-drained,Karimunda
+Trincomalee,Verugal,1419,3118,23.5,75,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Trincomalee,Verugal,1419,3118,23.5,75,Loamy,Organic-rich,Well-drained,Karimunda
+Trincomalee,Verugal,1419,3118,23.5,75,Sandy loam,Moist,Good drainage,Karimunda
+Vavuniya,Vavuniya,565,3094,26.9,95,Red loam,Slightly acidic,Good drainage,Panniyur-1
+Vavuniya,Vavuniya,565,3094,26.9,95,Loamy,Organic-rich,Well-drained,Panniyur-1
+Vavuniya,Vavuniya,565,3094,26.9,95,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Vavuniya,Vavuniya North,1179,3028,28.3,79,Loamy,Organic-rich,Well-drained,Karimunda
+Vavuniya,Vavuniya North,1179,3028,28.3,79,Red loam,Slightly acidic,Good drainage,Karimunda
+Vavuniya,Vavuniya North,1179,3028,28.3,79,Sandy loam,Moist,Good drainage,Karimunda
+Vavuniya,Vavuniya South,1245,2598,29.3,86,Red loam,Slightly acidic,Good drainage,Karimunda
+Vavuniya,Vavuniya South,1245,2598,29.3,86,Loamy,Organic-rich,Well-drained,Karimunda
+Vavuniya,Vavuniya South,1245,2598,29.3,86,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1
+Vavuniya,Venkalacheddikulam,214,1416,26.8,92,Red loam,Slightly acidic,Good drainage,Narayakodi
+Vavuniya,Venkalacheddikulam,214,1416,26.8,92,Sandy loam,Moist,Good drainage,Narayakodi
+Vavuniya,Venkalacheddikulam,214,1416,26.8,92,Sandy clay loam,Organic-rich,Moderate drainage,Panniyur-1

@@ -1,3 +1,4 @@
+# schemas.py
 from marshmallow import Schema, fields, validate
 
 class DeficiencyPredictionRequestSchema(Schema):
@@ -39,3 +40,8 @@ class ErrorResponseSchema(Schema):
     """Schema for error responses"""
     status = fields.String(required=True, validate=validate.Equal('error'))
     message = fields.String(required=True)
+
+class LeafIdentificationResultSchema(Schema):
+    """Schema for leaf identification result"""
+    predicted_class = fields.String(required=True)
+    confidence = fields.Float(required=True, validate=validate.Range(min=0, max=1))

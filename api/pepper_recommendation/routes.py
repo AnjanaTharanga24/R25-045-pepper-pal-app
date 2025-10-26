@@ -1,5 +1,6 @@
+# api/pepper_recommendation/routes.py
 from flask import Blueprint, request, jsonify
-from .services import predict_pepper, get_climate_data, get_soil_data
+from .services import predict_pepper, get_climate_data, get_soil_data, get_soil_and_pepper_data
 
 pepper_bp = Blueprint('pepper', __name__, url_prefix='/api/pepper')
 
@@ -49,8 +50,8 @@ def suggest_pepper():
             return jsonify({'error': 'Annual rainfall cannot be negative'}), 400
 
         variety = predict_pepper(
-            elevation, annual_rainfall, avg_temperature, 
-            humidity, soil_texture, soil_quality, drainage
+            elevation, annual_rainfall, avg_temperature, humidity, 
+            soil_texture, soil_quality, drainage
         )
 
         return jsonify({
@@ -143,6 +144,48 @@ def soil_data():
         return jsonify({
             'success': True,
             'soil_data': soil_data
+        }), 200
+
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': f'Internal server error: {str(e)}'
+        }), 500
+
+@pepper_bp.route('/get-soil-and-pepper-data', methods=['POST'])
+def soil_and_pepper_data():
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'No JSON data received'}), 400
+
+        soil_type = data.get('soil_type')
+        ds_division = data.get('ds_division')
+
+        required_fields = ['soil_type', 'ds_division']
+        missing_fields = [field for field in required_fields if field not in data or data[field] is None]
+        if missing_fields:
+            return jsonify({
+                'error': f'Missing required fields: {", ".join(missing_fields)}'
+            }), 400
+
+        try:
+            soil_type = str(soil_type).strip()
+            ds_division = str(ds_division).strip()
+        except (ValueError, TypeError):
+            return jsonify({'error': 'Soil type and DS Division must be valid strings'}), 400
+
+        soil_pepper_data = get_soil_and_pepper_data(soil_type, ds_division)
+        
+        if soil_pepper_data is None:
+            return jsonify({
+                'success': False,
+                'error': f'No data found for soil type {soil_type} in {ds_division}'
+            }), 404
+
+        return jsonify({
+            'success': True,
+            'soil_pepper_data': soil_pepper_data
         }), 200
 
     except Exception as e:

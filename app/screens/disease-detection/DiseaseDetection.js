@@ -250,7 +250,7 @@ export default function DiseaseDetection({ navigation }) {
       setAnalysisResult(result);
       
     } catch (error) {
-      let errorMessage = 'Failed to analyze image. Please try again.';
+      let errorMessage = 'This is not a pepper leaf. Please upload a proper pepper leaf image.';
       
       if (error.response) {
         errorMessage = error.response.data.error || error.response.data.message || errorMessage;

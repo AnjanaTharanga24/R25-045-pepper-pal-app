@@ -151,8 +151,8 @@ export default function AdvancedPredictionScreen({ navigation }) {
       const prediction = await predictAdvancedPrice(rainfall, priceType, inflationRate, seasonality);
       
       const predictedPrice = prediction.predicted_price;
-      const lowerPrice = Math.round(predictedPrice * 0.95);
-      const upperPrice = Math.round(predictedPrice * 1.05);
+      const lowerPrice = Math.round(predictedPrice - 50);
+      const upperPrice = Math.round(predictedPrice + 50);
       
       Alert.alert(
         'Advanced Price Prediction',

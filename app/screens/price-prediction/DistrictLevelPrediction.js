@@ -148,7 +148,7 @@ export default function DistrictPredictionScreen({ navigation }) {
             </TouchableOpacity>
           </View>
 
-          {/* {showPicker && (
+          {showPicker && (
             <DateTimePicker
               value={date}
               mode="date"
@@ -159,9 +159,9 @@ export default function DistrictPredictionScreen({ navigation }) {
                 if (selectedDate) setDate(selectedDate);
               }}
             />
-          )} */}
+          )}
 
-            {showPicker && (
+            {/* {showPicker && (
             <DateTimePicker
               value={date}
               mode="date"
@@ -172,7 +172,7 @@ export default function DistrictPredictionScreen({ navigation }) {
                 if (selectedDate) setDate(selectedDate);
               }}
             />
-          )}
+          )} */}
 
           {/* Selected Info Card */}
           <View style={styles.infoCard}>

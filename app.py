@@ -1,3 +1,4 @@
+# app.py
 import os
 import warnings
 
@@ -57,7 +58,7 @@ def create_app():
                 {
                     "name": "pepper-recommendation",
                     "endpoint": "/api/pepper",
-                    "description": "Get pepper variety recommendations and climate/soil data"
+                    "description": "Get pepper variety recommendations, climate/soil data, and soil-based pepper variety suggestions"
                 },
                 {
                     "name": "deficiency-prediction", 
